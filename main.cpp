@@ -33,6 +33,12 @@ int main()
 
 	t.display_table();
 
+	cout << "\n\n";
+
+	t.update("years = 6", "years < 5");
+
+	t.display_table();
+
 
 
 	cin.get();

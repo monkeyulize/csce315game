@@ -72,6 +72,30 @@ void table::update(string _set_argument, string _where_argument) {
 		//to be updated
 
 
+		
+		if (where_args[1] == "=") {
+			if (entity_table[i].attributes[where_args[0]] == where_args[2]) {	//hack that should work with an argument like "x1 < 0"
+				entity_table[i].attributes[set_args[0]] = set_args[2];	//hack that should work with an argument like "x1 = 0"
+			}
+		}
+		else if (where_args[1] == "<") {
+			if (entity_table[i].attributes[where_args[0]] < where_args[2]) {	
+				entity_table[i].attributes[set_args[0]] = set_args[2];	
+			}
+		}
+		else if (where_args[1] == ">") {
+			if (entity_table[i].attributes[where_args[0]] > where_args[2]) {
+				entity_table[i].attributes[set_args[0]] = set_args[2];	
+			}
+		}
+		else if (where_args[1] == "!=") {
+			if (entity_table[i].attributes[where_args[0]] != where_args[2]) {
+				entity_table[i].attributes[set_args[0]] = set_args[2];
+			}
+		}
+		
+
+
 
 
 	}

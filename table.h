@@ -14,7 +14,7 @@ public:
 
 	void insert(vector<string> _field_values);
 	void update(string _set_argument, string _where_argument);
-	void split_on_spaces(string str);
+	vector<string> split_on_spaces(string str);
 	void display_table();
 
 

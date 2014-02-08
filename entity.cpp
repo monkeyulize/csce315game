@@ -26,3 +26,17 @@ void entity::show_attributes(vector<string> _ordering) {
 
 
 }
+
+string entity::get_attribute(string _attribute_name) {
+	for (map<string, string>::iterator it = attributes.begin(); it != attributes.end(); it++) {
+		if (it->first == _attribute_name)
+		{
+			return it->second;
+
+		}
+
+
+	}
+
+
+}
