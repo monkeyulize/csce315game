@@ -12,7 +12,9 @@ public:
 	table() {};
 	table(string _name, vector<string> _attribute_names, vector<string> _primary_key) {name = _name; attribute_names = _attribute_names; primary_key = _primary_key;};
 
-	void insert(vector<string> field_values);
+	void insert(vector<string> _field_values);
+	void update(string _set_argument, string _where_argument);
+	void split_on_spaces(string str);
 	void display_table();
 
 

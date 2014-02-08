@@ -22,16 +22,7 @@ void entity::show_attributes(vector<string> _ordering) {
 
 	}
 	
-	
-	//for(map<string, string>::iterator it = attributes.begin(); it != attributes.end(); it++)
-	//{
-	//	
-	//	
-	//	cout << it->second << '\t';
-	//
-	//
-	//
-	//}
+
 
 
 }
