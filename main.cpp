@@ -39,7 +39,8 @@ int main()
 
 	t.display_table();
 
-
+	entity a();
+	entity b();
 
 	cin.get();
 	return 0;
