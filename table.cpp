@@ -57,14 +57,6 @@ vector<string> table::split_on_spaces(string str) {
 	return result;
 }
 
-void table::set_union(table t)
-{
-
-} 
-void table::set_differnce(table t)
-{
-
-} 
 void table::update(string _set_argument, string _where_argument) {
 	vector<string> set_args = split_on_spaces(_set_argument);
 	vector<string> where_args = split_on_spaces(_where_argument);
