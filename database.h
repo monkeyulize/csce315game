@@ -11,9 +11,7 @@ public:
 	{
 		tables.push_back(t);
 	}
-	void update(string _set_argument, string _where_argument);
-	vector<string> split_on_spaces(string str);
-	void display_table();
+	
 	void set_union();		//: compute the union of two relations; the relations must be union-compatible.
 	void set_differnce();	//: compute the set difference of two relations; the relations must be union-compatible.
 	void set_selection();	//: select the tuples in a relation that satisfy a particular condition.
