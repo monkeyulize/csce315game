@@ -18,9 +18,6 @@ void table::insert(vector<string> _field_values) {
 	entity_table.push_back(e);
 
 
-
-
-
 }
 
 void table::display_table() {
