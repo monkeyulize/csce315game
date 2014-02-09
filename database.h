@@ -11,7 +11,15 @@ public:
 	{
 		tables.push_back(t);
 	}
-	
+	int find_table(string table_name)
+	{
+		for(int i = 0; i <tables.size(); i++)
+		{
+			if(tables[i].get_name()==table_name)
+				return i;
+		}
+		return -1
+	}
 	void set_union(string view_name, string table_one_name, string table_two_name);		//: compute the union of two relations; the relations must be union-compatible.
 	void set_differnce(string view_name, string table_one_name, string table_two_name);	//: compute the set difference of two relations; the relations must be union-compatible.
 	void set_selection( string view_name, string table_name, int tuple_index);	//: select the tuples in a relation that satisfy a particular condition.
