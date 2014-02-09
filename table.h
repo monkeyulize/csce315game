@@ -17,11 +17,4 @@ public:
 	vector<string> split_on_spaces(string str);
 	void display_table();
 
-
-
-
-
-
-
-
 };
