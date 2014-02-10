@@ -57,7 +57,7 @@ int main()
 	
 	cout << "\n\n";
 
-	t.update("years = 6", "years < 5");
+	t.update("years = 6", "years < 5");	
 
 	t.display_table();
 	
