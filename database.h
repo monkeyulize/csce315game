@@ -29,6 +29,10 @@ public:
 		}
 		return -1;
 	}
+	table get_table(string table_name)
+	{
+		return tables[find_table(table_name)];
+	}
 	table set_union(string view_name, string table_one_name, string table_two_name);							//: compute the union of two relations; the relations must be union-compatible.
 	table set_differnce(string view_name, string table_one_name, string table_two_name);						//: compute the set difference of two relations; the relations must be union-compatible.
 	table set_selection( string view_name, string table_name, int tuple_index);									//: select the tuples in a relation that satisfy a particular condition.
