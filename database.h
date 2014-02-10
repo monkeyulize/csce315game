@@ -6,7 +6,11 @@ private:
 
 public:
 	database() {};
-	
+	void create_table(string _name, vector<string> _attribute_names, vector<string> _primary_key)
+	{
+		table t (_name, _attribute_names, _primary_key);
+		add_table(t);
+	}
 	void add_table(table t)
 	{
 		tables.push_back(t);

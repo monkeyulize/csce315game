@@ -20,7 +20,7 @@ int main()
 
 	//creation of table using above
 	table t (name, attribute_names, primary_key); 
-
+	database.create_table(name, attribute_names, primary_key); 
 	//creating tuples
 	vector<string> joe;
 	joe.push_back("joe");
@@ -48,8 +48,6 @@ int main()
 	t.update("years = 6", "years < 5");
 
 	t.display_table();
-	
-	database.add_table(t);
 	
 	cin.get();
 	return 0;

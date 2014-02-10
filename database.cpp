@@ -23,3 +23,7 @@ void set_cross_product(string view_name, string table_one_name, string table_two
 {
 
 }
+void set_natural_join(string view_name, string attribute_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
+{
+
+}
