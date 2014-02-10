@@ -62,7 +62,10 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 			}
 		}
 		//push only if didnt find this element
-		if(check==bigger_table.entity_table.size()) diff_table.push_back(smaller_table.entity_table[i])
+		if(check==bigger_table.entity_table.size()) {
+			diff_table.entity_table.push_back(smaller_table.entity_table[i]);
+		}
+		
 		check=0;
 	}
 	//finding reverse differnce between both tables
@@ -73,7 +76,7 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 			}
 		}
 		//push only if didnt find this element
-		if(check==smaller_table.entity_table.size()) diff_table.push_back(bigger_table.entity_table[i])
+		if(check==smaller_table.entity_table.size()) diff_table.entity_table.push_back(bigger_table.entity_table[i]);
 		check=0;
 	}
 	
@@ -81,8 +84,8 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 }
 entity database::set_selection(string view_name, string table_name, int tuple_index)	//: select the tuples in a relation that satisfy a particular condition.
 {
-	table t1 = tables[find_table(table_one_name)]
-	return t1.entity_table[tuple_index]
+	table t1 = tables[find_table(table_name)];
+	return t1.entity_table[tuple_index];
 }
 table database::set_projection(string view_name, string table_name, vector<string> attributes)	//: select a subset of the attributes in a relation.
 {

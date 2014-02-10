@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-	database database();
+	database db;
 	//attributes list
 	string name = "animals";
 	vector<string> attribute_names;
@@ -36,9 +36,9 @@ int main()
 	bob.push_back("4");
 	//third
 	vector<string> marty;
-	bob.push_back("marty");
-	bob.push_back("tiger");
-	bob.push_back("5");
+	marty.push_back("marty");
+	marty.push_back("tiger");
+	marty.push_back("5");
 	//inserting first tuple
 	t.insert(joe);
 
@@ -63,13 +63,13 @@ int main()
 	
 	cout<<endl<<endl;
 	
-	database.create_table("pets",attribute_names;,primary_key)
-	database.create_table("felines",attribute_names;,primary_key)
-	database.get_table("pets").insert(joe);
-	database.get_table("pets").insert(bob);
-	database.get_table("felies").insert(bob);
-	database.get_table("felies").insert(marty);
-	table temp = database.get_table("pets").set_union("felines");
+	db.create_table("pets", attribute_names, primary_key);
+	db.create_table("felines", attribute_names, primary_key);
+	db.get_table("pets").insert(joe);
+	db.get_table("pets").insert(bob);
+	db.get_table("felines").insert(bob);
+	db.get_table("felines").insert(marty);
+	table temp = db.set_union("felines", "pets");
 	temp.display_table();
 	
 	
