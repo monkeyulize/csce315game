@@ -5,21 +5,8 @@ table database::set_union(string view_name, string table_one_name, string table_
 	table union_table;
 	table t1 = tables[find_table(table_one_name)];
 	table t2 = tables[find_table(table_two_name)];
-	//int bigger_table_size = max(t1.entity_table.size(), t2.entity_table.size());
-	//table bigger_table;
-	//table smaller_table;
-	//if (t1.entity_table.size() > t2.entity_table.size()) {
-	//	bigger_table = t1;
-	//	smaller_table = t2;
-	//}
-	//else {
-	//	bigger_table = t2;
-	//	smaller_table = t1;
-	//}
 	union_table = t1;
-	//for (int i = 0; i < bigger_table.entity_table.size(); i++) { 
-	//	union_table.entity_table.push_back(bigger_table.entity_table[i]);
-	//}
+
 	int can_push = 0;
 	for (int i = 0; i < t2.entity_table.size(); i++) {
 		for (int j = 0; j < t1.entity_table.size(); j++) {
@@ -30,17 +17,15 @@ table database::set_union(string view_name, string table_one_name, string table_
 			else {
 				can_push = 1;
 			}
-
 		}
 		if (can_push == 1) {
 			union_table.entity_table.push_back(t2.entity_table[i]);
 		}
-
 	}
 	union_table.set_name(view_name);
 	return union_table;
 }
-table database::set_differnce(string view_name, string table_one_name, string table_two_name)	//: compute the set difference of two relations; the relations must be union-compatible.
+table database::set_difference(string view_name, string table_one_name, string table_two_name)	//: compute the set difference of two relations; the relations must be union-compatible.
 {
 	//defining tables
 	table diff_table;
@@ -73,7 +58,7 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 		
 		check=0;
 	}
-	//finding reverse differnce between both tables
+	//finding reverse difference between both tables
 	for (int i = 0; i < bigger_table.entity_table.size(); i++) {
 		for (int j = 0; j < smaller_table.entity_table.size(); j++) {
 			if (!(bigger_table.entity_table[i] == smaller_table.entity_table[j])) {
@@ -84,7 +69,7 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 		if(check==smaller_table.entity_table.size()) diff_table.entity_table.push_back(bigger_table.entity_table[i]);
 		check=0;
 	}
-	
+	diff_table.set_name(view_name);
 	return diff_table;
 }
 entity database::set_selection(string view_name, string table_name, int tuple_index)	//: select the tuples in a relation that satisfy a particular condition.
@@ -102,6 +87,8 @@ table database::set_renaming(string view_name, string table_name, vector<string>
 }
 table database::set_cross_product(string view_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
 {
+
+
 	return table();
 }
 table database::set_natural_join(string view_name, string attribute_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
