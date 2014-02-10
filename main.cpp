@@ -49,7 +49,7 @@ int main()
 
 	t.display_table();
 	
-	database.insert(t);
+	database.add_table(t);
 	
 	cin.get();
 	return 0;

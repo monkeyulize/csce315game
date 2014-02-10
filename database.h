@@ -7,9 +7,14 @@ private:
 public:
 	database() {};
 	
-	void insert(table t)
+	void add_table(table t)
 	{
 		tables.push_back(t);
+	}
+	void add_table(table t)
+	{
+		int index = find_table(t.get_name())
+		tables.erase(index);
 	}
 	int find_table(string table_name)
 	{
