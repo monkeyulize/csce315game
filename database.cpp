@@ -53,6 +53,7 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 		smaller_table = t1;
 	}
 	int check=0;
+	
 	//finding differences between both tables using smaller one as outer limit
 	for (int i = 0; i < smaller_table.entity_table.size(); i++) {
 		for (int j = 0; j < bigger_table.entity_table.size(); j++) {
@@ -60,15 +61,18 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 				check++;
 			}
 		}
+		//push only if didnt find this element
 		if(check==bigger_table.entity_table.size()) diff_table.push_back(smaller_table.entity_table[i])
 		check=0;
 	}
+	//finding reverse differnce between both tables
 	for (int i = 0; i < bigger_table.entity_table.size(); i++) {
 		for (int j = 0; j < smaller_table.entity_table.size(); j++) {
 			if (!(bigger_table.entity_table[i] == smaller_table.entity_table[j])) {
 				check++;
 			}
 		}
+		//push only if didnt find this element
 		if(check==smaller_table.entity_table.size()) diff_table.push_back(bigger_table.entity_table[i])
 		check=0;
 	}
