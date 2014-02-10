@@ -12,7 +12,7 @@ private:
 public:
 	table() {};
 	table(string _name, vector<string> _attribute_names, vector<string> _primary_key) {name = _name; attribute_names = _attribute_names; primary_key = _primary_key;};
-	string set_name(string _name) {
+	void set_name(string _name) {
 		name = _name;
 	}
 	string get_name() {

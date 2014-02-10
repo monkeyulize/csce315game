@@ -29,7 +29,7 @@ public:
 		}
 		return -1;
 	}
-	table get_table(string table_name)
+	table& get_table(string table_name)
 	{
 		return tables[find_table(table_name)];
 	}

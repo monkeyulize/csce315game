@@ -33,43 +33,31 @@ int main()
 	vector<string> bob;
 	bob.push_back("bob");
 	bob.push_back("cat");
-	bob.push_back("4");
+	bob.push_back("3");
 	//third
 	vector<string> marty;
 	marty.push_back("marty");
-	marty.push_back("tiger");
+	marty.push_back("cat");
 	marty.push_back("5");
-	//inserting first tuple
-	t.insert(joe);
-
-	//creating tuples
-	vector<string> bob;
-	bob.push_back("bob");
-	bob.push_back("cat");
-	bob.push_back("4");
-
-	//inserting second tuple
-	t.insert(bob);
-
-	t.display_table();
+	//forth
+	vector<string> spot;
+	spot.push_back("spot");
+	spot.push_back("dog");
+	spot.push_back("6");
 	
 	
 	
-	cout << "\n\n";
-
-	t.update("years = 6", "years < 5");	
-
-	t.display_table();
 	
 	cout<<endl<<endl;
 	
-	db.create_table("pets", attribute_names, primary_key);
-	db.create_table("felines", attribute_names, primary_key);
-	db.get_table("pets").insert(joe);
-	db.get_table("pets").insert(bob);
-	db.get_table("felines").insert(bob);
-	db.get_table("felines").insert(marty);
-	table temp = db.set_union("felines", "pets");
+	db.create_table("dogs", attribute_names, primary_key);
+	db.create_table("cats", attribute_names, primary_key);
+	db.get_table("dogs").insert(joe);
+	db.get_table("dogs").insert(spot);
+	db.get_table("dogs").insert(bob);
+	db.get_table("cats").insert(bob);
+	db.get_table("cats").insert(marty);
+	table temp = db.set_union("pets", "cats", "dogs");
 	temp.display_table();
 	
 	

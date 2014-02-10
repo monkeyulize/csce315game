@@ -6,33 +6,38 @@ table database::set_union(string view_name, string table_one_name, string table_
 	table t1 = tables[find_table(table_one_name)];
 	table t2 = tables[find_table(table_two_name)];
 	//int bigger_table_size = max(t1.entity_table.size(), t2.entity_table.size());
-	table bigger_table;
-	table smaller_table;
-	if (t1.entity_table.size() > t2.entity_table.size()) {
-		bigger_table = t1;
-		smaller_table = t2;
-	}
-	else {
-		bigger_table = t2;
-		smaller_table = t1;
-	}
-	union_table = bigger_table;
+	//table bigger_table;
+	//table smaller_table;
+	//if (t1.entity_table.size() > t2.entity_table.size()) {
+	//	bigger_table = t1;
+	//	smaller_table = t2;
+	//}
+	//else {
+	//	bigger_table = t2;
+	//	smaller_table = t1;
+	//}
+	union_table = t1;
 	//for (int i = 0; i < bigger_table.entity_table.size(); i++) { 
 	//	union_table.entity_table.push_back(bigger_table.entity_table[i]);
 	//}
-	for (int i = 0; i < smaller_table.entity_table.size(); i++) {
-		for (int j = 0; j < bigger_table.entity_table.size(); j++) {
-			if (smaller_table.entity_table[i] == bigger_table.entity_table[j]) {
-				//do nothing
-				;
+	int can_push = 0;
+	for (int i = 0; i < t2.entity_table.size(); i++) {
+		for (int j = 0; j < t1.entity_table.size(); j++) {
+			if (t2.entity_table[i] == t1.entity_table[j]) {
+				can_push = 0;
+				break;
 			}
 			else {
-				union_table.entity_table.push_back(smaller_table.entity_table[i]);
+				can_push = 1;
 			}
 
 		}
+		if (can_push == 1) {
+			union_table.entity_table.push_back(t2.entity_table[i]);
+		}
 
 	}
+	union_table.set_name(view_name);
 	return union_table;
 }
 table database::set_differnce(string view_name, string table_one_name, string table_two_name)	//: compute the set difference of two relations; the relations must be union-compatible.
