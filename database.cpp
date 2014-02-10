@@ -79,9 +79,10 @@ table database::set_differnce(string view_name, string table_one_name, string ta
 	
 	return diff_table;
 }
-table database::set_selection(string view_name, string table_name, int tuple_index)	//: select the tuples in a relation that satisfy a particular condition.
+entity database::set_selection(string view_name, string table_name, int tuple_index)	//: select the tuples in a relation that satisfy a particular condition.
 {
-	return table();
+	table t1 = tables[find_table(table_one_name)]
+	return t1.entity_table[tuple_index]
 }
 table database::set_projection(string view_name, string table_name, vector<string> attributes)	//: select a subset of the attributes in a relation.
 {
