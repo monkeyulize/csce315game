@@ -90,19 +90,7 @@ void table::update(string _set_argument, string _where_argument) {
 				entity_table[i].attributes[set_args[0]] = set_args[2];
 			}
 		}
-		
-
-
-
-
 	}
-
-
-
-
-
-
-
-
 }
+
 

@@ -1,4 +1,5 @@
 #include "table.h"
+#include "database.h"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -20,7 +21,7 @@ int main()
 
 	//creation of table using above
 	table t (name, attribute_names, primary_key); 
-	database.create_table(name, attribute_names, primary_key); 
+	//database.create_table(name, attribute_names, primary_key); 
 	//creating tuples
 	vector<string> joe;
 	joe.push_back("joe");
@@ -41,7 +42,7 @@ int main()
 
 	t.display_table();
 
-	cout<<t.entity_table[1]==t.entity_table[2];
+	//cout<<t.entity_table[1]==t.entity_table[2];
 	
 	cout << "\n\n";
 
