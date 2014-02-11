@@ -78,6 +78,53 @@ int main()
 	table temp3 = db.set_renaming("pests", "cats", renames);
 	temp3.display_table();
 
+//Testing cross product ---------------------------------------------------------------------------
+	vector<string> circle;
+	circle.push_back("circle");
+	vector<string> square;
+	square.push_back("square");
+	vector<string> rectangle;
+	rectangle.push_back("rectangle");
+
+	vector<string> red;
+	red.push_back("red");
+	vector<string> blue;
+	blue.push_back("blue");
+
+	vector<string> attribute_names2;
+	attribute_names2.push_back("shape");
+
+	vector<string> primary_key2;
+	primary_key2.push_back("shape");
+
+	vector<string> attribute_names3;
+	attribute_names3.push_back("color");
+
+	vector<string> primary_key3;
+	primary_key3.push_back("color");
+
+	db.create_table("shapes", attribute_names2, primary_key2);
+	db.create_table("colors", attribute_names3, primary_key3);
+	db.get_table("shapes").insert(circle);
+	db.get_table("shapes").insert(square);
+	db.get_table("shapes").insert(rectangle);
+
+	db.get_table("colors").insert(red);
+	db.get_table("colors").insert(blue);
+	table product_test = db.set_cross_product("product test", "shapes", "colors");
+	cout << "CROSS PRODUCT TEST ==============================================" << endl;
+	product_test.display_table();
+
+
+
+
+
+
+
+
+
+
+
 	cin.get();
 	return 0;
 }

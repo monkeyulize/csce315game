@@ -94,3 +94,8 @@ void table::update(string _set_argument, string _where_argument) {
 }
 
 
+void table::set_attr_names(vector<string> _attribute_names) {
+	attribute_names = _attribute_names;
+
+
+}
