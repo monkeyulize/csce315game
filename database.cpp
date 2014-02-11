@@ -6,7 +6,7 @@ table database::set_union(string view_name, string table_one_name, string table_
 	table t1 = tables[find_table(table_one_name)];
 	table t2 = tables[find_table(table_two_name)];
 	union_table = t1;
-
+s
 	int can_push = 0;
 	for (int i = 0; i < t2.entity_table.size(); i++) {
 		for (int j = 0; j < t1.entity_table.size(); j++) {
