@@ -46,6 +46,12 @@ int main()
 	spot.push_back("6");
 	
 	
+	//creating vector for rename
+	vector<string> renames;
+	renames.push_back("id");
+	renames.push_back("species");
+	renames.push_back("years");
+	
 	
 	
 	cout<<endl<<endl;
@@ -57,19 +63,20 @@ int main()
 	db.get_table("dogs").insert(bob);
 	db.get_table("cats").insert(bob);
 	db.get_table("cats").insert(marty);
-	table temp = db.set_union("pets", "cats", "dogs");
-	table temp2 = db.set_difference("animals", "cats", "dogs");
 	
 	cout<<"PRINTING=====================Dogs"<<endl;
 	db.get_table("dogs").display_table();
 	cout<<"PRINTING=====================Cats"<<endl;
 	db.get_table("cats").display_table();
 	cout<<"PRINTING=====================Union"<<endl;
+	table temp = db.set_union("pets", "cats", "dogs");
 	temp.display_table();
-	cout<<temp.entity_table.size();
 	cout<<"PRINTING=====================Differnce"<<endl;
+	table temp2 = db.set_difference("animals", "cats", "dogs");
 	temp2.display_table();
-	
+	cout<<"PRINTING=====================Rename"<<endl;
+	table temp3 = db.set_renaming("pests", "cats", renames);
+	temp3.display_table();
 
 	cin.get();
 	return 0;
