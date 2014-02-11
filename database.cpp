@@ -28,23 +28,23 @@ table database::set_union(string view_name, string table_one_name, string table_
 table database::set_difference(string view_name, string table_one_name, string table_two_name)	//: compute the set difference of two relations; the relations must be union-compatible.
 {
 	//defining tables
-	table diff_table;
+	
 	table t1 = tables[find_table(table_one_name)];
 	table t2 = tables[find_table(table_two_name)];
-	
+	table diff_table(view_name, t1.attribute_names,t1.primary_key);
 	int check=0;
 	
 	//finding differences between both tables using smaller one as outer limit
 	for (int i = 0; i < t1.entity_table.size(); i++) {
 		for (int j = 0; j < t2.entity_table.size(); j++) {
 			if (!(t1.entity_table[i] == t2.entity_table[j])) {
+				//t1.entity_table[i].show_attributes(t1.attribute_names);
 				check++;
 			}
 		}
 		//push only if didnt find this element
 		if(check<t2.entity_table.size()) {
 			diff_table.entity_table.push_back(t1.entity_table[i]);
-			cout<<"check1 "<<check<<endl;
 		}
 		check=0;
 	}
@@ -58,7 +58,6 @@ table database::set_difference(string view_name, string table_one_name, string t
 		//push only if didnt find this element
 		if(check<t1.entity_table.size()) {
 			diff_table.entity_table.push_back(t2.entity_table[i]);
-			cout<<"check2 "<<check<<endl;
 		}
 		check=0;
 	}
