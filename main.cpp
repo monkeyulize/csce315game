@@ -115,6 +115,8 @@ int main()
 	cout << "CROSS PRODUCT TEST ==============================================" << endl;
 	product_test.display_table();
 
+	table product_test2 = db.set_cross_product("product test 2", "cats", "dogs");
+	product_test2.display_table();
 
 
 

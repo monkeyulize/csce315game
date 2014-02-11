@@ -106,7 +106,17 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 	vector<string> attr_names;
 	attr_names = t1.attribute_names;
 	for (int i = 0; i < t2.attribute_names.size(); i++) {
-		attr_names.push_back(t2.attribute_names[i]);
+		string temp = t2.attribute_names[i];
+		int multiple_attr_counter = 1;
+		for (int j = 0; j < attr_names.size(); j++) {
+			if (temp == attr_names[j]) {
+				multiple_attr_counter++;
+				temp = temp + to_string(multiple_attr_counter);
+
+			}
+
+		}
+		attr_names.push_back(temp);
 	}
 	cp_table.set_attr_names(attr_names);
 	vector<string> field_values;
@@ -129,5 +139,11 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 }
 table database::set_natural_join(string view_name, string attribute_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
 {
-	return table();
+	table nj_table;
+
+
+
+
+
+	return nj_table;
 }
