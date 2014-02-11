@@ -43,7 +43,7 @@ table database::set_difference(string view_name, string table_one_name, string t
 			}
 		}
 		//push only if didnt find this element
-		if(check<t2.entity_table.size()) {
+		if(check==t2.entity_table.size()) {
 			diff_table.entity_table.push_back(t1.entity_table[i]);
 		}
 		check=0;
@@ -56,7 +56,7 @@ table database::set_difference(string view_name, string table_one_name, string t
 			}
 		}
 		//push only if didnt find this element
-		if(check<t1.entity_table.size()) {
+		if(check==t1.entity_table.size()) {
 			diff_table.entity_table.push_back(t2.entity_table[i]);
 		}
 		check=0;
