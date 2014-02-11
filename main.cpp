@@ -115,6 +115,10 @@ int main()
 	cout << "CROSS PRODUCT TEST ==============================================" << endl;
 	product_test.display_table();
 
+	//selection test
+
+	//db.set_selection("bob", "kind", "5");
+
 
 
 
