@@ -65,30 +65,22 @@ table database::set_difference(string view_name, string table_one_name, string t
 	cout<<diff_table.entity_table.size();
 	return diff_table;
 }
-/*
-entity database::set_selection(string view_name, string table_name, int tuple_index)	//: select the tuples in a relation that satisfy a particular condition.
+
+table database::set_selection(string view_name, string table_name, vector<string> attributes)	//: select the tuples in a relation that satisfy a particular condition.
 {
-	table t1 = tables[find_table(column_name)];
-
-	//entity set_selection(string view_name, string table_name, int tuple_index);
-
-	cout << "SELECT: " << endl;
-	cin >> table_name; 
-
-	for (int i = 0; entity_table.size(); i++){
-		for (int j = 0; attribute_names.size(); j++f){
-		
-			t1.pushback(t1.entity_table[i]);
+	table t1 = tables[find_table(table_name)];
+	table sel_table(view_name, t1.attribute_names,t1.primary_key);
+	
+	for(int i = 0; i< t1.entity_table.size(); i++){		//go through the whole entity table
+		for(int j = 0; j < t1.attribute_names.size(); j++){	//go through all the attributes
+			for(int k = 0; k<attributes.size(); k++)
+				if(t1.entity_table[i].get_attribute(t1.attribute_names[j])==attributes[k])
+					sel_table.entity_table.push_back(t1.entity_table[i]);
 		}
-	
-	
 	}
 	
-
-
-
-	return t1.entity_table[tuple_index];
-}*/
+	return sel_table;
+}
 table database::set_projection(string view_name, string table_name, vector<string> attributes)	//: select a subset of the attributes in a relation.
 {
 	table t1 = tables[find_table(table_name)];
@@ -133,7 +125,7 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 		for (int j = 0; j < attr_names.size(); j++) {
 			if (temp == attr_names[j]) {
 				multiple_attr_counter++;
-				temp = temp + to_string(multiple_attr_counter);
+				temp = temp+ to_string(multiple_attr_counter);
 
 			}
 

@@ -82,6 +82,15 @@ int main()
 	species.push_back("name");
 	table temp4 = db.set_projection("proj", "cats", species);
 	temp4.display_table();
+	cout<<"PRINTING=====================selection"<<endl;
+	vector<string> felines;
+	felines.push_back("cat");
+	table temp5 = db.set_selection("sell", "cats", felines);
+	temp5 = db.set_selection("sell", "cats", felines);
+	temp5.display_table();
+	felines.push_back("6");
+	table temp6 = db.set_selection("sell", "dogs", felines);
+	temp6.display_table();
 /*
 //Testing cross product ---------------------------------------------------------------------------
 	vector<string> circle;
