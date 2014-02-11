@@ -75,7 +75,7 @@ entity database::set_selection(string view_name, string table_name, int tuple_in
 	cin >> table_name; 
 
 	for (int i = 0; entity_table.size(); i++){
-		for (int j = 0; attribute_names.size(); j++f){
+		for (int j = 0; attribute_names.size(); j++){
 		
 			t1.pushback(t1.entity_table[i]);
 		}
@@ -91,16 +91,17 @@ entity database::set_selection(string view_name, string table_name, int tuple_in
 table database::set_projection(string view_name, string table_name, vector<string> attributes)	//: select a subset of the attributes in a relation.
 {
 	table t1 = tables[find_table(table_name)];
-	
-	for(int i = 0; i < t1.entity_table.size(); i++)
-		for(int j = 0; j < t1.attribute_names.size(); j++)
-			t1.entity_table[i].set_attribute(attributes[j],t1.entity_table[i].get_attribute(t1.attribute_names[j]));
-	
-	for(int i = 0; i < t1.attribute_names.size(); i++){		//go through all attributes
-		t1.attribute_names[i] = attributes[i];
+	table proj_table(view_name, attributes,t1.primary_key);
+	vector<string> tuple;
+	for(int i = 0; i< t1.entity_table.size(); i++){		//go through the whole entity table
+		for(int j = 0; j < t1.attribute_names.size(); j++){	//go through all the attributes
+			for(int k = 0; k<attributes.size(); k++)
+				if(t1.attribute_names[j]==attributes[k])
+					tuple.push_back(t1.entity_table[i].get_attribute(t1.attribute_names[j]));
+		}
 	}
-	t1.set_name(view_name);
-	return t1;
+	
+	return proj_table;
 }
 table database::set_renaming(string view_name, string table_name, vector<string> attributes)	//: rename the attributes in a relation.
 {
