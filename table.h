@@ -20,6 +20,9 @@ public:
 	}
 	void set_attr_names(vector<string> _attribute_names);
 	void insert(vector<string> _field_values);
+	void insert(entity _e) {
+		entity_table.push_back(_e);
+	}
 	void update(string _set_argument, string _where_argument);
 	vector<string> split_on_spaces(string _str);
 	void display_table();

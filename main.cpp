@@ -60,7 +60,6 @@ int main()
 	db.create_table("cats", attribute_names, primary_key);
 	db.get_table("dogs").insert(joe);
 	db.get_table("dogs").insert(spot);
-	db.get_table("dogs").insert(bob);
 	db.get_table("cats").insert(bob);
 	db.get_table("cats").insert(marty);
 	
@@ -120,9 +119,13 @@ int main()
 	//db.set_selection("bob", "kind", "5");
 
 
+//Testing natural join ---------------------------------------------------------------------------
 
+	db.get_table("cats").insert(joe);
+	db.get_table("cats").insert(spot);
 
-
+	table natural_join_test = db.set_natural_join("natural join test", "cats", "dogs");
+	natural_join_test.display_table();
 
 
 
