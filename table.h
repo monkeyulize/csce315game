@@ -26,6 +26,7 @@ public:
 	void update(string _set_argument, string _where_argument);
 	vector<string> split_on_spaces(string _str);
 	void display_table();
+	void delete_from(string _where_argument);
 
 
 	vector<entity> entity_table;

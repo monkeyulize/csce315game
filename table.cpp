@@ -93,6 +93,33 @@ void table::update(string _set_argument, string _where_argument) {
 	}
 }
 
+void table::delete_from(string _where_argument) {
+	vector<string> where_args = split_on_spaces(_where_argument);
+
+	for (int i = 0; i < entity_table.size(); i++)
+	{
+		if (where_args[1] == "=") {
+			if (entity_table[i].attributes[where_args[0]] == where_args[2]) {	//hack that should work with an argument like "x1 < 0"
+				entity_table.erase(entity_table.begin() + i);
+			}
+		}
+		else if (where_args[1] == "<") {
+			if (entity_table[i].attributes[where_args[0]] < where_args[2]) {
+				entity_table.erase(entity_table.begin() + i);
+			}
+		}
+		else if (where_args[1] == ">") {
+			if (entity_table[i].attributes[where_args[0]] > where_args[2]) {
+				entity_table.erase(entity_table.begin() + i);
+			}
+		}
+		else if (where_args[1] == "!=") {
+			if (entity_table[i].attributes[where_args[0]] != where_args[2]) {
+				entity_table.erase(entity_table.begin() + i);
+			}
+		}
+	}
+}
 
 void table::set_attr_names(vector<string> _attribute_names) {
 	attribute_names = _attribute_names;
