@@ -77,7 +77,13 @@ int main()
 	cout<<"PRINTING=====================Rename"<<endl;
 	table temp3 = db.set_renaming("pests", "cats", renames);
 	temp3.display_table();
-
+	cout<<"PRINTING=====================projection"<<endl;
+	vector<string> species;
+	species.push_back("kind");
+	species.push_back("name");
+	table temp4 = db.set_projection("proj", "cats", species);
+	temp4.display_table();
+/*
 //Testing cross product ---------------------------------------------------------------------------
 	vector<string> circle;
 	circle.push_back("circle");
@@ -114,7 +120,7 @@ int main()
 	table product_test = db.set_cross_product("product test", "shapes", "colors");
 	cout << "CROSS PRODUCT TEST ==============================================" << endl;
 	product_test.display_table();
-
+*/
 	//selection test
 
 	//db.set_selection("bob", "kind", "5");
