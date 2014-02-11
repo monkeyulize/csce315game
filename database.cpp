@@ -133,7 +133,7 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 		for (int j = 0; j < attr_names.size(); j++) {
 			if (temp == attr_names[j]) {
 				multiple_attr_counter++;
-				temp = temp ;
+				temp = temp + to_string(multiple_attr_counter);
 
 			}
 
