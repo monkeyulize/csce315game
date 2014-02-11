@@ -28,6 +28,29 @@ public:
 	void display_table();
 	void delete_from(string _where_argument);
 
+	bool operator == (const table &Ref) const {
+        bool found;
+		if(entity_table.size() != Ref.entity_table.size()) {
+			return false;
+		}
+
+		for(int i = 0; i < entity_table.size(); i++){
+			found = false;
+			for(int j = 0; i < Ref.entity_table.size(); j++){
+				if(entity_table[i] == Ref.entity_table[j]){
+					found = true;
+				} 
+				else {}
+
+			}
+
+			if (found == false) { return false; }
+
+		}
+
+		return true;
+    }
+
 
 	vector<entity> entity_table;
 	vector<string> attribute_names;
