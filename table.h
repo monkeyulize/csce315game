@@ -18,6 +18,7 @@ public:
 	string get_name() {
 		return name;
 	}
+	void set_attr_names(vector<string> _attribute_names);
 	void insert(vector<string> _field_values);
 	void update(string _set_argument, string _where_argument);
 	vector<string> split_on_spaces(string _str);

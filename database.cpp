@@ -100,9 +100,32 @@ table database::set_renaming(string view_name, string table_name, vector<string>
 }
 table database::set_cross_product(string view_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
 {
+	table cp_table;
+	table t1 = tables[find_table(table_one_name)];
+	table t2 = tables[find_table(table_two_name)];
+	vector<string> attr_names;
+	attr_names = t1.attribute_names;
+	for (int i = 0; i < t2.attribute_names.size(); i++) {
+		attr_names.push_back(t2.attribute_names[i]);
+	}
+	cp_table.set_attr_names(attr_names);
+	vector<string> field_values;
+	for (int i = 0; i < t1.entity_table.size(); i++) {
+		for (int j = 0; j < t2.entity_table.size(); j++) {
+			for (int x = 0; x < t1.attribute_names.size(); x++) {
+				field_values.push_back(t1.entity_table[i].get_attribute(t1.attribute_names[x]));
 
+			}
+			for (int x = 0; x < t2.attribute_names.size(); x++) {
 
-	return table();
+				field_values.push_back(t2.entity_table[j].get_attribute(t2.attribute_names[x]));
+			}
+			cp_table.insert(field_values);
+			field_values.clear();
+		}
+	}
+	cp_table.set_name(view_name);
+	return cp_table;
 }
 table database::set_natural_join(string view_name, string attribute_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
 {
