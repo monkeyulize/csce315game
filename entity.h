@@ -19,9 +19,7 @@ public:
 	
 	bool operator == (const entity &Ref) const {
         return attributes==Ref.attributes;
-    }
-
-	
+    }	
 };
 
 #endif

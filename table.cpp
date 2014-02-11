@@ -8,16 +8,11 @@ using namespace std;
 void table::insert(vector<string> _field_values) {
 	entity e;
 	
-
 	for(int i = 0; i < _field_values.size(); i++)
 	{
-
 		e.set_attribute(attribute_names[i], _field_values[i]);
-
 	}
 	entity_table.push_back(e);
-
-
 }
 
 void table::display_table() {
@@ -26,23 +21,12 @@ void table::display_table() {
 	{
 		cout << attribute_names[i] << '\t';
 	}
-
 	cout << endl;
-
-
 	for(int i = 0; i < entity_table.size(); i++)
-	{
-		
+	{		
 		entity_table[i].show_attributes(attribute_names);
 		cout << endl;
-
-
 	}
-
-
-
-
-
 }
 
 vector<string> table::split_on_spaces(string str) {
@@ -68,8 +52,6 @@ void table::update(string _set_argument, string _where_argument) {
 		//then parse where_args vector to find the condition on which entities need
 		//to be updated
 
-
-		
 		if (where_args[1] == "=") {
 			if (entity_table[i].attributes[where_args[0]] == where_args[2]) {	//hack that should work with an argument like "x1 < 0"
 				entity_table[i].attributes[set_args[0]] = set_args[2];	//hack that should work with an argument like "x1 = 0"

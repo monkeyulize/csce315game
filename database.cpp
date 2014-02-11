@@ -126,9 +126,7 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 			if (temp == attr_names[j]) {
 				multiple_attr_counter++;
 				temp = temp+ to_string(multiple_attr_counter);
-
 			}
-
 		}
 		attr_names.push_back(temp);
 	}
@@ -159,28 +157,13 @@ table database::set_natural_join(string view_name, string table_one_name, string
 	table t2 = tables[find_table(table_two_name)];
 	vector<string> attr_names;
 	attr_names = t1.attribute_names;
-	//for (int i = 0; i < t2.attribute_names.size(); i++) {
-	//	string temp = t2.attribute_names[i];
-	//	int multiple_attr_counter = 1;
-	//	for (int j = 0; j < attr_names.size(); j++) {
-	//		if (temp == attr_names[j]) {
-	//			multiple_attr_counter++;
-	//			temp = temp + to_string(multiple_attr_counter);
-	//
-	//		}
-	//
-	//	}
-	//	attr_names.push_back(temp);
-	//}
 	nj_table.set_attr_names(attr_names);
 	for (int i = 0; i < t1.entity_table.size(); i++) {
 		for (int j = 0; j < t2.entity_table.size(); j++) {
 
 			if (t1.entity_table[i] == t2.entity_table[j]) {
 				nj_table.insert(t1.entity_table[i]);
-
 			}
-
 		}
 	}
 	nj_table.set_name(view_name);
