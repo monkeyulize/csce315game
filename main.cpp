@@ -49,7 +49,7 @@ int main()
 	
 	
 	cout<<endl<<endl;
-	
+	cout<<"TESTING UNION"<<endl;
 	db.create_table("dogs", attribute_names, primary_key);
 	db.create_table("cats", attribute_names, primary_key);
 	db.get_table("dogs").insert(joe);
@@ -58,9 +58,19 @@ int main()
 	db.get_table("cats").insert(bob);
 	db.get_table("cats").insert(marty);
 	table temp = db.set_union("pets", "cats", "dogs");
+	table temp2 = db.set_difference("animals", "cats", "dogs");
+	
+	cout<<"PRINTING=====================Dogs"<<endl;
+	db.get_table("dogs").display_table();
+	cout<<"PRINTING=====================Cats"<<endl;
+	db.get_table("cats").display_table();
+	cout<<"PRINTING=====================Union"<<endl;
 	temp.display_table();
+	cout<<temp.entity_table.size();
+	cout<<"PRINTING=====================Differnce"<<endl;
+	temp2.display_table();
 	
-	
+
 	cin.get();
 	return 0;
 }
