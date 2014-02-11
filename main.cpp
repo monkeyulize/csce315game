@@ -91,7 +91,7 @@ int main()
 	felines.push_back("6");
 	table temp6 = db.set_selection("sell", "dogs", felines);
 	temp6.display_table();
-/*
+
 //Testing cross product ---------------------------------------------------------------------------
 	vector<string> circle;
 	circle.push_back("circle");
@@ -128,7 +128,7 @@ int main()
 	table product_test = db.set_cross_product("product test", "shapes", "colors");
 	cout << "CROSS PRODUCT TEST ==============================================" << endl;
 	product_test.display_table();
-*/
+
 	//selection test
 
 	//db.set_selection("bob", "kind", "5");
