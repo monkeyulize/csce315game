@@ -77,10 +77,10 @@ table database::set_projection(string view_name, string table_name, vector<strin
 table database::set_renaming(string view_name, string table_name, vector<string> attributes)	//: rename the attributes in a relation.
 {
 	table t1 = tables[find_table(table_name)];
+	
 	for(int i = 0; i < t1.entity_table.size(); i++)
-	{
-		
-	}
+		for(int j = 0; j < t1.attribute_names.size(); j++)
+			t1.entity_table[i].set_attribute(attributes[j],t1.entity_table[i].get_attribute(t1.attribute_names[j]));
 	
 	for(int i = 0; i < t1.attribute_names.size(); i++){		//go through all attributes
 		t1.attribute_names[i] = attributes[i];
