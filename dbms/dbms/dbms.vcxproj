@@ -14,11 +14,13 @@
     <ClCompile Include="database.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="parser.cpp" />
     <ClCompile Include="table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="database.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="parser.h" />
     <ClInclude Include="table.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
