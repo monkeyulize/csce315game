@@ -59,12 +59,9 @@ namespace dbms_test
 			db.get_table("Correct Union").insert(bob);
 			db.get_table("Correct Union").insert(marty);
 			db.get_table("Correct Union").insert(spot);
-
-			//bool equal = false;
-			//if(unioned == db.get_table("Correct Union")) { equal = true; }
 			
 			Assert::IsTrue(unioned == db.get_table("Correct Union"));
-			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
+			
 		}
 		
 		
@@ -123,7 +120,11 @@ namespace dbms_test
 			Assert::IsTrue(difference == db.get_table("Correct Difference"));
 			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
 		}
+<<<<<<< .mine
 
+=======
+
+>>>>>>> .theirs
 		TEST_METHOD(SelectionTest)
 		{
 			
@@ -137,6 +138,7 @@ namespace dbms_test
 			vector<string> primary_key;
 			primary_key.push_back("name");
 			primary_key.push_back("kind");
+
 
 			vector<string> joe;
 			joe.push_back("joe");
@@ -179,6 +181,7 @@ namespace dbms_test
 			Assert::IsTrue(selection == db.get_table("Correct Selection"));
 			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
 		}
+
 
 		
 
