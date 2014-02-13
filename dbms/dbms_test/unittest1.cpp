@@ -67,9 +67,14 @@ namespace dbms_test
 			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
 		}
 
-		TEST_METHOD(DifferenceTest)
+		TEST_METHOD(ParserTest)
 		{
-
+			vector<Token> chopped;
+			chopped.push_back(Token(9, "CREATE TABLE"));
+			chopped.push_back(Token(9, "animals"));
+			chopped.push_back(Token(9, "name"));
+			chopped.push_back(Token(9, "VARCHAR"));
+			//chopped
 
 
 		}
