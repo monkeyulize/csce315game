@@ -71,7 +71,7 @@ int main()
 	table temp = db.set_union("pets", "cats", "dogs");
 	temp.display_table();
 	cout<<endl<<endl;
-	cout<<"PRINTING=====================Differnce"<<endl;
+	cout<<"PRINTING=====================Difference"<<endl;
 	table temp2 = db.set_difference("animals", "cats", "dogs");
 	temp2.display_table();
 	cout<<"PRINTING=====================Rename"<<endl;

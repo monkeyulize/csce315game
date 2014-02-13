@@ -36,7 +36,7 @@ public:
 
 		for(int i = 0; i < entity_table.size(); i++){
 			found = false;
-			for(int j = 0; i < Ref.entity_table.size(); j++){
+			for(int j = 0; j < Ref.entity_table.size(); j++){
 				if(entity_table[i] == Ref.entity_table[j]){
 					found = true;
 				} 

@@ -11,9 +11,9 @@ namespace dbms_test
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(UnionTest)
 		{
-			//Testing Union
+			
 			database db;
 			string name = "animals";
 			vector<string> attribute_names;
@@ -65,6 +65,13 @@ namespace dbms_test
 			
 			Assert::IsTrue(unioned == db.get_table("Correct Union"));
 			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
+		}
+
+		TEST_METHOD(DifferenceTest)
+		{
+
+
+
 		}
 
 		
