@@ -38,7 +38,6 @@ table database::set_difference(string view_name, string table_one_name, string t
 	for (int i = 0; i < t1.entity_table.size(); i++) {
 		for (int j = 0; j < t2.entity_table.size(); j++) {
 			if (!(t1.entity_table[i] == t2.entity_table[j])) {
-				//t1.entity_table[i].show_attributes(t1.attribute_names);
 				check++;
 			}
 		}

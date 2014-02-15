@@ -7,54 +7,71 @@
 
 class table {
 private:
-
-	string name;
+	string name;	//stores name of table
 public:
+	//storage variables
+	vector<entity> entity_table;				//stores tuples
+	vector<string> attribute_names;				//stores column titles
+	vector<string> primary_key;					//stores significant columns, blocks redundant entries
+	
 	table() {};
-	table(string _name, vector<string> _attribute_names, vector<string> _primary_key) {name = _name; attribute_names = _attribute_names; primary_key = _primary_key;};
+	table(string _name, vector<string> _attribute_names, vector<string> _primary_key){
+		name = _name;
+		attribute_names = _attribute_names;
+		primary_key = _primary_key;
+	};
+	
+	//mutator function
 	void set_name(string _name) {
 		name = _name;
 	}
+	void set_attr_names(vector<string> _attribute_names);
+	
+	//accessor function
 	string get_name() {
 		return name;
 	}
-	void set_attr_names(vector<string> _attribute_names);
+	
+	//Helper functions
 	void insert(vector<string> _field_values);
+	
+	//inserts an entity into the entity table
 	void insert(entity _e) {
 		entity_table.push_back(_e);
 	}
+	
+	//updates all values that meet a specific condition
 	void update(string _set_argument, string _where_argument);
+	
+	//parses an input into table to return a vector with inputs at each index
 	vector<string> split_on_spaces(string _str);
+	
+	//print function
 	void display_table();
+	
+	//removes an entity from table
 	void delete_from(string _where_argument);
 
+	//overwritten boolean operator to compare two trees equality
 	bool operator == (const table &Ref) const {
         bool found;
-		if(entity_table.size() != Ref.entity_table.size()) {
+		if(entity_table.size() != Ref.entity_table.size()){ 	//unequal size means unequal tables
 			return false;
-		}
+		}	
 
 		for(int i = 0; i < entity_table.size(); i++){
 			found = false;
 			for(int j = 0; j < Ref.entity_table.size(); j++){
-				if(entity_table[i] == Ref.entity_table[j]){
+				if(entity_table[i] == Ref.entity_table[j]){			//check if each entry is in other table
 					found = true;
-				} 
-				else {}
-
+				}
+			}	
+			if (found == false){ 								//if even one is not found return false
+				return false; 
 			}
-
-			if (found == false) { return false; }
-
 		}
-
 		return true;
     }
-
-
-	vector<entity> entity_table;
-	vector<string> attribute_names;
-	vector<string> primary_key;
 
 };
 
