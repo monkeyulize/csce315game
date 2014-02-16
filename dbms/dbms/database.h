@@ -1,3 +1,5 @@
+#ifndef DATABASE_H
+#define DATABASE_H
 #include "table.h"
 
 class database{
@@ -42,3 +44,5 @@ public:
 	table set_cross_product(string view_name, string table_one_name, string table_two_name);					//: compute the Cartesian product of two relations.
 	table set_natural_join(string view_name, string table_one_name, string table_two_name);
 };
+
+#endif
