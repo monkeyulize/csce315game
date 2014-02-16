@@ -16,8 +16,13 @@ int main()
 	cout << d.table_num()<<endl;
 	//parsed create table seems to work
 	string name = p.close_cmd();
+	cout << "." << name << "." << endl;
 	d.delete_table(d.get_table(name));
 	cout << d.table_num() << endl;
+	//
+	name = p.show_cmd();
+	cout << "." << name << "." << endl;
+	d.get_table(name).display_table();
 	//
 	cin.get();
 	return 0;

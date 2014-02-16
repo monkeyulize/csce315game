@@ -180,6 +180,34 @@ table parser::create_cmd() {
 	table temp(name, ta_list.list, primary_key_list);
 	return temp;
 }
+string parser::show_cmd() {
+	cout << "in show" << endl;
+	Token t = ts.get();
+	string name;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			cout << "case 9" << endl;
+			ts.putback(t);//does not continue to have name
+			cout << "not pushed back" << endl;
+			name = relation_name();
+			cout << "have name" << endl;
+			t = ts.get();
+			keep_going = 0;
+			break;
+		case '7':
+			cout << "case 7" << endl;
+			ts.putback(t);
+			if (keyword() == "SHOW") {
+				t = ts.get();
+				cout << "know show" << endl;
+			}
+			break;
+		}
+	}
+	return name;
+}
 string parser::close_cmd() {
 	cout << "in close" << endl;
 	Token t = ts.get();

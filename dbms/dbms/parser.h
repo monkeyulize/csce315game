@@ -28,6 +28,7 @@ public:
 	vector<string> attribute_list();
 	table create_cmd();
 	string close_cmd();
+	string show_cmd();
 };
 
 #endif
