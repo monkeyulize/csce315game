@@ -43,6 +43,7 @@ public:
 	table set_renaming(string view_name, string table_name, vector<string> attributes);							//: rename the attributes in a relation.
 	table set_cross_product(string view_name, string table_one_name, string table_two_name);					//: compute the Cartesian product of two relations.
 	table set_natural_join(string view_name, string table_one_name, string table_two_name);
+	int table_num(){ return tables.size(); }
 };
 
 #endif

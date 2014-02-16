@@ -8,10 +8,17 @@ using namespace std;
 
 int main()
 {
+	database d;
 	parser p;
-	p.create_cmd();
-
-
+	table t = p.create_cmd();
+	d.add_table(t);
+	t.display_table();
+	cout << d.table_num()<<endl;
+	//parsed create table seems to work
+	string name = p.close_cmd();
+	d.delete_table(d.get_table(name));
+	cout << d.table_num() << endl;
+	//
 	cin.get();
 	return 0;
 }

@@ -146,7 +146,7 @@ vector<string> parser::attribute_list() {
 		}
 	}
 }
-void parser::create_cmd() {
+table parser::create_cmd() {
 
 	Token t = ts.get();
 	string name;
@@ -177,4 +177,34 @@ void parser::create_cmd() {
 			break;
 		}
 	}
+	table temp(name, ta_list.list, primary_key_list);
+	return temp;
+}
+string parser::close_cmd() {
+	cout << "in close" << endl;
+	Token t = ts.get();
+	string name;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			cout << "case 9" << endl;
+			ts.putback(t);//does not continue to have name
+			cout << "not pushed back" << endl;
+			name = relation_name();
+			cout << "have name" << endl;
+			t = ts.get();
+			keep_going = 0;
+			break;
+		case '7':
+			cout << "case 7" << endl;
+			ts.putback(t);
+			if (keyword() == "CLOSE") {
+				t = ts.get();
+				cout << "know close" << endl;
+			}
+			break;
+		}
+	}
+	return name;
 }
