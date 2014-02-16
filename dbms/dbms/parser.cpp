@@ -146,6 +146,61 @@ vector<string> parser::attribute_list() {
 		}
 	}
 }
+vector<string> parser::literal_list() {
+	vector<string> list;
+	string id;
+	Token t = ts.get();
+	while (1) {
+		switch (t.kind) {
+		case '"':
+			id = identifier();
+			list.push_back(id);
+			ts.get();
+			t = ts.get();
+			break;
+		case ',':
+			t = ts.get();
+			break;
+		case ')':
+			return list;
+
+
+
+
+		}
+
+
+	}
+
+
+}
+
+void parser::insert_cmd()  {
+	Token t = ts.get();
+	string name;
+	vector<string> literals;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			name = relation_name();
+			t = ts.get();
+			break;
+		case '7':
+			ts.putback(t);
+			if (keyword() == "VALUESFROM") {
+				t = ts.get();
+				literals = literal_list();
+
+			}
+			keep_going = 0;
+			break;
+		}
+	}
+}
+
+
 table parser::create_cmd() {
 
 	Token t = ts.get();

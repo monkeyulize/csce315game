@@ -26,9 +26,11 @@ public:
 	pair<int, int> attr_type();
 	typed_attribute typed_attribute_list();
 	vector<string> attribute_list();
+	vector<string> literal_list();
 	table create_cmd();
 	string close_cmd();
 	string show_cmd();
+	void insert_cmd();
 };
 
 #endif
