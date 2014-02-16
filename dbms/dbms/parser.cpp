@@ -17,16 +17,30 @@ char parser::alpha() {
 
 
 string parser::identifier() {
-
+	int quote_counter = 0;
 	string id = "";
 	Token t = ts.get();
-	ts.putback(t);
+	if (t.kind != '"') {
+		ts.putback(t);
+	}	
 	while (1) {
 		switch (t.kind) {
 		case '9':
 			id += alpha();
 			t = ts.get();
 			ts.putback(t);
+			break;
+		case '"':
+			quote_counter++;
+			if (quote_counter == 2) {
+				ts.get();
+				return id;
+			}
+			t = ts.get();
+			if (t.kind != '"') {
+				ts.putback(t);
+			}
+			
 			break;
 		default:
 			return id;
@@ -198,6 +212,70 @@ void parser::insert_cmd()  {
 			break;
 		}
 	}
+}
+
+void parser::update_cmd() {
+	Token t = ts.get();
+	string name;
+	string attr_name;
+	vector<pair<string, string>> sets; //pair<string, string> is <attribute, new-value>
+	string condition;
+
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			name = relation_name();
+			t = ts.get();
+			break;
+		case '7':
+			ts.putback(t);
+			string temp_keyword = keyword();
+			if (temp_keyword == "SET") {
+				int keep_going2 = 1;
+				pair<string, string> temp;
+				t = ts.get();
+				while (keep_going2) {
+					
+					
+					switch (t.kind) {
+					case '9':
+						ts.putback(t);
+						temp.first = attribute_name();
+						t = ts.get();
+						break;
+					case '=':
+						temp.second = identifier();
+						t = ts.get();
+						break;
+					case ',':
+						sets.push_back(temp);
+						t = ts.get();
+						break;
+					case '7':
+						ts.putback(t);
+						keep_going2 = 0;
+						break;
+					}
+				}
+			}
+			else if (temp_keyword == "WHERE") {
+
+			}
+			break;
+
+		}
+
+
+
+
+	}
+
+
+
+
+
 }
 
 

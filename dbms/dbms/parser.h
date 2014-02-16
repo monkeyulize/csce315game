@@ -31,6 +31,7 @@ public:
 	string close_cmd();
 	string show_cmd();
 	void insert_cmd();
+	void update_cmd();
 };
 
 #endif

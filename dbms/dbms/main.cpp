@@ -10,7 +10,8 @@ int main()
 {
 	database d;
 	parser p;
-	p.insert_cmd();
+	p.update_cmd();
+
 	table t = p.create_cmd();
 	d.add_table(t);
 	t.display_table();
