@@ -14,6 +14,22 @@ public:
 								  //first int specifies type of variable, second specifies length assuming its a string
 };
 
+class comparison_obj {
+public:
+	string oper1;
+	string op;
+	string oper2;
+};
+class conjunction_obj {
+public:
+	vector<comparison_obj> comparisons; //&& between elements
+};
+class condition_obj {
+public:
+	vector<conjunction_obj> conjunctions; //|| between elements
+};
+
+
 class parser {
 public:
 
@@ -22,6 +38,9 @@ public:
 	string keyword();
 	string relation_name();
 	string attribute_name();
+	condition_obj condition();
+	conjunction_obj conjunction();
+	comparison_obj comparison();
 	int type();
 	pair<int, int> attr_type();
 	typed_attribute typed_attribute_list();

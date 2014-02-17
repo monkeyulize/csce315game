@@ -42,11 +42,162 @@ string parser::identifier() {
 			}
 			
 			break;
+		case '8':
+			ts.putback(t);
+			id = t.value;
 		default:
 			return id;
 		}
 	}
 }
+
+
+
+
+comparison_obj parser::comparison() {
+	comparison_obj comp;
+	Token t = ts.get();
+	string _oper1, _oper2 = "";
+	string _op = "";
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '8':
+			_oper2 = to_string(t.value);
+			keep_going = 0;
+			break;
+		
+		case '9':
+			ts.putback(t);
+			_oper1 = identifier();
+
+			t = ts.get();
+			break;
+		case '"':
+			ts.putback(t);
+			_oper2 = identifier();
+
+			t = ts.get();
+			break;
+		case '<':
+			_op += t.kind;
+			t = ts.get();
+			
+			if (t.kind == '=') {
+				_op += t.kind;
+				t = ts.get();
+			}
+			else if (t.kind == '9') {
+				_oper2 = identifier();
+				keep_going = 0;
+			}
+			break;
+		case '>':
+			_op += t.kind;
+			t = ts.get();
+			
+			if (t.kind == '=') {
+				_op += t.kind;
+				t = ts.get();
+			}
+			else if (t.kind == '9') {
+				_oper2 = identifier();
+				keep_going = 0;
+			}
+			break;
+		case '=':
+			_op += t.kind;
+			t = ts.get();
+			
+			if (t.kind == '=') {
+				_op += t.kind;
+				t = ts.get();
+			}
+			else if (t.kind == '9') {
+				_oper2 = identifier();
+				keep_going = 0;
+			}
+			break;
+		case '!':
+			_op += t.kind;
+			t = ts.get();
+			
+			if (t.kind == '=') {
+				_op += t.kind;
+				t = ts.get();
+			}
+			else if (t.kind == '9' || t.kind == '"') {
+				_oper2 = identifier();
+				keep_going = 0;
+			}
+			break;
+		case ';': //end of line
+			ts.putback(t);
+			keep_going = 0;
+		}
+	}
+	comp.oper1 = _oper1;
+	comp.op = _op;
+	comp.oper2 = _oper2;
+	return comp;
+}
+
+
+conjunction_obj parser::conjunction() {
+	conjunction_obj conjun;
+	Token t = ts.get();
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			conjun.comparisons.push_back(comparison());
+			t = ts.get();
+			break;
+		case '&':
+			ts.get();
+			conjun.comparisons.push_back(comparison());
+			t = ts.get();
+			break;		
+		case ';':
+			ts.putback(t);
+			return conjun;
+		default:
+			ts.putback(t);
+			keep_going = 0;
+			return conjun;
+		}
+	}
+}
+
+condition_obj parser::condition() {
+	condition_obj condit;
+	Token t = ts.get();
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			condit.conjunctions.push_back(conjunction());
+			t = ts.get();
+			break;
+		case '|':
+			ts.get();
+			condit.conjunctions.push_back(conjunction());
+			t = ts.get();
+			break;
+		case ';':
+			ts.putback(t);
+			return condit;
+		default:
+			ts.putback(t);
+			keep_going = 0;
+		}
+	}
+}
+
+
+
 string parser::keyword() {
 
 	string id = "";
@@ -216,10 +367,11 @@ void parser::insert_cmd()  {
 
 void parser::update_cmd() {
 	Token t = ts.get();
+	condition_obj condits;
 	string name;
 	string attr_name;
 	vector<pair<string, string>> sets; //pair<string, string> is <attribute, new-value>
-	string condition;
+	//string condition;
 
 	int keep_going = 1;
 	while (keep_going) {
@@ -261,7 +413,7 @@ void parser::update_cmd() {
 				}
 			}
 			else if (temp_keyword == "WHERE") {
-
+				condits = condition();
 			}
 			break;
 
