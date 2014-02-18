@@ -759,7 +759,8 @@ void parser::evaluate_statement(database& db){
 				close_cmd();
 			}
 			else if (key_word == "UPDATE") {
-				update_cmd();
+				update_obj uo = update_cmd();
+				
 			}
 			else if (key_word == "WRITE") {
 				;
