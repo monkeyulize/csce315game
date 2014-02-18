@@ -577,31 +577,38 @@ string parser::show_cmd() {
 	}
 }
 string parser::close_cmd() {
-	cout << "in close" << endl;
+	
+	table tble;
+	ofstream myfile;
+	myfile.open("display.db");
+
+	myfile << "in write" << endl;
 	Token t = ts.get();
 	string name;
 	int keep_going = 1;
-	while (keep_going) {
-		switch (t.kind) {
-		case '9':
-			cout << "case 9" << endl;
-			ts.putback(t);//does not continue to have name
-			cout << "not pushed back" << endl;
-			name = relation_name();
-			cout << "have name" << endl;
-			t = ts.get();
-			keep_going = 0;
-			break;
-		case '7':
-			cout << "case 7" << endl;
-			ts.putback(t);
-			if (keyword() == "CLOSE") {
-				t = ts.get();
-				cout << "know close" << endl;
-			}
-			break;
-		}
+	ts.putback(t);//does not continue to have name
+
+	name = relation_name();
+
+	cout << name << endl;
+	name = "animals";
+	myfile << name << endl;
+	for (int i = 0; i < tble.attribute_names.size(); i++){
+		myfile << tble.attribute_names[i] << '\t';
 	}
+
+	myfile << endl;
+
+	for (int i = 0; i < tble.entity_table.size(); i++){
+		for (int j = 0; j <tble.attribute_names.size(); j++){
+			myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
+		}
+		myfile << endl;
+	}
+
+
+	myfile.close();
+	db.delete_table(db.tables[db.find_table(name)]);
 	return name;
 }
 
@@ -679,7 +686,7 @@ void parser::delete_cmd() {
 
 }
 void parser::exit_cmd() {
-	Token t = ts.get();
+	exit(0);
 
 
 }
@@ -688,10 +695,10 @@ void parser::open_cmd() {
 
 
 }
-void parser::write_cmd(table tble) {
+void parser::write_cmd() {
 
 	
-
+	    table tble;
 		ofstream myfile;
 		myfile.open("display.db");
 

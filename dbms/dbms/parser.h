@@ -13,6 +13,8 @@ using namespace std;
 class parser {
 public:
 
+	database db;
+
 	char alpha();
 	std::string identifier();
 	std::string keyword();
@@ -35,7 +37,7 @@ public:
 	std::string show_cmd();
 	insert_obj insert_cmd();
 	update_obj update_cmd();
-	void write_cmd(table);		//drops table writes to a file, name+.db
+	void write_cmd();		//drops table writes to a file, name+.db
 	void delete_cmd();		//deletes entry
 	void open_cmd();		//loads table form a text file
 	void exit_cmd();		//exit(0)
