@@ -2,14 +2,20 @@
 #include "parser.h"
 #include "tokenizer.h"
 #include <iostream>
+#include <sstream>
 using namespace std;
 
 int main()
 {
 	database d;
 	parser p;
-	p.show_cmd();
-	p.update_cmd();
+	//p.show_cmd();
+	//p.update_cmd();
+
+	stringstream query_input;
+	query_input << "high_hit_pirates <- select (team == \"pirates\") (select (homeruns >= 40) baseball_players);";
+	cin.rdbuf(query_input.rdbuf());
+	p.query();
 
 
 	cin.get();

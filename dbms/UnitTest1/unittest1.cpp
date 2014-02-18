@@ -16,7 +16,7 @@ namespace UnitTest1
 			update_obj test_obj;
 			update_obj set_obj;
 			stringstream update_input;
-			update_input << "animals SET name = \"bob\" WHERE age <= 10 && kind == \"dog\";";
+			update_input << "animals SET name = \"bob\" WHERE age < 10;";
 			parser p;
 			cin.rdbuf(update_input.rdbuf());
 
@@ -38,7 +38,7 @@ namespace UnitTest1
 			set_obj.condition = condits;
 			set_obj.rel_name = relation_name;
 
-			//Assert::IsTrue(test_obj == set_obj);
+			Assert::IsTrue(test_obj == set_obj);
 		}
 
 	};

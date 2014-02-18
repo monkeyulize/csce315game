@@ -45,6 +45,12 @@ string parser::identifier() {
 		case '8':
 			ts.putback(t);
 			id = t.value;
+		case '_':
+			id += t.kind;
+			ts.get();
+			t = ts.get();
+			ts.putback(t);
+			break;
 		default:
 			return id;
 		}
@@ -134,6 +140,8 @@ comparison_obj parser::comparison() {
 		case ';': //end of line
 			ts.putback(t);
 			keep_going = 0;
+		default:
+			keep_going = 0;
 		}
 	}
 	comp.oper1 = _oper1;
@@ -189,6 +197,9 @@ condition_obj parser::condition() {
 		case ';':
 			ts.putback(t);
 			return condit;
+		case ')':
+			ts.putback(t);
+			return condit;
 		default:
 			ts.putback(t);
 			keep_going = 0;
@@ -222,6 +233,73 @@ string parser::relation_name() {
 string parser::attribute_name() {
 	return identifier();
 }
+string parser::atomic_expr() {
+	Token t = ts.get();
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			return relation_name();
+			t = ts.get();
+			break;
+		case '(':
+			;
+
+
+
+		}
+
+
+
+	}
+
+
+
+}
+string parser::expr() {
+	Token t = ts.get();
+	string result;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			result = identifier();
+			t = ts.get();
+			keep_going = 0;
+			break;
+		default:
+			keep_going = 0;
+		}
+	}
+	if (result == "selection") {
+
+	}
+	else if (result == "projection") {
+
+	}
+	else if (result == "renaming") {
+
+	}
+	else if (result == "union") {
+
+	}
+	else if (result == "difference") {
+
+	}
+	else if (result == "product") {
+
+	}
+	else if (result == "natural-join") {
+
+	}
+	else {
+		return result;
+	}
+}
+
+
 int parser::type() {
 	Token t = ts.get();
 	ts.putback(t);
@@ -406,6 +484,7 @@ update_obj parser::update_cmd() {
 						t = ts.get();
 						break;
 					case '7':
+						sets.push_back(temp);
 						ts.putback(t);
 						keep_going2 = 0;
 						break;
@@ -414,6 +493,7 @@ update_obj parser::update_cmd() {
 			}
 			else if (temp_keyword == "WHERE") {
 				condits = condition();
+				keep_going = 0;
 			}
 			break;
 		}
@@ -519,6 +599,57 @@ string parser::close_cmd() {
 
 void parser::selection_qry() {
 	Token t = ts.get();
+	condition_obj condits;
+	string name;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '(':
+
+			condits = condition();
+			t = ts.get();
+			break;
+		case ')':
+			name = atomic_expr();
+			break;
+		default:
+			keep_going = 0;
+		}
+
+
+	}
+
+
+
+}
+
+void parser::query() {
+	Token t = ts.get();
+	int keep_going = 1;
+	string name;
+	string which_query;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			name = relation_name();
+			t = ts.get();
+			break;
+		case '<':
+			t = ts.get();
+			if (t.kind == '-') {
+				which_query = identifier();
+				keep_going = 0;
+			}			
+			break;
+		default:
+			break;
+		}
+	}
+
+	if (which_query == "select") {
+		selection_qry();
+	}
 
 
 }

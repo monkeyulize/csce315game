@@ -17,6 +17,8 @@ public:
 	std::string keyword();
 	std::string relation_name();
 	std::string attribute_name();
+	std::string atomic_expr();
+	std::string expr();
 	condition_obj condition();
 	conjunction_obj conjunction();
 	comparison_obj comparison();
@@ -38,6 +40,7 @@ public:
 	void exit_cmd();		//exit(0)
 
 	//queries
+	void query();
 	void selection_qry();
 	void projection_qry();
 	void attribute_qry();
