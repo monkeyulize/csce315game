@@ -339,7 +339,7 @@ vector<string> parser::literal_list() {
 
 
 }
-
+//commands
 void parser::insert_cmd()  {
 	Token t = ts.get();
 	string name;
@@ -364,7 +364,6 @@ void parser::insert_cmd()  {
 		}
 	}
 }
-
 void parser::update_cmd() {
 	Token t = ts.get();
 	condition_obj condits;
@@ -429,8 +428,6 @@ void parser::update_cmd() {
 
 
 }
-
-
 table parser::create_cmd() {
 
 	Token t = ts.get();
@@ -528,5 +525,20 @@ void parser::write_cmd() {
 	
 }
 void parser::exit_cmd() {
-	
+	exit(0);
+}
+//querys
+void parser::projection_qry(){
+}
+void parser::attribute_qry(){
+}
+void parser::renaming_qry(){
+}
+void parser::union_qry(){
+}
+void parser::difference_qry(){
+}
+void parser::product_qry(){
+}
+void parser::natural_join_qry(){
 }
