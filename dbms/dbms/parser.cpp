@@ -398,12 +398,13 @@ vector<string> parser::literal_list() {
 		case '"':
 			id = identifier();
 			list.push_back(id);
-			ts.get();
 			t = ts.get();
 			break;
 		case ',':
 			t = ts.get();
 			break;
+		case '8':
+			list.push_back(to_string(t.value));
 		case ')':
 			return list;
 
