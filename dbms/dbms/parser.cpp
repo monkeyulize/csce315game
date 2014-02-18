@@ -339,7 +339,7 @@ vector<string> parser::literal_list() {
 
 
 }
-//commands
+
 void parser::insert_cmd()  {
 	Token t = ts.get();
 	string name;
@@ -364,7 +364,9 @@ void parser::insert_cmd()  {
 		}
 	}
 }
-void parser::update_cmd() {
+
+update_obj parser::update_cmd() {
+	update_obj uo;
 	Token t = ts.get();
 	condition_obj condits;
 	string name;
@@ -388,8 +390,7 @@ void parser::update_cmd() {
 				pair<string, string> temp;
 				t = ts.get();
 				while (keep_going2) {
-					
-					
+									
 					switch (t.kind) {
 					case '9':
 						ts.putback(t);
@@ -415,19 +416,15 @@ void parser::update_cmd() {
 				condits = condition();
 			}
 			break;
-
 		}
-
-
-
-
 	}
-
-
-
-
-
+	uo.rel_name = name;
+	uo.attribute_values = sets;
+	uo.condition = condits;
+	return uo;
 }
+
+
 table parser::create_cmd() {
 
 	Token t = ts.get();
@@ -517,28 +514,4 @@ string parser::close_cmd() {
 		}
 	}
 	return name;
-}
-void parser::open_cmd() {
-	
-}
-void parser::write_cmd() {
-	
-}
-void parser::exit_cmd() {
-	exit(0);
-}
-//querys
-void parser::projection_qry(){
-}
-void parser::attribute_qry(){
-}
-void parser::renaming_qry(){
-}
-void parser::union_qry(){
-}
-void parser::difference_qry(){
-}
-void parser::product_qry(){
-}
-void parser::natural_join_qry(){
 }

@@ -1,9 +1,7 @@
-#include "table.h"
 #include "database.h"
 #include "parser.h"
 #include "tokenizer.h"
 #include <iostream>
-#include <string>
 using namespace std;
 
 int main()
@@ -12,23 +10,27 @@ int main()
 	parser p;
 	p.update_cmd();
 
-	table t = p.create_cmd();
-	d.add_table(t);
-	t.display_table();
-	cout << d.table_num()<<endl;
-	//parsed create table seems to work
-	string name = p.close_cmd();
-	cout << "." << name << "." << endl;
-	d.delete_table(d.get_table(name));
-	cout << d.table_num() << endl;
-	//
-	name = p.show_cmd();
-	cout << "." << name << "." << endl;
-	d.get_table(name).display_table();
-	//
+
 	cin.get();
 	return 0;
 }
+/*
+table t = p.create_cmd();
+d.add_table(t);
+t.display_table();
+cout << d.table_num()<<endl;
+//parsed create table seems to work
+string name = p.close_cmd();
+cout << "." << name << "." << endl;
+d.delete_table(d.get_table(name));
+cout << d.table_num() << endl;
+//
+name = p.show_cmd();
+cout << "." << name << "." << endl;
+d.get_table(name).display_table();
+//
+*/
+
 /*
 database db;
 //attributes list

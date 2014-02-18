@@ -13,38 +13,12 @@ void table::set_attr_names(vector<string> _attribute_names) {
 //inserts an entity into table
 void table::insert(vector<string> _field_values) {
 	entity e;
-	vector<bool> found;
-	bool present = true;
 	
-	for (int i = 0; i < _field_values.size(); i++){
+	for(int i = 0; i < _field_values.size(); i++){
 		e.set_attribute(attribute_names[i], _field_values[i]);
 	}
-
-	for (int i = 0; i < primary_key.size(); i++){
-		found.push_back(false);
-		for (int j = 0; j < entity_table.size(); j++){
-			if (e.attributes[primary_key[i]] == entity_table[j].attributes[primary_key[i]]){
-				found[i] = true;
-			}
-		}
-	}
-
-	for (int k = 0; k < found.size(); k++){
-		if (found[k] == false){
-			present = false;
-		}
-	}
-
-	if (present == false){
-		entity_table.push_back(e);
-	}
 	
-	if (present){
-		cout << "Duplicate entity detected. Insert FAILED." << endl;
-	}
-	
-	
-	
+	entity_table.push_back(e);
 }
 
 //prints table for user

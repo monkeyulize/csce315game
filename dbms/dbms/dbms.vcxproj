@@ -19,11 +19,16 @@
     <ClCompile Include="tokenizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="comparison_obj.h" />
+    <ClInclude Include="condition_obj.h" />
+    <ClInclude Include="conjunction_obj.h" />
     <ClInclude Include="database.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="table.h" />
     <ClInclude Include="tokenizer.h" />
+    <ClInclude Include="typed_attribute.h" />
+    <ClInclude Include="update_obj.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{BDD3CF89-4BD3-49C2-B2C4-20B4DE75FC00}</ProjectGuid>
@@ -64,7 +69,7 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
