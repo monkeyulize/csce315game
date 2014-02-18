@@ -4,10 +4,10 @@
 #include <vector>
 class comparison_obj {
 public:
-	std::string oper1;
-	std::string op;
-	std::string oper2;
-	bool operator==(const comparison_obj& c);
+	std::string oper1;			//operand one
+	std::string op;				//operation +,-,*,/, &,|
+	std::string oper2;			//operand two
+	bool operator==(const comparison_obj& c);		//overloaded boolean operator to define equality
 };
 
 inline bool comparison_obj::operator == (const comparison_obj& c){

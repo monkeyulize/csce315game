@@ -8,20 +8,24 @@ private:
 
 public:
 	database() {};
+	//create table using name, attributes, and primary key
 	void create_table(string _name, vector<string> _attribute_names, vector<string> _primary_key)
 	{
 		table t (_name, _attribute_names, _primary_key);
 		add_table(t);
 	}
+	//insert table into database
 	void add_table(table t)
 	{
 		tables.push_back(t);
 	}
+	//remove table from database
 	void delete_table(table t)
 	{
 		int index = find_table(t.get_name());
 		tables.erase(tables.begin() + index);
 	}
+	//return index of table
 	int find_table(string table_name)
 	{
 		for(int i = 0; i <tables.size(); i++)

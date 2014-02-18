@@ -6,6 +6,7 @@ using namespace std;
 
 Token_stream ts;
 
+//a-z, A-Z
 char parser::alpha() {
 	Token t = ts.get();
 	switch (t.kind) {
@@ -19,7 +20,7 @@ char parser::alpha() {
 
 }
 
-
+//an alpha, alpha or digit pairing
 string parser::identifier() {
 	int quote_counter = 0;
 	string id = "";
@@ -63,7 +64,7 @@ string parser::identifier() {
 
 
 
-
+//comparison object of two operands and an operation
 comparison_obj parser::comparison() {
 	comparison_obj comp;
 	Token t = ts.get();
@@ -154,7 +155,7 @@ comparison_obj parser::comparison() {
 	return comp;
 }
 
-
+//two comparisons anded together
 conjunction_obj parser::conjunction() {
 	conjunction_obj conjun;
 	Token t = ts.get();
@@ -181,7 +182,7 @@ conjunction_obj parser::conjunction() {
 		}
 	}
 }
-
+//two conjunctions or'ed together
 condition_obj parser::condition() {
 	condition_obj condit;
 	Token t = ts.get();
@@ -212,7 +213,7 @@ condition_obj parser::condition() {
 }
 
 
-
+//key words for COMMANDS
 string parser::keyword() {
 
 	string id = "";
@@ -230,13 +231,15 @@ string parser::keyword() {
 		}
 	}
 }
-
+//a tables name, or views
 string parser::relation_name() {
 	return identifier();
 }
+//a header to a column in a table
 string parser::attribute_name() {
 	return identifier();
 }
+// relation name or an expressoin
 string parser::atomic_expr() {
 	Token t = ts.get();
 	int keep_going = 1;
@@ -261,6 +264,7 @@ string parser::atomic_expr() {
 
 
 }
+//any combination of tables combinations
 string parser::expr() {
 	Token t = ts.get();
 	string result;
@@ -303,7 +307,7 @@ string parser::expr() {
 	}
 }
 
-
+//varchar or integer
 int parser::type() {
 	Token t = ts.get();
 	ts.putback(t);
@@ -321,6 +325,7 @@ int parser::type() {
 		}
 	}
 }
+//
 pair<int, int> parser::attr_type() {
 	pair<int, int> pair;
 	int which_type = type();
@@ -343,7 +348,7 @@ pair<int, int> parser::attr_type() {
 	}
 	return pair;
 }
-
+//attribute name types, intgeters and varchars
 typed_attribute parser::typed_attribute_list() {
 	typed_attribute ta_list;
 
@@ -371,6 +376,7 @@ typed_attribute parser::typed_attribute_list() {
 		}
 	}
 }
+//a list of pairings of attributes
 vector<string> parser::attribute_list() {
 	vector<string> list;
 	string attr;
@@ -393,6 +399,7 @@ vector<string> parser::attribute_list() {
 		}
 	}
 }
+//list of constant values
 vector<string> parser::literal_list() {
 	vector<string> list;
 	string id;
@@ -422,7 +429,7 @@ vector<string> parser::literal_list() {
 
 
 }
-
+//command used to insert into a database
 insert_obj parser::insert_cmd()  {
 	insert_obj io;
 	Token t = ts.get();
@@ -451,7 +458,7 @@ insert_obj parser::insert_cmd()  {
 	io.values = literals;
 	return io;
 }
-
+//updates values based on expressions into a database
 update_obj parser::update_cmd() {
 	update_obj uo;
 	Token t = ts.get();
@@ -513,7 +520,7 @@ update_obj parser::update_cmd() {
 	return uo;
 }
 
-
+//creates a new table into a database
 table parser::create_cmd() {
 
 	Token t = ts.get();
@@ -548,6 +555,7 @@ table parser::create_cmd() {
 	table temp(name, ta_list.list, primary_key_list);
 	return temp;
 }
+//displays values of a database into command line
 string parser::show_cmd() {
 	cout << "in show" << endl;
 	Token t = ts.get();
@@ -578,6 +586,7 @@ string parser::show_cmd() {
 		}
 	}
 }
+//prints and saves a table into an output file, and closes table from database
 string parser::close_cmd() {
 	
 	table tble;
@@ -613,7 +622,7 @@ string parser::close_cmd() {
 	db.delete_table(db.tables[db.find_table(name)]);
 	return name;
 }
-
+//selectoin query for databse to select expressions
 void parser::selection_qry() {
 	Token t = ts.get();
 	condition_obj condits;
@@ -639,7 +648,7 @@ void parser::selection_qry() {
 
 
 }
-
+//a request to perform a manipulation on a table
 void parser::query() {
 	Token t = ts.get();
 	int keep_going = 1;

@@ -2,13 +2,13 @@
 #include <algorithm>
 table database::set_union(string view_name, string table_one_name, string table_two_name)		//: compute the union of two relations; the relations must be union-compatible.
 {
-	table union_table;
-	table t1 = tables[find_table(table_one_name)];
+	table union_table;		//the final table view
+	table t1 = tables[find_table(table_one_name)];		//get a handle on both tables by their passed name arguments
 	table t2 = tables[find_table(table_two_name)];
 	union_table = t1;
 
 	int can_push = 0;
-	for (int i = 0; i < t2.entity_table.size(); i++) {
+	for (int i = 0; i < t2.entity_table.size(); i++) {			//check for unique entities in t2, add those to t1
 		for (int j = 0; j < t1.entity_table.size(); j++) {
 			if (t2.entity_table[i] == t1.entity_table[j]) {
 				can_push = 0;
@@ -72,9 +72,11 @@ table database::set_selection(string view_name, string table_name, vector<string
 	
 	for(int i = 0; i< t1.entity_table.size(); i++){		//go through the whole entity table
 		for(int j = 0; j < t1.attribute_names.size(); j++){	//go through all the attributes
-			for(int k = 0; k<attributes.size(); k++)
-				if(t1.entity_table[i].get_attribute(t1.attribute_names[j])==attributes[k])
+			for (int k = 0; k < attributes.size(); k++){
+				if (t1.entity_table[i].get_attribute(t1.attribute_names[j]) == attributes[k]){
 					sel_table.entity_table.push_back(t1.entity_table[i]);
+				}
+			}
 		}
 	}
 	
@@ -113,15 +115,19 @@ table database::set_renaming(string view_name, string table_name, vector<string>
 }
 table database::set_cross_product(string view_name, string table_one_name, string table_two_name)//: compute the Cartesian product of two relations.
 {
+	//defining tables
 	table cp_table;
 	table t1 = tables[find_table(table_one_name)];
 	table t2 = tables[find_table(table_two_name)];
+	
+	//defining starting
 	vector<string> attr_names;
 	attr_names = t1.attribute_names;
+	
 	for (int i = 0; i < t2.attribute_names.size(); i++) {
 		string temp = t2.attribute_names[i];
 		int multiple_attr_counter = 1;
-		for (int j = 0; j < attr_names.size(); j++) {
+		for (int j = 0; j < attr_names.size(); j++) {			//add other terms + special character due to map data structure
 			if (temp == attr_names[j]) {
 				multiple_attr_counter++;
 				temp = temp+ to_string(multiple_attr_counter);
@@ -129,6 +135,7 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 		}
 		attr_names.push_back(temp);
 	}
+	//defining final attirbute names
 	cp_table.set_attr_names(attr_names);
 	vector<string> field_values;
 	for (int i = 0; i < t1.entity_table.size(); i++) {
@@ -150,16 +157,19 @@ table database::set_cross_product(string view_name, string table_one_name, strin
 }
 table database::set_natural_join(string view_name, string table_one_name, string table_two_name)
 {
+	//defining tables
 	table nj_table;
-
 	table t1 = tables[find_table(table_one_name)];
 	table t2 = tables[find_table(table_two_name)];
+	
+	//define attribute names as t1's they must be union compatable
 	vector<string> attr_names;
 	attr_names = t1.attribute_names;
 	nj_table.set_attr_names(attr_names);
+
+	//go through and see which entities are in both tables, push into natural join
 	for (int i = 0; i < t1.entity_table.size(); i++) {
 		for (int j = 0; j < t2.entity_table.size(); j++) {
-
 			if (t1.entity_table[i] == t2.entity_table[j]) {
 				nj_table.insert(t1.entity_table[i]);
 			}
