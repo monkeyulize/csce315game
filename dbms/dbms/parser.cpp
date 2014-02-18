@@ -402,12 +402,13 @@ vector<string> parser::literal_list() {
 		case '"':
 			id = identifier();
 			list.push_back(id);
-			ts.get();
 			t = ts.get();
 			break;
 		case ',':
 			t = ts.get();
 			break;
+		case '8':
+			list.push_back(to_string(t.value));
 		case ')':
 			return list;
 
@@ -562,6 +563,7 @@ string parser::show_cmd() {
 			cout << "have name" << endl;
 			t = ts.get();
 			keep_going = 0;
+			return name;
 			break;
 		case '7':
 			cout << "case 7" << endl;
@@ -741,7 +743,7 @@ void parser::evaluate_statement(database& db){
 		switch (t.kind) {
 		case '7':
 			if (key_word == "SHOW") {
-				show_cmd();
+				db.get_table(show_cmd()).display_table();;
 			}
 			else if (key_word == "DELETE") {
 				delete_cmd();
@@ -760,7 +762,8 @@ void parser::evaluate_statement(database& db){
 				update_cmd();
 			}
 			else if (key_word == "WRITE") {
-				write_cmd();
+				;
+				//write_cmd();
 			}
 			else if (key_word == "OPEN") {
 				open_cmd();
@@ -768,6 +771,7 @@ void parser::evaluate_statement(database& db){
 			else if (key_word == "INSERTINTO") {
 				insert_obj io = insert_cmd();
 				db.get_table(io.name).insert(io.values);
+				t = ts.get();
 
 			}
 			break;
