@@ -1,4 +1,8 @@
 #include "parser.h"
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 
 Token_stream ts;
 
@@ -680,11 +684,45 @@ void parser::open_cmd() {
 
 
 }
-void parser::write_cmd() {
-	Token t = ts.get();
+void parser::write_cmd(table tble) {
+
+	
+
+		ofstream myfile;
+		myfile.open("display.db");
+
+		myfile << "in write" << endl;
+		Token t = ts.get();
+		string name;
+		int keep_going = 1;
+		ts.putback(t);//does not continue to have name
+
+		name = relation_name();
+
+		cout << name << endl;
+		name = "animals";
+		myfile << name << endl;
+		for (int i = 0; i < tble.attribute_names.size(); i++){
+			myfile << tble.attribute_names[i] << '\t';
+		}
+
+		myfile << endl;
+
+		for (int i = 0; i < tble.entity_table.size(); i++){
+			for (int j = 0; j <tble.attribute_names.size(); j++){
+				myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
+			}
+			myfile << endl;
+		}
+
+
+		myfile.close();
+
 
 
 }
+
+
 void parser::evaluate_statement(){
 	Token t = ts.get();
 	ts.putback(t);
