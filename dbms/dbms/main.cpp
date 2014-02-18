@@ -14,8 +14,13 @@ int main()
 
 	stringstream query_input;
 	query_input << "high_hit_pirates <- select (team == \"pirates\") (select (homeruns >= 40) baseball_players);";
-	cin.rdbuf(query_input.rdbuf());
-	p.query();
+	//cin.rdbuf(query_input.rdbuf());
+	//p.query();
+	stringstream eval_input;
+	eval_input << "CREATE TABLE animals (name VARCHAR(4), kind VARCHAR(4)) PRIMARY KEY (name);";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement();
 
 
 	cin.get();

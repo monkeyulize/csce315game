@@ -687,34 +687,34 @@ void parser::write_cmd() {
 }
 void parser::evaluate_statement(){
 	Token t = ts.get();
+	ts.putback(t);
+	string key_word = keyword();
 	if (t.kind == '7'){			//is a command
-		if (keyword() == "SHOW") {
+		if (key_word == "SHOW") {
 			show_cmd();
 		}
-		else if (keyword() == "DELETE") {
+		else if (key_word == "DELETE") {
 			delete_cmd();
 		}
-		else if (keyword() == "CREATE") {
-			ts.get(); //to clear word table
+		else if (key_word == "CREATETABLE") {
 			create_cmd();
 		}
-		else if (keyword() == "EXIT") {
+		else if (key_word == "EXIT") {
 			exit_cmd();
 		}
-		else if (keyword() == "CLOSE") {
+		else if (key_word == "CLOSE") {
 			close_cmd();
 		}
-		else if (keyword() == "UPDATE") {
+		else if (key_word == "UPDATE") {
 			update_cmd();
 		}
-		else if (keyword() == "WRITE") {
+		else if (key_word == "WRITE") {
 			write_cmd();
 		}
-		else if (keyword() == "OPEN") {
+		else if (key_word == "OPEN") {
 			open_cmd();
 		}
-		else if (keyword() == "INSERT") {
-			ts.get(); //to clear word into
+		else if (key_word == "INSERTINTO") {
 			insert_cmd();
 		}
 	}
