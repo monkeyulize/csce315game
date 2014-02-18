@@ -515,3 +515,37 @@ string parser::close_cmd() {
 	}
 	return name;
 }
+
+void parser::evaluate_statement(){
+	Token t = ts.get();
+	ts.putback(t);
+	if (t.kind == '7'){			//is a command
+		if (keyword() == "SHOW") {
+			show_cmd();
+		}
+		if (keyword() == "DELETE") {
+			delete_cmd();
+		}
+		if (keyword() == "CREATE") {
+			create_cmd();
+		}
+		if (keyword() == "EXIT") {
+			exit_cmd();
+		}
+		if (keyword() == "CLOSE") {
+			close_cmd();
+		}
+		if (keyword() == "UPDATE") {
+			update_cmd();
+		}
+		if (keyword() == "WRITE") {
+			write_cmd();
+		}
+		if (keyword() == "OPEN") {
+			open_cmd();
+		}
+		if (keyword() == "INSERT") {
+			insert_cmd();
+		}
+	}
+}

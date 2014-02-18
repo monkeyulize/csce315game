@@ -1,9 +1,9 @@
-﻿Build started 2/17/2014 4:54:55 PM.
-     1>Project "C:\Users\Samuel\Documents\GitHub\dbms\dbms\dbms.vcxproj" on node 2 (Build target(s)).
+﻿Build started 2/17/2014 8:46:26 PM.
+     1>Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" on node 2 (Build target(s)).
      1>Link:
-         dbms.vcxproj -> C:\Users\Samuel\Documents\GitHub\dbms\Debug\dbms.exe
-     1>Done Building Project "C:\Users\Samuel\Documents\GitHub\dbms\dbms\dbms.vcxproj" (Build target(s)).
+         dbms.vcxproj -> H:\Github\Team-Project-1-\dbms\Debug\dbms.exe
+     1>Done Building Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.06
+Time Elapsed 00:00:00.74

@@ -45,6 +45,9 @@ public:
 	void difference_qry();
 	void product_qry();
 	void natural_join_qry();
+
+	void evaluate_statement();
+
 };
 
 #endif
