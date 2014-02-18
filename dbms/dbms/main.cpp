@@ -5,9 +5,10 @@
 #include <sstream>
 using namespace std;
 
+
 int main()
 {
-	database d;
+	database db;
 	parser p;
 	//p.show_cmd();
 	//p.update_cmd();
@@ -16,12 +17,24 @@ int main()
 	query_input << "high_hit_pirates <- select (team == \"pirates\") (select (homeruns >= 40) baseball_players);";
 	//cin.rdbuf(query_input.rdbuf());
 	//p.query();
+
 	stringstream eval_input;
-	eval_input << "CREATE TABLE animals (name VARCHAR(4), kind VARCHAR(4)) PRIMARY KEY (name);";
+	eval_input << "CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);";
 	cin.rdbuf(eval_input.rdbuf());
 
-	p.evaluate_statement();
+	
+	
+	p.evaluate_statement(db);
 
+
+	
+	
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "INSERT INTO animals VALUES FROM(\"joe\", \"cat\", 4);";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
 
 	cin.get();
 	return 0;

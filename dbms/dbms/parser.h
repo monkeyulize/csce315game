@@ -7,6 +7,7 @@
 #include "table.h"
 #include "typed_attribute.h"
 #include "update_obj.h"
+#include "insert_obj.h"
 
 using namespace std;
 class parser {
@@ -32,7 +33,7 @@ public:
 	table create_cmd();
 	std::string close_cmd();
 	std::string show_cmd();
-	void insert_cmd();
+	insert_obj insert_cmd();
 	update_obj update_cmd();
 	void write_cmd(table);		//drops table writes to a file, name+.db
 	void delete_cmd();		//deletes entry
@@ -50,7 +51,7 @@ public:
 	void product_qry();
 	void natural_join_qry();
 
-	void evaluate_statement();
+	void evaluate_statement(database& db);
 
 };
 

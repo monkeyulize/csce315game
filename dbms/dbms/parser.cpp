@@ -422,7 +422,8 @@ vector<string> parser::literal_list() {
 
 }
 
-void parser::insert_cmd()  {
+insert_obj parser::insert_cmd()  {
+	insert_obj io;
 	Token t = ts.get();
 	string name;
 	vector<string> literals;
@@ -445,6 +446,9 @@ void parser::insert_cmd()  {
 			break;
 		}
 	}
+	io.name = name;
+	io.values = literals;
+	return io;
 }
 
 update_obj parser::update_cmd() {
@@ -721,39 +725,50 @@ void parser::write_cmd(table tble) {
 
 
 }
-
-
-void parser::evaluate_statement(){
+void parser::evaluate_statement(database& db){
 	Token t = ts.get();
 	ts.putback(t);
+	int keep_going = 1;
 	string key_word = keyword();
-	if (t.kind == '7'){			//is a command
-		if (key_word == "SHOW") {
-			show_cmd();
-		}
-		else if (key_word == "DELETE") {
-			delete_cmd();
-		}
-		else if (key_word == "CREATETABLE") {
-			create_cmd();
-		}
-		else if (key_word == "EXIT") {
-			exit_cmd();
-		}
-		else if (key_word == "CLOSE") {
-			close_cmd();
-		}
-		else if (key_word == "UPDATE") {
-			update_cmd();
-		}
-		else if (key_word == "WRITE") {
-			write_cmd();
-		}
-		else if (key_word == "OPEN") {
-			open_cmd();
-		}
-		else if (key_word == "INSERTINTO") {
-			insert_cmd();
+	while (keep_going) {
+		switch (t.kind) {
+		case '7':
+			if (key_word == "SHOW") {
+				show_cmd();
+			}
+			else if (key_word == "DELETE") {
+				delete_cmd();
+			}
+			else if (key_word == "CREATETABLE") {
+				db.add_table(create_cmd());
+				t = ts.get();
+			}
+			else if (key_word == "EXIT") {
+				exit_cmd();
+			}
+			else if (key_word == "CLOSE") {
+				close_cmd();
+			}
+			else if (key_word == "UPDATE") {
+				update_cmd();
+			}
+			else if (key_word == "WRITE") {
+				write_cmd();
+			}
+			else if (key_word == "OPEN") {
+				open_cmd();
+			}
+			else if (key_word == "INSERTINTO") {
+				insert_obj io = insert_cmd();
+				db.get_table(io.name).insert(io.values);
+
+			}
+			break;
+		default:
+			keep_going = 0;
+			break;
 		}
 	}
+
+			
 }
