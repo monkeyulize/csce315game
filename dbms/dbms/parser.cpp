@@ -521,3 +521,12 @@ string parser::close_cmd() {
 	}
 	return name;
 }
+string parser::open_cmd() {
+	
+}
+string parser::write_cmd() {
+	
+}
+string parser::exit_cmd() {
+	
+}

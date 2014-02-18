@@ -65,7 +65,7 @@ table database::set_difference(string view_name, string table_one_name, string t
 	return diff_table;
 }
 
-table database::set_selection(string view_name, string table_name, vector<string> attributes)	//: select the tuples in a relation that satisfy a particular condition.
+table database::set_selection(string view_name, string table_name, vector<string> attributes, vector<int> op)	//: select the tuples in a relation that satisfy a particular condition.
 {
 	table t1 = tables[find_table(table_name)];
 	table sel_table(view_name, t1.attribute_names,t1.primary_key);

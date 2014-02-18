@@ -1,22 +1,9 @@
-﻿Build started 2/15/2014 6:09:26 PM.
-     1>Project "D:\Documents\GitHub\Team-Project-1-\dbms\dbms\dbms.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt tokenizer.cpp
-         tokenizer.cpp
-     1>d:\documents\github\team-project-1-\dbms\dbms\table.h(62): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\github\team-project-1-\dbms\dbms\table.h(64): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\github\team-project-1-\dbms\dbms\database.h(27): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\documents\github\team-project-1-\dbms\dbms\tokenizer.cpp(46): warning C4715: 'Token_stream::get' : not all control paths return a value
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Documents\GitHub\Team-Project-1-\dbms\Debug\dbms.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Documents\GitHub\Team-Project-1-\dbms\Debug\dbms.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Documents\GitHub\Team-Project-1-\dbms\Debug\dbms.lib" /MACHINE:X86 Debug\database.obj
-         Debug\entity.obj
-         Debug\main.obj
-         Debug\parser.obj
-         Debug\table.obj
-         Debug\tokenizer.obj
-         dbms.vcxproj -> D:\Documents\GitHub\Team-Project-1-\dbms\Debug\dbms.exe
-     1>Done Building Project "D:\Documents\GitHub\Team-Project-1-\dbms\dbms\dbms.vcxproj" (Build target(s)).
+﻿Build started 2/17/2014 7:17:40 PM.
+     1>Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" on node 2 (Build target(s)).
+     1>Link:
+         dbms.vcxproj -> H:\Github\Team-Project-1-\dbms\Debug\dbms.exe
+     1>Done Building Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.77
+Time Elapsed 00:00:00.68

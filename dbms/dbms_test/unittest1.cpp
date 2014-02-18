@@ -120,11 +120,7 @@ namespace dbms_test
 			Assert::IsTrue(difference == db.get_table("Correct Difference"));
 			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
 		}
-<<<<<<< .mine
 
-=======
-
->>>>>>> .theirs
 		TEST_METHOD(SelectionTest)
 		{
 			
@@ -165,8 +161,8 @@ namespace dbms_test
 		temp6.display_table();*/
 			vector<string> felines;
 			felines.push_back("dog");
-
-			table selection = db.set_selection("sell", "dog", felines);
+			vector<int> ops;
+			table selection = db.set_selection("sell", "dog", felines, ops);
 			/*table selection = db.set_selection("bob", "cat", bob);
 			table selection = db.set_selection("marty", "cat", marty);
 			table selection = db.set_selection("spot", "dog", spot);*/
