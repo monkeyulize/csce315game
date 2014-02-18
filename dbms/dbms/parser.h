@@ -46,13 +46,16 @@ public:
 	typed_attribute typed_attribute_list();
 	vector<string> attribute_list();
 	vector<string> literal_list();
-	table create_cmd();
-	string close_cmd();
-	string show_cmd();
-	void open_cmd();
-	void exit_cmd();
-	void insert_cmd();
-	void update_cmd();
+	//commands
+	table create_cmd();		//creates a table
+	string close_cmd();		//writes and then drops table
+	string show_cmd();		//prints
+	void write_cmd();		//drops table writes to a file, name+.db
+	void delete_cmd();		//deletes entry
+	void open_cmd();		//loads table form a text file
+	void exit_cmd();		//exit(0)
+	void insert_cmd();		//inserts a tuple
+	void update_cmd();		//updates values in a table
 };
 
 #endif
