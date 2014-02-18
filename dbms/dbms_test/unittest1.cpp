@@ -124,7 +124,7 @@ namespace dbms_test
 
 		TEST_METHOD(SelectionTest)
 		{
-			
+			vector<int> op;
 			database db;
 			string name = "animals";
 			vector<string> attribute_names;
@@ -152,18 +152,14 @@ namespace dbms_test
 			db.get_table("dogs").insert(spot);
 
 
-		
+			vector<string> felines;
 		felines.push_back("cat");
-		table selection = db.set_selection("sell", "cats", felines);
-		selection = db.set_selection("sell", "cats", felines);
+		table selection = db.set_selection("sell", "cats", felines,op);
+		selection = db.set_selection("sell", "cats", felines,op);
 		selection.display_table();
 		felines.push_back("6");
-		table temp6 = db.set_selection("sell", "dogs", felines);
+		table temp6 = db.set_selection("sell", "dogs", felines,op);
 		temp6.display_table();
-			vector<string> felines;
-			felines.push_back("dog");
-			vector<int> ops;
-			table selection = db.set_selection("sell", "dog", felines, ops);
 			/*table selection = db.set_selection("bob", "cat", bob);
 			table selection = db.set_selection("marty", "cat", marty);
 			table selection = db.set_selection("spot", "dog", spot);
@@ -176,8 +172,8 @@ namespace dbms_test
 			//if(unioned == db.get_table("Correct Union")) { equal = true; }
 			
 			Assert::IsTrue(selection == db.get_table("Correct Selection"));
-			//Assert::AreEqual(unioned, db.get_table("Correct Union"));
-		}*/
+			//Assert::AreEqual(unioned, db.get_table("Correct Union"));*/
+		}
 
 	
 		TEST_METHOD(InsertionTest)

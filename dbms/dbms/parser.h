@@ -56,6 +56,14 @@ public:
 	void exit_cmd();		//exit(0)
 	void insert_cmd();		//inserts a tuple
 	void update_cmd();		//updates values in a table
+	//queries
+	void projection_qry();
+	void attribute_qry();
+	void renaming_qry();
+	void union_qry();
+	void difference_qry();
+	void product_qry();
+	void natural_join_qry();
 };
 
 #endif

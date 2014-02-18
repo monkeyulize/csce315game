@@ -1,27 +1,9 @@
-﻿Build started 2/17/2014 7:45:14 PM.
+﻿Build started 2/17/2014 8:00:41 PM.
      1>Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp parser.cpp tokenizer.cpp
-         tokenizer.cpp
-     1>h:\github\team-project-1-\dbms\dbms\table.h(62): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\table.h(64): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\database.h(27): warning C4018: '<' : signed/unsigned mismatch
-         parser.cpp
-     1>h:\github\team-project-1-\dbms\dbms\table.h(62): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\table.h(64): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\database.h(27): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\parser.cpp(47): warning C4244: 'argument' : conversion from 'double' to 'char', possible loss of data
-     1>h:\github\team-project-1-\dbms\dbms\parser.cpp(251): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
-     1>h:\github\team-project-1-\dbms\dbms\parser.cpp(527): error C2039: 'write_cmd' : is not a member of 'parser'
-                 h:\github\team-project-1-\dbms\dbms\parser.h(33) : see declaration of 'parser'
-         main.cpp
-     1>h:\github\team-project-1-\dbms\dbms\table.h(62): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\table.h(64): warning C4018: '<' : signed/unsigned mismatch
-     1>h:\github\team-project-1-\dbms\dbms\database.h(27): warning C4018: '<' : signed/unsigned mismatch
-         Generating Code...
-     1>h:\github\team-project-1-\dbms\dbms\tokenizer.cpp(46): warning C4715: 'Token_stream::get' : not all control paths return a value
-     1>Done Building Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" (Build target(s)) -- FAILED.
+     1>Link:
+         dbms.vcxproj -> H:\Github\Team-Project-1-\dbms\Debug\dbms.exe
+     1>Done Building Project "H:\Github\Team-Project-1-\dbms\dbms\dbms.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:03.72
+Time Elapsed 00:00:00.59
