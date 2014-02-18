@@ -8,6 +8,7 @@ int main()
 {
 	database d;
 	parser p;
+	p.show_cmd();
 	p.update_cmd();
 
 

@@ -483,9 +483,10 @@ string parser::show_cmd() {
 				cout << "know show" << endl;
 			}
 			break;
+		default:
+			return name;
 		}
 	}
-	return name;
 }
 string parser::close_cmd() {
 	cout << "in close" << endl;
@@ -515,6 +516,34 @@ string parser::close_cmd() {
 	}
 	return name;
 }
+
+void parser::selection_qry() {
+	Token t = ts.get();
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void parser::evaluate_statement(){
 	Token t = ts.get();
