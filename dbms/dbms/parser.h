@@ -49,6 +49,8 @@ public:
 	table create_cmd();
 	string close_cmd();
 	string show_cmd();
+	void open_cmd();
+	void exit_cmd();
 	void insert_cmd();
 	void update_cmd();
 };
