@@ -587,13 +587,9 @@ string parser::show_cmd() {
 	}
 }
 //prints and saves a table into an output file, and closes table from database
-string parser::close_cmd() {
+string parser::close_cmd(database& db) {
 	
-	table tble;
-	ofstream myfile;
-	myfile.open("display.db");
-
-	myfile << "in write" << endl;
+	
 	Token t = ts.get();
 	string name;
 	int keep_going = 1;
@@ -602,7 +598,12 @@ string parser::close_cmd() {
 	name = relation_name();
 
 	cout << name << endl;
-	name = "animals";
+
+	table tble = db.get_table(name);
+
+	ofstream myfile;
+	myfile.open("close"+name+".db");
+
 	myfile << name << endl;
 	for (int i = 0; i < tble.attribute_names.size(); i++){
 		myfile << tble.attribute_names[i] << '\t';
@@ -619,7 +620,6 @@ string parser::close_cmd() {
 
 
 	myfile.close();
-	db.delete_table(db.tables[db.find_table(name)]);
 	return name;
 }
 //selectoin query for databse to select expressions
@@ -683,14 +683,6 @@ void parser::query() {
 
 
 
-
-
-
-
-
-
-
-
 void parser::delete_cmd() {
 	Token t = ts.get();
 
@@ -706,14 +698,10 @@ void parser::open_cmd() {
 
 
 }
-void parser::write_cmd() {
+void parser::write_cmd(database& db) {
 
-	
-	    table tble;
-		ofstream myfile;
-		myfile.open("display.db");
+		
 
-		myfile << "in write" << endl;
 		Token t = ts.get();
 		string name;
 		int keep_going = 1;
@@ -722,7 +710,10 @@ void parser::write_cmd() {
 		name = relation_name();
 
 		cout << name << endl;
-		name = "animals";
+		ofstream myfile;
+		myfile.open("write"+name+".db");
+		table tble = db.get_table(name);
+
 		myfile << name << endl;
 		for (int i = 0; i < tble.attribute_names.size(); i++){
 			myfile << tble.attribute_names[i] << '\t';
@@ -752,7 +743,8 @@ void parser::evaluate_statement(database& db){
 		switch (t.kind) {
 		case '7':
 			if (key_word == "SHOW") {
-				db.get_table(show_cmd()).display_table();;
+				db.get_table(show_cmd()).display_table();
+				keep_going = 0;
 			}
 			else if (key_word == "DELETE") {
 				delete_cmd();
@@ -765,15 +757,15 @@ void parser::evaluate_statement(database& db){
 				exit_cmd();
 			}
 			else if (key_word == "CLOSE") {
-				close_cmd();
+				db.delete_table(db.get_table(close_cmd(db)));
 			}
 			else if (key_word == "UPDATE") {
 				update_obj uo = update_cmd();
 				
 			}
 			else if (key_word == "WRITE") {
-				;
-				//write_cmd();
+				write_cmd(db);
+				keep_going = 0;
 			}
 			else if (key_word == "OPEN") {
 				open_cmd();

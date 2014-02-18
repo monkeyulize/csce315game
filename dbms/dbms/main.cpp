@@ -43,6 +43,20 @@ int main()
 
 	p.evaluate_statement(db);
 
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "WRITE animals;";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
+
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "CLOSE animals;";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
+
 	cin.get();
 	return 0;
 }
