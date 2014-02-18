@@ -563,6 +563,7 @@ string parser::show_cmd() {
 			cout << "have name" << endl;
 			t = ts.get();
 			keep_going = 0;
+			return name;
 			break;
 		case '7':
 			cout << "case 7" << endl;
@@ -578,27 +579,21 @@ string parser::show_cmd() {
 	}
 }
 string parser::close_cmd() {
-	cout << "in close" << endl;
 	Token t = ts.get();
 	string name;
 	int keep_going = 1;
 	while (keep_going) {
 		switch (t.kind) {
 		case '9':
-			cout << "case 9" << endl;
 			ts.putback(t);//does not continue to have name
-			cout << "not pushed back" << endl;
 			name = relation_name();
-			cout << "have name" << endl;
 			t = ts.get();
 			keep_going = 0;
 			break;
 		case '7':
-			cout << "case 7" << endl;
 			ts.putback(t);
 			if (keyword() == "CLOSE") {
 				t = ts.get();
-				cout << "know close" << endl;
 			}
 			break;
 		}
@@ -735,7 +730,7 @@ void parser::evaluate_statement(database& db){
 		switch (t.kind) {
 		case '7':
 			if (key_word == "SHOW") {
-				show_cmd();
+				db.get_table(show_cmd()).display_table();;
 			}
 			else if (key_word == "DELETE") {
 				delete_cmd();
@@ -754,7 +749,8 @@ void parser::evaluate_statement(database& db){
 				update_cmd();
 			}
 			else if (key_word == "WRITE") {
-				write_cmd();
+				;
+				//write_cmd();
 			}
 			else if (key_word == "OPEN") {
 				open_cmd();
@@ -762,6 +758,7 @@ void parser::evaluate_statement(database& db){
 			else if (key_word == "INSERTINTO") {
 				insert_obj io = insert_cmd();
 				db.get_table(io.name).insert(io.values);
+				t = ts.get();
 
 			}
 			break;
