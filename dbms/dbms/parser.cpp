@@ -534,17 +534,26 @@ void parser::selection_qry() {
 
 
 
+void parser::delete_cmd() {
+	Token t = ts.get();
 
 
+}
+void parser::exit_cmd() {
+	Token t = ts.get();
 
 
+}
+void parser::open_cmd() {
+	Token t = ts.get();
 
 
+}
+void parser::write_cmd() {
+	Token t = ts.get();
 
 
-
-
-
+}
 void parser::evaluate_statement(){
 	Token t = ts.get();
 	ts.putback(t);
@@ -552,28 +561,28 @@ void parser::evaluate_statement(){
 		if (keyword() == "SHOW") {
 			show_cmd();
 		}
-		if (keyword() == "DELETE") {
+		else if (keyword() == "DELETE") {
 			delete_cmd();
 		}
-		if (keyword() == "CREATE") {
+		else if (keyword() == "CREATE") {
 			create_cmd();
 		}
-		if (keyword() == "EXIT") {
+		else if (keyword() == "EXIT") {
 			exit_cmd();
 		}
-		if (keyword() == "CLOSE") {
+		else if (keyword() == "CLOSE") {
 			close_cmd();
 		}
-		if (keyword() == "UPDATE") {
+		else if (keyword() == "UPDATE") {
 			update_cmd();
 		}
-		if (keyword() == "WRITE") {
+		else if (keyword() == "WRITE") {
 			write_cmd();
 		}
-		if (keyword() == "OPEN") {
+		else if (keyword() == "OPEN") {
 			open_cmd();
 		}
-		if (keyword() == "INSERT") {
+		else if (keyword() == "INSERT") {
 			insert_cmd();
 		}
 	}
