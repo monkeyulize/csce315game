@@ -556,7 +556,6 @@ void parser::write_cmd() {
 }
 void parser::evaluate_statement(){
 	Token t = ts.get();
-	ts.putback(t);
 	if (t.kind == '7'){			//is a command
 		if (keyword() == "SHOW") {
 			show_cmd();
@@ -565,6 +564,7 @@ void parser::evaluate_statement(){
 			delete_cmd();
 		}
 		else if (keyword() == "CREATE") {
+			ts.get(); //to clear word table
 			create_cmd();
 		}
 		else if (keyword() == "EXIT") {
@@ -583,6 +583,7 @@ void parser::evaluate_statement(){
 			open_cmd();
 		}
 		else if (keyword() == "INSERT") {
+			ts.get(); //to clear word into
 			insert_cmd();
 		}
 	}
