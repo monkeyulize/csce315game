@@ -38,6 +38,7 @@ public:
 	void exit_cmd();		//exit(0)
 
 	//queries
+	void selection_qry();
 	void projection_qry();
 	void attribute_qry();
 	void renaming_qry();
