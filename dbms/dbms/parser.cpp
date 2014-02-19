@@ -685,11 +685,36 @@ void parser::query() {
 
 
 
-void parser::delete_cmd() {
+delete_obj parser::delete_cmd() {
+	delete_obj del_obj;
 	Token t = ts.get();
+	string name;
+	condition_obj condits;
 
-
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			name = identifier();
+			t = ts.get();
+			break;
+		case '7':
+			ts.putback(t);
+			string temp_keyword = keyword();
+			if (temp_keyword == "WHERE") {
+				condits = condition();
+				keep_going = 0;
+			}
+			break;
+		}
+	}
+	del_obj.condit = condits;
+	del_obj.rel_name = name;
+	return del_obj;
 }
+
+
 void parser::exit_cmd() {
 	exit(0);
 
@@ -749,8 +774,10 @@ void parser::evaluate_statement(database& db){
 				db.get_table(show_cmd()).display_table();
 				keep_going = 0;
 			}
-			else if (key_word == "DELETE") {
-				delete_cmd();
+			else if (key_word == "DELETEFROM") {
+				del_obj = delete_cmd();
+				db.get_table(del_obj.rel_name).delete_from(del_obj.condit);
+				t = ts.get();
 			}
 			else if (key_word == "CREATETABLE") {
 				db.add_table(create_cmd());

@@ -60,41 +60,18 @@ void table::update(vector<pair<string, string>> _set_argument, condition_obj con
 		int index = indices_to_update[i];
 		for (int j = 0; j < _set_argument.size(); j++) {
 			entity_table[index].set_attribute(_set_argument[0].first, _set_argument[0].second);
-
 		}
 	}
-
-
-
-
 }
 
 //goes through table and deletes arguements that meet set arguments
-void table::delete_from(string _where_argument) {
-	vector<string> where_args = split_on_spaces(_where_argument);
+void table::delete_from(condition_obj condit) {
 
-	for (int i = 0; i < entity_table.size(); i++)
-	{
-		if (where_args[1] == "=") {
-			if (entity_table[i].attributes[where_args[0]] == where_args[2]) {	//hack that should work with an argument like "x1 < 0"
-				entity_table.erase(entity_table.begin() + i);
-			}
-		}
-		else if (where_args[1] == "<") {
-			if (entity_table[i].attributes[where_args[0]] < where_args[2]) {
-				entity_table.erase(entity_table.begin() + i);
-			}
-		}
-		else if (where_args[1] == ">") {
-			if (entity_table[i].attributes[where_args[0]] > where_args[2]) {
-				entity_table.erase(entity_table.begin() + i);
-			}
-		}
-		else if (where_args[1] == "!=") {
-			if (entity_table[i].attributes[where_args[0]] != where_args[2]) {
-				entity_table.erase(entity_table.begin() + i);
-			}
-		}
+	vector<int> indices_to_update = eval_condition(condit);
+	for (int i = 0; i < indices_to_update.size(); i++) {
+		int index = indices_to_update[i];
+
+		entity_table.erase(entity_table.begin() + index);
 	}
 }
 

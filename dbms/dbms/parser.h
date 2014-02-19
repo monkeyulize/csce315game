@@ -8,12 +8,14 @@
 #include "typed_attribute.h"
 #include "update_obj.h"
 #include "insert_obj.h"
+#include "delete_obj.h"
 
 using namespace std;
 class parser {
 public:
 
 	update_obj uo;
+	delete_obj del_obj;
 
 
 	char alpha();
@@ -39,7 +41,7 @@ public:
 	insert_obj insert_cmd();
 	update_obj update_cmd();
 	void write_cmd();		//drops table writes to a file, name+.db
-	void delete_cmd();		//deletes entry
+	delete_obj delete_cmd();		//deletes entry
 	void open_cmd();		//loads table form a text file
 	void exit_cmd();		//exit(0)
 

@@ -51,7 +51,7 @@ public:
 	void display_table();
 	
 	//removes an entity from table
-	void delete_from(string _where_argument);
+	void delete_from(condition_obj condit);
 
 	vector<int> eval_condition(condition_obj condit);
 
