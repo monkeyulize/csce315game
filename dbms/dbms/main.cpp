@@ -22,19 +22,35 @@ int main()
 	eval_input << "CREATE TABLE animals (name VARCHAR(20), kind VARCHAR(8), years INTEGER) PRIMARY KEY (name, kind);";
 	cin.rdbuf(eval_input.rdbuf());
 
-	
-	
 	p.evaluate_statement(db);
 
-
-	
-	
 	eval_input.clear();
 	eval_input.str(string());
 	eval_input << "INSERT INTO animals VALUES FROM(\"joe\", \"cat\", 4);";
 	cin.rdbuf(eval_input.rdbuf());
 
 	p.evaluate_statement(db);
+
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "INSERT INTO animals VALUES FROM (\"spot\", \"dog\", 10);";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "INSERT INTO animals VALUES FROM (\"snoopy\", \"dog\", 3);";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "INSERT INTO animals VALUES FROM (\"tweety\", \"bird\", 1);";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
+
+
 
 	eval_input.clear();
 	eval_input.str(string());
@@ -45,19 +61,18 @@ int main()
 
 	eval_input.clear();
 	eval_input.str(string());
-	eval_input << "WRITE animals;";
+	eval_input << "UPDATE animals SET name = \"bingo\" WHERE kind == \"dog\" && years < 5;";
 	cin.rdbuf(eval_input.rdbuf());
 
-	p.evaluate_statement(db);
+	p.evaluate_statement(db);	
 
 	eval_input.clear();
 	eval_input.str(string());
-	eval_input << "CLOSE animals;";
+	eval_input << "SHOW animals;";
 	cin.rdbuf(eval_input.rdbuf());
 
 	p.evaluate_statement(db);
-
-	cin.get();
+	system("pause");
 	return 0;
 }
 /*

@@ -146,6 +146,7 @@ comparison_obj parser::comparison() {
 			ts.putback(t);
 			keep_going = 0;
 		default:
+			ts.putback(t);
 			keep_going = 0;
 		}
 	}
@@ -557,28 +558,22 @@ table parser::create_cmd() {
 }
 //displays values of a database into command line
 string parser::show_cmd() {
-	cout << "in show" << endl;
 	Token t = ts.get();
 	string name;
 	int keep_going = 1;
 	while (keep_going) {
 		switch (t.kind) {
 		case '9':
-			cout << "case 9" << endl;
 			ts.putback(t);//does not continue to have name
-			cout << "not pushed back" << endl;
 			name = relation_name();
-			cout << "have name" << endl;
 			t = ts.get();
 			keep_going = 0;
 			return name;
 			break;
 		case '7':
-			cout << "case 7" << endl;
 			ts.putback(t);
 			if (keyword() == "SHOW") {
 				t = ts.get();
-				cout << "know show" << endl;
 			}
 			break;
 		default:
@@ -587,9 +582,13 @@ string parser::show_cmd() {
 	}
 }
 //prints and saves a table into an output file, and closes table from database
-string parser::close_cmd(database& db) {
+string parser::close_cmd() {
 	
-	
+	table tble;
+	ofstream myfile;
+	myfile.open("display.db");
+
+	myfile << "in write" << endl;
 	Token t = ts.get();
 	string name;
 	int keep_going = 1;
@@ -598,12 +597,7 @@ string parser::close_cmd(database& db) {
 	name = relation_name();
 
 	cout << name << endl;
-
-	table tble = db.get_table(name);
-
-	ofstream myfile;
-	myfile.open("close"+name+".db");
-
+	name = "animals";
 	myfile << name << endl;
 	for (int i = 0; i < tble.attribute_names.size(); i++){
 		myfile << tble.attribute_names[i] << '\t';
@@ -683,6 +677,14 @@ void parser::query() {
 
 
 
+
+
+
+
+
+
+
+
 void parser::delete_cmd() {
 	Token t = ts.get();
 
@@ -698,10 +700,14 @@ void parser::open_cmd() {
 
 
 }
-void parser::write_cmd(database& db) {
+void parser::write_cmd() {
 
-		
+	
+	    table tble;
+		ofstream myfile;
+		myfile.open("display.db");
 
+		myfile << "in write" << endl;
 		Token t = ts.get();
 		string name;
 		int keep_going = 1;
@@ -710,10 +716,7 @@ void parser::write_cmd(database& db) {
 		name = relation_name();
 
 		cout << name << endl;
-		ofstream myfile;
-		myfile.open("write"+name+".db");
-		table tble = db.get_table(name);
-
+		name = "animals";
 		myfile << name << endl;
 		for (int i = 0; i < tble.attribute_names.size(); i++){
 			myfile << tble.attribute_names[i] << '\t';
@@ -757,15 +760,16 @@ void parser::evaluate_statement(database& db){
 				exit_cmd();
 			}
 			else if (key_word == "CLOSE") {
-				db.delete_table(db.get_table(close_cmd(db)));
+				close_cmd();
 			}
 			else if (key_word == "UPDATE") {
-				update_obj uo = update_cmd();
-				
+				uo = update_cmd();
+				db.get_table(uo.rel_name).update(uo.attribute_values, uo.condition);
+				t = ts.get();				
 			}
 			else if (key_word == "WRITE") {
-				write_cmd(db);
-				keep_going = 0;
+				;
+				//write_cmd();
 			}
 			else if (key_word == "OPEN") {
 				open_cmd();

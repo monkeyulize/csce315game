@@ -1,7 +1,9 @@
 #include "table.h"
+#include <stdlib.h> 
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 using namespace std;
 
 //mutator function
@@ -50,38 +52,21 @@ vector<string> table::split_on_spaces(string str) {
 }
 
 //goes through table andfinds which arguements meet set arguments and updates though values
-void table::update(string _set_argument, string _where_argument) {
-	vector<string> set_args = split_on_spaces(_set_argument);
-	vector<string> where_args = split_on_spaces(_where_argument);
+void table::update(vector<pair<string, string>> _set_argument, condition_obj condit) {
+	
+	vector<int> indices_to_update = eval_condition(condit);
 
-	for (int i = 0; i < entity_table.size(); i++)
-	{
-		//parse through set_args vector to determine which attribute to change (and to what)
-		
-		//then parse where_args vector to find the condition on which entities need
-		//to be updated
+	for (int i = 0; i < indices_to_update.size(); i++) {
+		int index = indices_to_update[i];
+		for (int j = 0; j < _set_argument.size(); j++) {
+			entity_table[index].set_attribute(_set_argument[0].first, _set_argument[0].second);
 
-		if (where_args[1] == "=") {
-			if (entity_table[i].attributes[where_args[0]] == where_args[2]) {	//hack that should work with an argument like "x1 < 0"
-				entity_table[i].attributes[set_args[0]] = set_args[2];	//hack that should work with an argument like "x1 = 0"
-			}
-		}
-		else if (where_args[1] == "<") {
-			if (entity_table[i].attributes[where_args[0]] < where_args[2]) {	
-				entity_table[i].attributes[set_args[0]] = set_args[2];	
-			}
-		}
-		else if (where_args[1] == ">") {
-			if (entity_table[i].attributes[where_args[0]] > where_args[2]) {
-				entity_table[i].attributes[set_args[0]] = set_args[2];	
-			}
-		}
-		else if (where_args[1] == "!=") {
-			if (entity_table[i].attributes[where_args[0]] != where_args[2]) {
-				entity_table[i].attributes[set_args[0]] = set_args[2];
-			}
 		}
 	}
+
+
+
+
 }
 
 //goes through table and deletes arguements that meet set arguments
@@ -111,4 +96,156 @@ void table::delete_from(string _where_argument) {
 			}
 		}
 	}
+}
+
+
+bool do_comparison(string oper1, string op, string oper2) {
+	int d_oper1, d_oper2;
+	int integer_op_flag = 0;
+
+	if (isdigit(oper1[0])) {
+		d_oper1 = atoi(oper1.c_str());
+		
+		d_oper2 = atoi(oper2.c_str());
+		integer_op_flag = 1;
+	}
+
+	if (op == "<") {
+		if (integer_op_flag) {
+			if (d_oper1 < d_oper2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (oper1 < oper2) {
+			return true;
+		}
+	}
+	else if (op == "<=") {
+		if (integer_op_flag) {
+			if (d_oper1 < d_oper2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (oper1 <= oper2) {
+			return true;
+		}
+	}
+	else if (op == ">") {
+		if (integer_op_flag) {
+			if (d_oper1 < d_oper2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (oper1 > oper2) {
+			return true;
+		}
+	}
+	else if (op == ">=") {
+		if (integer_op_flag) {
+			if (d_oper1 < d_oper2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (oper1 >= oper2) {
+			return true;
+		}
+	}
+	else if (op == "==") {
+		if (integer_op_flag) {
+			if (d_oper1 < d_oper2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (oper1 == oper2) {
+			return true;
+		}
+	}
+	else if (op == "!=") {
+		if (integer_op_flag) {
+			if (d_oper1 < d_oper2) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		if (oper1 != oper2) {
+			return true;
+		}
+	}
+	return false;
+}
+
+vector<int> table::eval_condition(condition_obj condit) {
+	vector<entity> entities; //for returning
+	vector<int> condition_satisfactory_indices;
+	vector<int> conjunction_satisfactory_indices;
+	vector<int> indices_to_update;
+	//loop through every conjunction (conjunction || conjunction || ...) in condition condit
+	for (int i = 0; i < condit.conjunctions.size(); i++) { 
+		//loop through every comparison (comparison && comparison && ..) in i-th conjunction
+		for (int j = 0; j < condit.conjunctions[i].comparisons.size(); j++) {
+			
+			string oper1 = condit.conjunctions[i].comparisons[j].oper1;
+			string oper2 = condit.conjunctions[i].comparisons[j].oper2;
+			string op = condit.conjunctions[i].comparisons[j].op;
+			string e_oper2;
+			bool comparison_true = false;
+			//loop through every entity in table
+			//if oper1 (field of entity) satisfies op with oper2, then push index to satisfactory_indices
+			for (int y = 0; y < entity_table.size(); y++) {
+				
+				e_oper2 = entity_table[y].get_attribute(oper1); //get value of attribute "oper1" (attribute name)
+				
+				comparison_true = do_comparison(e_oper2, op, oper2);
+
+				if (comparison_true) {
+					conjunction_satisfactory_indices.push_back(y); //since entity satisfies comparison, push back
+				}
+
+				comparison_true = false;
+			}
+			//check each previous satisfactory entity with new comparison
+
+		}
+		for (int x = 0; x < conjunction_satisfactory_indices.size(); x++) {
+			int index = conjunction_satisfactory_indices[x];
+			for (int k = condit.conjunctions[i].comparisons.size() - 1; k > -1; k--) {
+				string e_oper2 = entity_table[index].get_attribute(condit.conjunctions[i].comparisons[k].oper1);
+				string oper2 = condit.conjunctions[i].comparisons[k].oper2;
+				string op = condit.conjunctions[i].comparisons[k].op;
+				bool comparison_true = do_comparison(e_oper2, op, oper2);
+
+				if (!comparison_true) {
+					conjunction_satisfactory_indices.erase(conjunction_satisfactory_indices.begin() + x); //remove x-th index because entity does not satisfy comparison
+				}
+				comparison_true = false;
+			}
+
+		}
+
+		//push every satisfactory index in conjunction into the overall satisfactory indices
+		for (int j = 0; j < conjunction_satisfactory_indices.size(); j++) {
+			condition_satisfactory_indices.push_back(conjunction_satisfactory_indices[j]);
+		}
+
+	}
+	sort(condition_satisfactory_indices.begin(), condition_satisfactory_indices.end());
+	condition_satisfactory_indices.erase(std::unique(condition_satisfactory_indices.begin(), condition_satisfactory_indices.end()), condition_satisfactory_indices.end());
+	return condition_satisfactory_indices;
 }

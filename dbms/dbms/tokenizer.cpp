@@ -2,7 +2,7 @@
 Token_stream::Token_stream() :full(false), buffer(0) {}   // no Token in buffer
 void Token_stream::putback(Token t)
 {
-	if (full) cerr << "putback() into a full buffer";
+	if (full) cerr << "";
 	buffer = t;       // copy t to buffer
 	full = true;      // buffer is now full
 }

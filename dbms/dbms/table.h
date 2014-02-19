@@ -2,6 +2,7 @@
 #define TABLE_H
 
 #include "entity.h"
+#include "condition_obj.h"
 #include <vector>
 
 
@@ -41,7 +42,7 @@ public:
 	}
 	
 	//updates all values that meet a specific condition
-	void update(string _set_argument, string _where_argument);
+	void update(vector<pair<string, string>> _set_argument, condition_obj condit);
 	
 	//parses an input into table to return a vector with inputs at each index
 	vector<string> split_on_spaces(string _str);
@@ -52,7 +53,11 @@ public:
 	//removes an entity from table
 	void delete_from(string _where_argument);
 
-	//overwritten boolean operator to compare two trees equality
+	vector<int> eval_condition(condition_obj condit);
+
+
+
+	//overwritten boolean operator to compare two tables equality
 	bool operator == (const table &Ref) const {
         bool found;
 		if(entity_table.size() != Ref.entity_table.size()){ 	//unequal size means unequal tables
