@@ -42,7 +42,7 @@ public:
 	update_obj update_cmd();
 	void write_cmd();		//drops table writes to a file, name+.db
 	delete_obj delete_cmd();		//deletes entry
-	void open_cmd();		//loads table form a text file
+	void open_cmd(database&);		//loads table form a text file
 	void exit_cmd();		//exit(0)
 
 	//queries

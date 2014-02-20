@@ -720,8 +720,63 @@ void parser::exit_cmd() {
 
 
 }
-void parser::open_cmd() {
-	Token t = ts.get();
+
+void parser::open_cmd(database& db) {
+
+	table tble;
+
+
+	Token t = ts.get();						//used to get the name of the file
+	string name;							//name+.db is where you will open from
+	ts.putback(t);
+
+	name = relation_name();				//have name to use in open statmeent
+
+	cout << name << endl;
+	name = "animals";
+
+
+	string line, tmp_contents;
+	ifstream ifs(name + ".db", ifstream::in);
+	if (ifs.is_open())
+	{
+		while (getline(ifs, line))
+		{
+			cout << line << '\n';
+		}
+		ifs.close();
+	}
+	else cout << "Unable to open file";
+
+
+	//getline(ifs, line) = > vector, look at entity seperate by spaces
+
+	//create_table(getline(my_file, tmp_contents), getline(my_file, tmp_contents))
+
+	while (ifs)
+	{
+		getline(ifs, line);		//grabs a line
+		line += tmp_contents;				//add contents to a string
+	}
+
+
+
+	/*for (int i = 0; i < tble.attribute_names.size(); i++){
+	myfile << tble.attribute_names[i] << '\t';
+	}
+
+	myfile << endl;
+
+	for (int i = 0; i < tble.entity_table.size(); i++){
+	for (int j = 0; j <tble.attribute_names.size(); j++){
+	myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
+	}
+	myfile << endl;
+	}*/
+
+
+	ifs.close();
+	//db.delete_table(db.get_table(name));
 
 
 }
