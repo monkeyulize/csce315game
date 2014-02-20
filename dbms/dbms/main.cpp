@@ -6,6 +6,15 @@
 using namespace std;
 
 
+
+
+void clear_and_put(stringstream &eval_input, string input) {
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << input;
+	cin.rdbuf(eval_input.rdbuf());
+}
+
 int main()
 {
 	database db;
@@ -71,7 +80,7 @@ int main()
 	eval_input << "DELETE FROM animals WHERE kind == \"cat\";";
 	cin.rdbuf(eval_input.rdbuf());
 
-	p.evaluate_statement(db);
+	//p.evaluate_statement(db);
 
 	eval_input.clear();
 	eval_input.str(string());
@@ -80,7 +89,19 @@ int main()
 
 	p.evaluate_statement(db);
 
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "youngdogs <- select (kind == \"dog\") (select (years < 5) animals);";
+	cin.rdbuf(eval_input.rdbuf());
 
+	p.evaluate_statement(db);
+
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "SHOW youngdogs;";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
 
 	system("pause");
 	return 0;

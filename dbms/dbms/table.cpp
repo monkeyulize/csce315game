@@ -61,6 +61,7 @@ void table::display_table() {
 		entity_table[i].show_attributes(attribute_names);
 		cout << endl;
 	}
+	cout << endl;
 }
 
 //chuncks a string by spaces and returns a vector with inputs

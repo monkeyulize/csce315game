@@ -16,15 +16,15 @@ public:
 
 	update_obj uo;
 	delete_obj del_obj;
-
+	database* db_ptr = new database();
 
 	char alpha();
 	std::string identifier();
 	std::string keyword();
 	std::string relation_name();
 	std::string attribute_name();
-	std::string atomic_expr();
-	std::string expr();
+	table atomic_expr();
+	table expr();
 	condition_obj condition();
 	conjunction_obj conjunction();
 	comparison_obj comparison();
@@ -47,14 +47,14 @@ public:
 
 	//queries
 	void query();
-	void selection_qry();
-	void projection_qry();
-	void attribute_qry();
-	void renaming_qry();
-	void union_qry();
-	void difference_qry();
-	void product_qry();
-	void natural_join_qry();
+	table selection_qry();
+	table projection_qry();
+	table attribute_qry();
+	table renaming_qry();
+	table union_qry();
+	table difference_qry();
+	table product_qry();
+	table natural_join_qry();
 
 	void evaluate_statement(database& db);
 

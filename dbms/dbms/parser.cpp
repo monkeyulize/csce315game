@@ -241,18 +241,23 @@ string parser::attribute_name() {
 	return identifier();
 }
 // relation name or an expressoin
-string parser::atomic_expr() {
+table parser::atomic_expr() {
 	Token t = ts.get();
 	int keep_going = 1;
 	while (keep_going) {
 		switch (t.kind) {
 		case '9':
 			ts.putback(t);
-			return relation_name();
+			return db_ptr->get_table(relation_name());
 			t = ts.get();
 			break;
 		case '(':
-			;
+			return expr();
+			t = ts.get();
+			break;
+		default:
+			keep_going = 0;
+			break;
 
 
 
@@ -266,7 +271,7 @@ string parser::atomic_expr() {
 
 }
 //any combination of tables combinations
-string parser::expr() {
+table parser::expr() {
 	Token t = ts.get();
 	string result;
 	int keep_going = 1;
@@ -282,8 +287,9 @@ string parser::expr() {
 			keep_going = 0;
 		}
 	}
-	if (result == "selection") {
-
+	if (result == "select") {
+		ts.putback(t);
+		return selection_qry();
 	}
 	else if (result == "projection") {
 
@@ -304,7 +310,7 @@ string parser::expr() {
 
 	}
 	else {
-		return result;
+		return atomic_expr();
 	}
 }
 
@@ -616,23 +622,40 @@ string parser::close_cmd() {
 	myfile.close();
 	return name;
 }
-//selectoin query for databse to select expressions
-void parser::selection_qry() {
+//selection query for databse to select expressions
+table parser::selection_qry() {
+	int num_of_parentheses = 0;
 	Token t = ts.get();
 	condition_obj condits;
+	table to_return;
 	string name;
 	int keep_going = 1;
 	while (keep_going) {
 		switch (t.kind) {
 		case '(':
-
-			condits = condition();
+			num_of_parentheses++;
+			if (num_of_parentheses < 2) {
+				condits = condition();
+			}
+			else {
+				
+				to_return = expr();
+			}
 			t = ts.get();
 			break;
 		case ')':
-			name = atomic_expr();
+			to_return = atomic_expr();
+			t = ts.get();
+			if (t.kind = ';') {
+				break;
+			}
+			else {
+				t = ts.get();
+			}			
 			break;
-		default:
+		case ';':
+			//ts.putback(t);
+			return db_ptr->set_selection(name, to_return, condits);
 			keep_going = 0;
 		}
 
@@ -668,7 +691,8 @@ void parser::query() {
 	}
 
 	if (which_query == "select") {
-		selection_qry();
+		//selection_qry();
+		;
 	}
 
 
@@ -764,9 +788,13 @@ void parser::write_cmd() {
 }
 void parser::evaluate_statement(database& db){
 	Token t = ts.get();
+	*db_ptr = db;
 	ts.putback(t);
 	int keep_going = 1;
+	table query_view;
 	string key_word = keyword();
+	string new_view;
+	string operation_or_name;
 	while (keep_going) {
 		switch (t.kind) {
 		case '7':
@@ -806,6 +834,25 @@ void parser::evaluate_statement(database& db){
 				db.get_table(io.name).insert(io.values);
 				t = ts.get();
 
+			}
+			break;
+		case '9':
+			ts.putback(t);
+			new_view = relation_name();
+			t = ts.get();
+			break;
+		case '<':
+			t = ts.get();
+			if (t.kind == '-') {
+				operation_or_name = identifier();
+				if (operation_or_name == "select") { //select
+					query_view = selection_qry();
+					query_view.set_name(new_view);
+					db.add_table(query_view);
+				}
+				else { //project, union, etc
+
+				}
 			}
 			break;
 		default:
