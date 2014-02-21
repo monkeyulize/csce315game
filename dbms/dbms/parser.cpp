@@ -958,6 +958,11 @@ void parser::evaluate_statement(database& db){
 					query_view.set_name(new_view);
 					db.add_table(query_view);
 				}
+				if (operation_or_name == "rename") { //select
+					query_view = renaming_qry();
+					query_view.set_name(new_view);
+					db.add_table(query_view);
+				}
 				else { //project, union, etc
 
 				}

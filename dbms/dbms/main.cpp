@@ -110,11 +110,14 @@ int main()
 	cin.rdbuf(eval_input.rdbuf());
 
 	p.evaluate_statement(db);
+	
 	//printing rename
 	eval_input.clear();
 	eval_input.str(string());
 	eval_input << "SHOW renamed;";
 	cin.rdbuf(eval_input.rdbuf());
+	
+	p.evaluate_statement(db);
 	
 	system("pause");
 	return 0;
