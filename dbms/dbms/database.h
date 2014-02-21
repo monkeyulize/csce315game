@@ -44,7 +44,7 @@ public:
 	vector<entity> set_selection(table table, int op, int);								//: select the tuples in a relation that satisfy a particular condition.
     table set_projection(string view_name, string table_name, vector<string> attributes);						//: select a subset of the attributes in a relation.
 	table set_selection(string view_name, table tble, condition_obj condit);
-	table set_renaming(string view_name, string table_name, vector<string> attributes);							//: rename the attributes in a relation.
+	table set_renaming(string view_name, table tble, vector<string> attributes);							//: rename the attributes in a relation.
 	table set_cross_product(string view_name, string table_one_name, string table_two_name);					//: compute the Cartesian product of two relations.
 	table set_natural_join(string view_name, string table_one_name, string table_two_name);
 	int table_num(){ return tables.size(); }

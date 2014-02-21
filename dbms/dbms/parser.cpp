@@ -704,7 +704,48 @@ void parser::query() {
 
 }
 
+table parser::renaming_qry() {
+	int num_of_parentheses = 0;
+	Token t = ts.get();
+	vector<string> attr_list;
+	table to_return;
+	string name;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '(':
+			num_of_parentheses++;
+			if (num_of_parentheses < 2) {
+				attr_list = attribute_list();
+			}
+			else {
 
+				to_return = expr();
+			}
+			t = ts.get();
+			break;
+		case ')':
+			to_return = atomic_expr();
+			t = ts.get();
+			if (t.kind = ';') {
+				break;
+			}
+			else {
+				t = ts.get();
+			}
+			break;
+		case ';':
+			//ts.putback(t);
+			return db_ptr->set_renaming(name, to_return, attr_list);
+			keep_going = 0;
+		}
+
+
+	}
+
+
+
+}
 
 
 
@@ -751,7 +792,7 @@ void parser::exit_cmd() {
 
 }
 
-void parser::open_cmd(database& db) {
+void parser::open_cmd() {
 
 	table tble;
 

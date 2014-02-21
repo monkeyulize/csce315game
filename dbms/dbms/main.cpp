@@ -103,6 +103,19 @@ int main()
 
 	p.evaluate_statement(db);
 
+	//rename test
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "renamed <- rename (aname, akind, age) (select (years < 5) animals);";
+	cin.rdbuf(eval_input.rdbuf());
+
+	p.evaluate_statement(db);
+	//printing rename
+	eval_input.clear();
+	eval_input.str(string());
+	eval_input << "SHOW renamed;";
+	cin.rdbuf(eval_input.rdbuf());
+	
 	system("pause");
 	return 0;
 }

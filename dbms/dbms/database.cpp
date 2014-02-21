@@ -93,9 +93,9 @@ table database::set_projection(string view_name, string table_name, vector<strin
 	
 	return proj_table;
 }
-table database::set_renaming(string view_name, string table_name, vector<string> attributes)	//: rename the attributes in a relation.
+table database::set_renaming(string view_name, table tble, vector<string> attributes)	//: rename the attributes in a relation.
 {
-	table t1 = tables[find_table(table_name)];
+	table t1 = tble;
 	
 	for(int i = 0; i < t1.entity_table.size(); i++)
 		for(int j = 0; j < t1.attribute_names.size(); j++)
