@@ -608,6 +608,12 @@ string parser::close_cmd() {
 	for (int i = 0; i < tble.attribute_names.size(); i++){
 		myfile << tble.attribute_names[i] << '\t';
 	}
+	
+	myfile << endl;
+	
+	for (int i = 0; i < tble.primary_key.size(); i++){
+		myfile << tble.primary_key[i] << '\t';
+	}
 
 	myfile << endl;
 
@@ -824,6 +830,12 @@ void parser::write_cmd() {
 		myfile << name << endl;
 		for (int i = 0; i < tble.attribute_names.size(); i++){
 			myfile << tble.attribute_names[i] << '\t';
+		}
+
+		myfile << endl;
+
+		for (int i = 0; i < tble.primary_key.size(); i++){
+			myfile << tble.primary_key[i] << '\t';
 		}
 
 		myfile << endl;
