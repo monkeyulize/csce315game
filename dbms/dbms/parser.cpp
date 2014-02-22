@@ -240,7 +240,7 @@ string parser::relation_name() {
 string parser::attribute_name() {
 	return identifier();
 }
-// relation name or an expressoin
+// relation name or an expression
 table parser::atomic_expr() {
 	Token t = ts.get();
 	int keep_going = 1;
@@ -258,17 +258,8 @@ table parser::atomic_expr() {
 		default:
 			keep_going = 0;
 			break;
-
-
-
 		}
-
-
-
 	}
-
-
-
 }
 //any combination of tables combinations
 table parser::expr() {
@@ -291,26 +282,15 @@ table parser::expr() {
 		ts.putback(t);
 		return selection_qry();
 	}
-	else if (result == "projection") {
-
-	}
-	else if (result == "renaming") {
-
-	}
-	else if (result == "union") {
-
-	}
-	else if (result == "difference") {
-
-	}
-	else if (result == "product") {
-
-	}
-	else if (result == "natural-join") {
-
+	else if (result == "project") {
+		ts.putback(t);
+		return projection_qry();
 	}
 	else {
-		return atomic_expr();
+		for (int i = 0; i < result.size() + 2; i++) {
+			cin.unget();
+		}
+		return tables_qry();
 	}
 }
 
@@ -425,16 +405,8 @@ vector<string> parser::literal_list() {
 			list.push_back(to_string(t.value));
 		case ')':
 			return list;
-
-
-
-
 		}
-
-
 	}
-
-
 }
 //command used to insert into a database
 insert_obj parser::insert_cmd()  {
@@ -608,12 +580,6 @@ string parser::close_cmd() {
 	for (int i = 0; i < tble.attribute_names.size(); i++){
 		myfile << tble.attribute_names[i] << '\t';
 	}
-	
-	myfile << endl;
-	
-	for (int i = 0; i < tble.primary_key.size(); i++){
-		myfile << tble.primary_key[i] << '\t';
-	}
 
 	myfile << endl;
 
@@ -634,7 +600,7 @@ table parser::selection_qry() {
 	Token t = ts.get();
 	condition_obj condits;
 	table to_return;
-	string name;
+	string view_name;
 	int keep_going = 1;
 	while (keep_going) {
 		switch (t.kind) {
@@ -643,8 +609,7 @@ table parser::selection_qry() {
 			if (num_of_parentheses < 2) {
 				condits = condition();
 			}
-			else {
-				
+			else {			
 				to_return = expr();
 			}
 			t = ts.get();
@@ -652,58 +617,20 @@ table parser::selection_qry() {
 		case ')':
 			to_return = atomic_expr();
 			t = ts.get();
-			if (t.kind = ';') {
+			if (t.kind == ';') {
 				break;
 			}
 			else {
 				t = ts.get();
+				ts.putback(t);
 			}			
 			break;
 		case ';':
-			//ts.putback(t);
-			return db_ptr->set_selection(name, to_return, condits);
+			return db_ptr->set_selection(view_name, to_return, condits);
 			keep_going = 0;
 		}
-
-
 	}
-
-
-
 }
-//a request to perform a manipulation on a table
-void parser::query() {
-	Token t = ts.get();
-	int keep_going = 1;
-	string name;
-	string which_query;
-	while (keep_going) {
-		switch (t.kind) {
-		case '9':
-			ts.putback(t);
-			name = relation_name();
-			t = ts.get();
-			break;
-		case '<':
-			t = ts.get();
-			if (t.kind == '-') {
-				which_query = identifier();
-				keep_going = 0;
-			}			
-			break;
-		default:
-			break;
-		}
-	}
-
-	if (which_query == "select") {
-		//selection_qry();
-		;
-	}
-
-
-}
-
 table parser::renaming_qry() {
 	int num_of_parentheses = 0;
 	Token t = ts.get();
@@ -716,11 +643,10 @@ table parser::renaming_qry() {
 		case '(':
 			num_of_parentheses++;
 			if (num_of_parentheses < 2) {
-				attr_list = attribute_list();
+				attr_list = attribute_list();				
 			}
 			else {
-
-				to_return = expr();
+				to_return = expr();			
 			}
 			t = ts.get();
 			break;
@@ -728,6 +654,38 @@ table parser::renaming_qry() {
 			to_return = atomic_expr();
 			t = ts.get();
 			if (t.kind = ';') {
+				break;					
+			}
+			else {
+				t = ts.get();					
+			}
+			break;
+		case ';':
+			return db_ptr->set_renaming(name, to_return, attr_list);
+			keep_going = 0;					
+		}
+	}
+}
+table parser::projection_qry() {
+	int num_of_parentheses = 0;
+	Token t = ts.get();
+	vector<string> attr_list;
+	table to_return;
+	string view_name;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '(':
+			num_of_parentheses++;
+			if (num_of_parentheses < 2) {
+				attr_list = attribute_list();
+			}
+			t = ts.get();
+			break;
+		case ')':
+			to_return = atomic_expr();
+			t = ts.get();
+			if (t.kind == ';') {
 				break;
 			}
 			else {
@@ -735,24 +693,56 @@ table parser::renaming_qry() {
 			}
 			break;
 		case ';':
-			//ts.putback(t);
-			return db_ptr->set_renaming(name, to_return, attr_list);
+			return db_ptr->set_projection(view_name, to_return, attr_list);
 			keep_going = 0;
 		}
-
-
 	}
-
-
-
 }
 
+table parser::tables_qry() {
 
+	Token t = ts.get();
+	table left, right;
+	int assign_right = 0;
+	string view_name;
+	char op;
+	int keep_going = 1;
+	while (keep_going) {
+		switch (t.kind) {
+		case '9':
+			ts.putback(t);
+			if (assign_right == 0) {
+				left = atomic_expr();
+				assign_right += 1;
+			}
+			else if (assign_right == 1) {
+				right = atomic_expr();
+			}
+			t = ts.get();
+			break;
+		case '+': case '-': case '*':
+			op = t.kind;
+			right = atomic_expr();
+			t = ts.get();
+			break;
+		case ';': case ')':
+			switch (op) {
+			case '+':
+				return db_ptr->set_union(view_name, left, right);
+				break;
+			case '-':
+				return db_ptr->set_difference(view_name, left, right);
+				break;
+			case '*':
+				return db_ptr->set_cross_product(view_name, left, right);
+				break;
+			}
+			
+		}
+	}
+}
 
-
-
-
-
+//a request to perform a manipulation on a table
 
 
 
@@ -792,7 +782,7 @@ void parser::exit_cmd() {
 
 }
 
-void parser::open_cmd() {
+void parser::open_cmd(database& db) {
 
 	table tble;
 
@@ -875,12 +865,6 @@ void parser::write_cmd() {
 
 		myfile << endl;
 
-		for (int i = 0; i < tble.primary_key.size(); i++){
-			myfile << tble.primary_key[i] << '\t';
-		}
-
-		myfile << endl;
-
 		for (int i = 0; i < tble.entity_table.size(); i++){
 			for (int j = 0; j <tble.attribute_names.size(); j++){
 				myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
@@ -900,15 +884,17 @@ void parser::evaluate_statement(database& db){
 	ts.putback(t);
 	int keep_going = 1;
 	table query_view;
-	string key_word = keyword();
+	string key_word;
 	string new_view;
 	string operation_or_name;
 	while (keep_going) {
 		switch (t.kind) {
 		case '7':
+			ts.putback(t);
+			key_word = keyword();
 			if (key_word == "SHOW") {
 				db.get_table(show_cmd()).display_table();
-				keep_going = 0;
+				t = ts.get();
 			}
 			else if (key_word == "DELETEFROM") {
 				del_obj = delete_cmd();
@@ -935,13 +921,12 @@ void parser::evaluate_statement(database& db){
 				//write_cmd();
 			}
 			else if (key_word == "OPEN") {
-				open_cmd();
+				//open_cmd();
 			}
 			else if (key_word == "INSERTINTO") {
 				insert_obj io = insert_cmd();
 				db.get_table(io.name).insert(io.values);
 				t = ts.get();
-
 			}
 			break;
 		case '9':
@@ -953,24 +938,43 @@ void parser::evaluate_statement(database& db){
 			t = ts.get();
 			if (t.kind == '-') {
 				operation_or_name = identifier();
-				if (operation_or_name == "select") { //select
+				if (operation_or_name == "select") {
 					query_view = selection_qry();
 					query_view.set_name(new_view);
 					db.add_table(query_view);
 				}
-				if (operation_or_name == "rename") { //select
+				else if (operation_or_name == "project") {
+					query_view = projection_qry();
+					query_view.set_name(new_view);
+					db.add_table(query_view);
+				}
+				else if (operation_or_name == "rename") {
 					query_view = renaming_qry();
 					query_view.set_name(new_view);
 					db.add_table(query_view);
 				}
-				else { //project, union, etc
-
+				else { //first token will be a table name or atomic expr
+					ts.get();
+				
+					//put operation_or_name back on the front of cin buffer
+					for (int i = 0; i < operation_or_name.size() + 2; i++) {
+						cin.unget();
+					}
+					
+					query_view = tables_qry();
+					query_view.set_name(new_view);
+					db.add_table(query_view);
 				}
 			}
 			break;
-		default:
+		case '0':
 			keep_going = 0;
 			break;
+		default:
+			t = ts.get();
+			break;
+		
+
 		}
 	}
 
