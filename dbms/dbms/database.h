@@ -35,6 +35,11 @@ public:
 		}
 		return -1;
 	}
+	//return index of table
+	vector<table> get_tables_vector()
+	{
+		return tables;
+	}
 	table& get_table(string table_name)
 	{
 		return tables[find_table(table_name)];

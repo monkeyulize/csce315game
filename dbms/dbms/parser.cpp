@@ -564,23 +564,27 @@ string parser::close_cmd() {
 	
 	table tble;
 	ofstream myfile;
-	myfile.open("display.db");
 
-	myfile << "in write" << endl;
 	Token t = ts.get();
 	string name;
-	int keep_going = 1;
 	ts.putback(t);//does not continue to have name
 
 	name = relation_name();
-
+	myfile.open(name+".db");
 	cout << name << endl;
-	name = "animals";
 	myfile << name << endl;
+	
+	tble = db_ptr->get_table(name);
+
 	for (int i = 0; i < tble.attribute_names.size(); i++){
 		myfile << tble.attribute_names[i] << '\t';
 	}
 
+	myfile << endl;
+
+	for (int i = 0; i < tble.primary_key.size(); i++){
+		myfile << tble.primary_key[i] << '\t';
+	}
 	myfile << endl;
 
 	for (int i = 0; i < tble.entity_table.size(); i++){
@@ -777,6 +781,8 @@ delete_obj parser::delete_cmd() {
 
 
 void parser::exit_cmd() {
+	cout << "You are logging out. Have a Good Day."<<endl;
+
 	exit(0);
 
 
@@ -843,44 +849,40 @@ void parser::open_cmd(database& db) {
 }
 void parser::write_cmd() {
 
-	
-	    table tble;
-		ofstream myfile;
-		myfile.open("display.db");
+	table tble;
+	ofstream myfile;
 
-		myfile << "in write" << endl;
-		Token t = ts.get();
-		string name;
-		int keep_going = 1;
-		ts.putback(t);//does not continue to have name
+	Token t = ts.get();
+	string name;
+	ts.putback(t);//does not continue to have name
 
-		name = relation_name();
+	name = relation_name();
+	myfile.open(name + ".db");
+	cout << name << endl;
+	myfile << name << endl;
 
-		cout << name << endl;
-		name = "animals";
-		myfile << name << endl;
-		for (int i = 0; i < tble.attribute_names.size(); i++){
-			myfile << tble.attribute_names[i] << '\t';
+	tble = db_ptr->get_table(name);
+
+	for (int i = 0; i < tble.attribute_names.size(); i++){
+		myfile << tble.attribute_names[i] << '\t';
+	}
+
+	myfile << endl;
+	for (int i = 0; i < tble.primary_key.size(); i++){
+		myfile << tble.primary_key[i] << '\t';
+	}
+	myfile << endl;
+	for (int i = 0; i < tble.entity_table.size(); i++){
+		for (int j = 0; j <tble.attribute_names.size(); j++){
+			myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
 		}
-
 		myfile << endl;
-
-		for (int i = 0; i < tble.entity_table.size(); i++){
-			for (int j = 0; j <tble.attribute_names.size(); j++){
-				myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
-			}
-			myfile << endl;
-		}
-
-
-		myfile.close();
-
-
-
+	}
+	myfile.close();
 }
 void parser::evaluate_statement(database& db){
 	Token t = ts.get();
-	*db_ptr = db;
+	db_ptr = &db;
 	ts.putback(t);
 	int keep_going = 1;
 	table query_view;
@@ -910,6 +912,7 @@ void parser::evaluate_statement(database& db){
 			}
 			else if (key_word == "CLOSE") {
 				close_cmd();
+				t = ts.get();
 			}
 			else if (key_word == "UPDATE") {
 				uo = update_cmd();
@@ -917,8 +920,8 @@ void parser::evaluate_statement(database& db){
 				t = ts.get();				
 			}
 			else if (key_word == "WRITE") {
-				;
-				//write_cmd();
+				write_cmd();
+				t = ts.get();
 			}
 			else if (key_word == "OPEN") {
 				//open_cmd();
