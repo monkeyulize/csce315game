@@ -35,7 +35,7 @@ public:
 	typed_attribute typed_attribute_list();
 	std::vector<string> attribute_list();
 	std::vector<string> literal_list();
-	
+	vector<string> split_on_spaces(string str);
 	//commands	
 	table create_cmd();
 	std::string close_cmd();
@@ -44,7 +44,7 @@ public:
 	update_obj update_cmd();
 	void write_cmd();		//drops table writes to a file, name+.db
 	delete_obj delete_cmd();		//deletes entry
-	void open_cmd(database&);		//loads table form a text file
+	void open_cmd();		//loads table form a text file
 	void exit_cmd();		//exit(0)
 
 	//queries
@@ -53,12 +53,6 @@ public:
 	table projection_qry();
 	table attribute_qry();
 	table renaming_qry();
-	/*
-	table union_qry();
-	table difference_qry();
-	table product_qry();
-	table natural_join_qry();
-	*/
 	table tables_qry();
 
 

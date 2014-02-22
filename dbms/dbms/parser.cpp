@@ -571,7 +571,7 @@ string parser::close_cmd() {
 
 	name = relation_name();
 	myfile.open(name+".db");
-	cout << name << endl;
+
 	myfile << name << endl;
 	
 	tble = db_ptr->get_table(name);
@@ -788,63 +788,48 @@ void parser::exit_cmd() {
 
 }
 
-void parser::open_cmd(database& db) {
+vector<string> parser::split_on_spaces(string str) {
+	istringstream iss(str);
+	string s;
+	vector<string> result;
+
+	while (getline(iss, s, ' ')){
+		result.push_back(s.c_str());
+	}
+
+	return result;
+}
+
+void parser::open_cmd() {
 
 	table tble;
-
 
 	Token t = ts.get();						//used to get the name of the file
 	string name;							//name+.db is where you will open from
 	ts.putback(t);
 
 	name = relation_name();				//have name to use in open statmeent
-
-	cout << name << endl;
-	name = "animals";
-
-
+	
 	string line, tmp_contents;
-	ifstream ifs(name + ".db", ifstream::in);
-	if (ifs.is_open())
+	ifstream myfile(name + ".db", ifstream::in);
+	
+	if (myfile.is_open())
 	{
-		while (getline(ifs, line))
+		getline(myfile, line);
+		string tbl_name = line;
+		getline(myfile, line);
+		vector<string> attr_list = split_on_spaces(line);
+		getline(myfile, line);
+		vector <string> prmy_key = split_on_spaces(line);
+
+		db_ptr->create_table(tbl_name, attr_list, prmy_key);
+		while (getline(myfile, line))
 		{
-			cout << line << '\n';
+			db_ptr->get_table(name).insert(split_on_spaces(line));
 		}
-		ifs.close();
+		myfile.close();
 	}
 	else cout << "Unable to open file";
-
-
-	//getline(ifs, line) = > vector, look at entity seperate by spaces
-
-	//create_table(getline(my_file, tmp_contents), getline(my_file, tmp_contents))
-
-	while (ifs)
-	{
-		getline(ifs, line);		//grabs a line
-		line += tmp_contents;				//add contents to a string
-	}
-
-
-
-	/*for (int i = 0; i < tble.attribute_names.size(); i++){
-	myfile << tble.attribute_names[i] << '\t';
-	}
-
-	myfile << endl;
-
-	for (int i = 0; i < tble.entity_table.size(); i++){
-	for (int j = 0; j <tble.attribute_names.size(); j++){
-	myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
-	}
-	myfile << endl;
-	}*/
-
-
-	ifs.close();
-	//db.delete_table(db.get_table(name));
-
 
 }
 void parser::write_cmd() {
@@ -858,7 +843,7 @@ void parser::write_cmd() {
 
 	name = relation_name();
 	myfile.open(name + ".db");
-	cout << name << endl;
+
 	myfile << name << endl;
 
 	tble = db_ptr->get_table(name);
@@ -924,7 +909,8 @@ void parser::evaluate_statement(database& db){
 				t = ts.get();
 			}
 			else if (key_word == "OPEN") {
-				//open_cmd();
+				open_cmd();
+				t = ts.get();
 			}
 			else if (key_word == "INSERTINTO") {
 				insert_obj io = insert_cmd();

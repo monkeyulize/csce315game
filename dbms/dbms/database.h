@@ -46,7 +46,6 @@ public:
 	}
 	table set_union(string view_name, table tble1, table tble2);							//: compute the union of two relations; the relations must be union-compatible.
 	table set_difference(string view_name, table tble1, table tble2);						//: compute the set difference of two relations; the relations must be union-compatible.
-	vector<entity> set_selection(table table, int op, int);								//: select the tuples in a relation that satisfy a particular condition.
 	table set_projection(string view_name, table tble, vector<string> attributes);						//: select a subset of the attributes in a relation.
 	table set_selection(string view_name, table tble, condition_obj condit);
 	table set_renaming(string view_name, table tble, vector<string> attributes);							//: rename the attributes in a relation.
