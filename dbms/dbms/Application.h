@@ -96,9 +96,9 @@ class Application{
 			cout << "        Which <Fill> do you want to display				                        	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the tables name----------------------------------------------------------" << endl;
 			cin >> table1;
-			return table1;
+			return "SHOW "+ table1;
 		}
 		string prompt_primary(){
 			string attr_list;			//full command of space delimited primary keys
@@ -106,12 +106,13 @@ class Application{
 			stringstream ss;		//used for final return including braces and brackets
 			cout << "What key values would you like to use to specify unique entries? " << endl;
 			cout << "i.e. two entries cannot have the same name and age	  	" << endl;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, attr_list); //delimited by spaces
 			split_list = split_on_spaces(attr_list);
 			
 			ss <<"PRIMARY KEY (";
 			for (int i = 0; i < split_list.size(); i++){
-				ss << prompt_type(split_list[i]);
+				ss << split_list[i];
 				if (i < split_list.size() - 1){
 					ss << ", ";
 				}
@@ -124,11 +125,15 @@ class Application{
 			string type;			//stores users input of string or int
 			stringstream ss;		//used for final return including braces and brackets
 			int length;					//each string will have a length
-			cout << "Is " << attr << "a number or a word? enter \"number\" or \"word\" without the quotes "<< endl;
-			cout << "i.e. color is a word such as blue or green, age would be a number such as 1 or 3" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "Is " << attr << " a number or a word? "<< endl;
+			cout << "enter \"number\" or \"word\" without the quotes "<< endl;
+			cout << "i.e. color is a word such as blue or green, age would be a number like 3" << endl;
 			cin >> type;
 			if (type == "word"){
-				cout << "What is the maximum length " << attr << " can have? i.e. name can only be 8 letters long" << endl;
+				cout << "-------------------------------------------------------------------------------		" << endl;
+				cout << "What is the maximum length " << attr << " can have?" << endl; 
+				cout << "i.e. name can only be 8 letters long" << endl;
 				cin >> length;
 				type = "VARCHAR";
 			}
@@ -149,15 +154,16 @@ class Application{
 			string attr_list;			//full command of space delimited attributes
 			vector<string> split_list;		//full command split into a vector of attributes names
 			stringstream ss;		//used for final return including braces and brackets
-			string garbage;				//inelegant fix to computer running multiple prompts at same time
-			cout << "What descriptions do you want in your collection? i.e. name age color statistics	  	" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "What descriptions do you want in your collection?" << endl;
+			cout << "i.e. name age color statistics	  	" << endl;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin, attr_list); //delimited by spaces
 			split_list = split_on_spaces(attr_list);
-			
+
 			ss << " (";
 			for (int i = 0; i < split_list.size(); i++){
 				ss<<prompt_type(split_list[i]);
-				cin >> garbage;
 				if (i < split_list.size() - 1){
 					ss << ", ";
 				}
@@ -170,7 +176,6 @@ class Application{
 			string table1;
 			stringstream ss;
 			string attributes="";
-			string garbage;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        What is the name of the new <Fill> Collection		                         	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
@@ -178,6 +183,7 @@ class Application{
 			attributes = prompt_attributes();
 			string primary = prompt_primary();
 			ss << "CREATE TABLE " << table1 << attributes << primary;
+			cout << ss.str();
 			return ss.str();
 		}
 		string prompt_save(){
@@ -188,7 +194,7 @@ class Application{
 			print_tables();
 			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
-			return "SAVE " + table1;
+			return "WRITE " + table1;
 		}
 		string prompt_open(){
 			string table1;
@@ -209,7 +215,6 @@ class Application{
 			return "CLOSE " + table1;
 		}
 		void initialize(){	
-			string parsed_name;						//used for achievement, player, and game names
 			string parsed_inst;						//used for achievement, player, and game names
 			string command;							//used to keep track of switch case
 			bool exit = false;
@@ -242,7 +247,7 @@ class Application{
 				}
 				else if (command == "Open<FILL>"){
 					parsed_inst = prompt_open();
-					
+					cout <<	"&" <<	parsed_inst	<<	"&";
 				}
 				else if (command == "SaveAndCLose<FILL>"){
 					parsed_inst = prompt_close();
@@ -261,10 +266,12 @@ class Application{
 					continue;
 				}
 				eval_input << parsed_inst;
+				cout << eval_input.rdbuf()<<endl;
 				cin.rdbuf(eval_input.rdbuf());
 
 				p.evaluate_statement();
 				cin.clear();
+				cin.ignore(10000, '\n');
 			}
 		}
 };
