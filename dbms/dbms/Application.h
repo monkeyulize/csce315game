@@ -25,15 +25,19 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "                                    Commands and Queries                              	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			cout << "        Add<FILL>    : Add a <Fill> to a specific collection.             				" << endl;
-			cout << "        Remove<FILL> : Remove a specific or collection of <Fills> that meet a condition." << endl;
-			cout << "        Combine	  : Perform an operation on collections of <Fills>; Add, Cross, Difference." << endl;
-			cout << "        Display<FILL> : Display the contents of a collection with specified name.		" << endl;
-			cout << "        New<FILL>Collection :                  										" << endl;
-			cout << "        Save<FILL>	  :																	" << endl;
-			cout << "        Open<FILL>   :            														" << endl;
-			cout << "        SaveAndCLose<FILL> :															" << endl;
-			cout << "        Help		  :																	" << endl;
+			cout << "        Add<FILL> : Add a <Fill> to a specific collection.             				" << endl;
+			cout << "        Remove<FILL> : Remove a specific or collection of <Fills> that 				" << endl;
+			cout << "						meet a condition." 												  << endl;
+			cout << "        Combine : Perform an operation on collections of <Fills>					" << endl;
+			cout<<  "                       Add, Cross, Difference."							              << endl;
+			cout << "        Display<FILL> : Display the contents of a collection with specified 			" << endl;
+			cout << "		     	 		 name.		"                                                     << endl;
+			cout << "        New<FILL>Collection : Creates a new collection of <Fills> 						" << endl;
+			cout << "        Save<FILL>	  :	Saves values to a file for future reading						" << endl;
+			cout << "        Open<FILL>   : Opens and reads from a file a <Fill>       						" << endl;
+			cout << "        SaveAndCLose<FILL> : Closes and saves values to a file 						" << endl;
+			cout << "        Help :	You should know you are here, but it prints						" << endl;
+			cout << "    					detailed description of each instruction						" << endl;
 			cout << "        Exit(To terminate)	:															" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 		}
@@ -42,8 +46,8 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
@@ -55,8 +59,8 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
@@ -68,8 +72,8 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
@@ -81,8 +85,8 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
@@ -94,8 +98,8 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
@@ -103,43 +107,33 @@ class Application{
 			cin >> table2;
 		}
 		void prompt_save(){
-			string table1, table2;
+			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
+			cout << "        Which <Fill> would you like to save?                          					" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
-			cout << "----------Enter the second tables name----------------------------------------------------------" << endl;
-			cin >> table2;
 		}
 		void prompt_open(){
-			string table1, table2;
+			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
+			cout << "        Which <Fill> would you like to open?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
-			}
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
-			cout << "----------Enter the second tables name----------------------------------------------------------" << endl;
-			cin >> table2;
 		}
 		void prompt_close(){
-			string table1, table2;
+			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
+			cout << "        Which <Fill> would you like to save and close?                          					" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			for (int i = 0; i < db.get_tables_vector.size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector[i].get_name();
+			for (int i = 0; i < db.get_tables_vector().size(); i++){
+				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name();
 			}
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
-			cout << "----------Enter the second tables name----------------------------------------------------------" << endl;
-			cin >> table2;
 		}
 		void initialize(){
 			string parsed_name;						//used for achievement, player, and game names
@@ -176,20 +170,18 @@ class Application{
 				else if (command == "SaveAndCLose<FILL>"){
 					prompt_close();
 				}
-				else if (command == "Help"){
+				else if (command == "Help"){		//works
 					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
-					display_detail_menu();
+					display_detailed_menu();
 				}
 				else if (command == "Exit"){
 					p.exit_cmd();
 				}
-				else if (command == "Help"){
-					display_detailed_menu();
-				}
 				else{
-					exit = true;
+					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
+					display_detailed_menu();
 				}
 
 			}
 		}
-}
+};
