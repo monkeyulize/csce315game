@@ -3,7 +3,7 @@
 #include "tokenizer.h"
 #include <iostream>
 #include <sstream>
-//#include "Application.h"
+#include "Application.h"
 
 using namespace std;
 
@@ -12,6 +12,7 @@ int main(){
 	parser p;
 
 	stringstream eval_input;
+	/*
 	cout << "OPEN animals;" << endl << "SHOW animals;" << endl;
 	eval_input.clear();
 	eval_input.str(string());
@@ -112,16 +113,17 @@ int main(){
 
 	p.evaluate_statement(db);
 	
-	/*
+	cout << "EXIT" << endl;
+
 	eval_input.clear();
 	eval_input.str(string());
 	eval_input << "EXIT;";
 	cin.rdbuf(eval_input.rdbuf());
 
-	p.evaluate_statement(db);*/
-
-	//Application A;
-	//A.initialize();
+	p.evaluate_statement(db);
+	*/
+	Application A;
+	A.initialize();
 
 	system("pause");
 	return 0;
