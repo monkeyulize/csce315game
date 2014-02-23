@@ -889,17 +889,19 @@ void parser::evaluate_statement(){
 			}
 			else if (key_word == "CLOSE") {
 				close_cmd();
+				t = ts.get();
 			}
 			else if (key_word == "UPDATE") {
 				update_cmd();			
 				t = ts.get();				
 			}
 			else if (key_word == "WRITE") {
-				;
-				//write_cmd();
+				write_cmd();
+				t = ts.get();
 			}
 			else if (key_word == "OPEN") {
-				//open_cmd();
+				open_cmd();
+				t = ts.get();
 			}
 			else if (key_word == "INSERTINTO") {
 				insert_cmd();

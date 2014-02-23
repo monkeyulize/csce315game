@@ -47,6 +47,17 @@ class Application{
 			cout << "        Exit(To terminate)	: Terminates Application    								" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 		}
+		vector<string> split_on_spaces(string str) {
+			istringstream iss(str);
+			string s;
+			vector<string> result;
+
+			while (getline(iss, s, ' ')){
+				result.push_back(s.c_str());
+			}
+
+			return result;
+		}
 		string prompt_add(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
@@ -96,7 +107,7 @@ class Application{
 			cout << "What key values would you like to use to specify unique entries? " << endl;
 			cout << "i.e. two entries cannot have the same name and age	  	" << endl;
 			getline(cin, attr_list); //delimited by spaces
-			split_list = p.split_on_spaces(attr_list);
+			split_list = split_on_spaces(attr_list);
 			
 			ss <<"PRIMARY KEY (";
 			for (int i = 0; i < split_list.size(); i++){
@@ -141,7 +152,7 @@ class Application{
 			string garbage;				//inelegant fix to computer running multiple prompts at same time
 			cout << "What descriptions do you want in your collection? i.e. name age color statistics	  	" << endl;
 			getline(cin, attr_list); //delimited by spaces
-			split_list = p.split_on_spaces(attr_list);
+			split_list = split_on_spaces(attr_list);
 			
 			ss << " (";
 			for (int i = 0; i < split_list.size(); i++){
@@ -177,7 +188,7 @@ class Application{
 			print_tables();
 			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
-			return table1;
+			return "SAVE " + table1;
 		}
 		string prompt_open(){
 			string table1;
@@ -185,7 +196,7 @@ class Application{
 			cout << "        What is the name of the <Fill> you would like to open?                       	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cin >> table1;
-			return table1;
+			return "OPEN " + table1;
 		}
 		string prompt_close(){
 			string table1;
@@ -195,7 +206,7 @@ class Application{
 			print_tables();
 			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
-			return table1;
+			return "CLOSE " + table1;
 		}
 		void initialize(){	
 			string parsed_name;						//used for achievement, player, and game names
