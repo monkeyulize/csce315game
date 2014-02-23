@@ -11,6 +11,128 @@ namespace UnitTest1
 	{
 	public:
 		
+		TEST_METHOD(UnionTest)
+		{
+			database db;
+			bool check;
+
+			vector<string> attribute_names;
+			attribute_names.push_back("name");
+			attribute_names.push_back("kind");
+			attribute_names.push_back("years");
+
+			vector<string> primary_key;
+			primary_key.push_back("name");
+			primary_key.push_back("kind");
+
+
+			vector<string> joe;
+			joe.push_back("joe");
+			joe.push_back("dog");
+			joe.push_back("4");
+
+			vector<string> spot;
+			spot.push_back("spot");
+			spot.push_back("dog");
+			spot.push_back("6");
+
+			vector<string> fluffy;
+			fluffy.push_back("fluffy");
+			fluffy.push_back("cat");
+			fluffy.push_back("1");
+
+			vector<string> merlin;
+			merlin.push_back("merlin");
+			merlin.push_back("cat");
+			merlin.push_back("3");
+
+			db.create_table("cats", attribute_names, primary_key);
+			db.create_table("dogs", attribute_names, primary_key);
+
+			db.get_table("cats").insert(fluffy);
+			db.get_table("cats").insert(merlin);
+
+			db.get_table("dogs").insert(joe);
+			db.get_table("dogs").insert(spot);
+
+			table test("animals", attribute_names, primary_key);
+			test.insert(joe);
+			test.insert(spot);
+			test.insert(fluffy);
+			test.insert(merlin);
+
+			if (test == db.set_union("animals", db.get_table("cats"), db.get_table("dogs")))
+			{
+				check = true;
+
+			}
+
+			Assert::IsTrue(check);
+
+
+		}
+
+		TEST_METHOD(DifferenceTest)
+		{
+
+			database db;
+			bool check;
+
+			vector<string> attribute_names;
+			attribute_names.push_back("name");
+			attribute_names.push_back("kind");
+			attribute_names.push_back("years");
+
+			vector<string> primary_key;
+			primary_key.push_back("name");
+			primary_key.push_back("kind");
+
+
+			vector<string> joe;
+			joe.push_back("joe");
+			joe.push_back("dog");
+			joe.push_back("4");
+
+			vector<string> spot;
+			spot.push_back("spot");
+			spot.push_back("dog");
+			spot.push_back("6");
+
+			vector<string> fluffy;
+			fluffy.push_back("fluffy");
+			fluffy.push_back("cat");
+			fluffy.push_back("1");
+
+			vector<string> merlin;
+			merlin.push_back("merlin");
+			merlin.push_back("cat");
+			merlin.push_back("3");
+
+			db.create_table("cats", attribute_names, primary_key);
+			db.create_table("dogs", attribute_names, primary_key);
+
+			db.get_table("cats").insert(fluffy);
+			db.get_table("cats").insert(joe);
+
+			db.get_table("dogs").insert(joe);
+			db.get_table("dogs").insert(spot);
+
+			db.set_difference("animals", db.get_table("dogs"), db.get_table("cats"));
+
+			table test("check", attribute_names, primary_key);
+			test.insert(fluffy);
+			test.insert(joe);
+			test.insert(spot);
+
+			if (db.set_difference("animals", db.get_table("dogs"), db.get_table("cats")) == test)
+			{
+				check = true;
+			}
+
+			Assert::IsTrue(check);
+
+		}
+
 		TEST_METHOD(parser_updateTest)
 		{
 			update_obj test_obj;
