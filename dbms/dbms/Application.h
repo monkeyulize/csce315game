@@ -5,6 +5,7 @@ class Application{
 		database db;
 		parser p;
 	public:
+		Application(database& _db, parser& _p) { db = _db; p = _p; }
 		void print_tables(){
 			for (int i = 0; i < db.get_tables_vector().size(); i++){
 				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name() << endl;
@@ -125,6 +126,7 @@ class Application{
 			return table1;
 		}
 		void initialize(){
+			
 			string parsed_name;						//used for achievement, player, and game names
 			string command;							//used to keep track of switch case
 			bool exit = false;
@@ -178,7 +180,7 @@ class Application{
 				}
 
 				cin.rdbuf(eval_input.rdbuf());
-				p.evaluate_statement(db);
+				p.evaluate_statement();
 
 			}
 		}

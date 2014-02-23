@@ -6,7 +6,7 @@ using namespace std;
 
 Token_stream ts;
 
-//a-z, A-Z
+//function returns a letter (checks if uppercase or lowercase)
 char parser::alpha() {
 	Token t = ts.get();
 	switch (t.kind) {
@@ -14,49 +14,62 @@ char parser::alpha() {
 		return t.letter;
 	default:
 		return '\0';
-
-
 	}
-
 }
 
-//an alpha, alpha or digit pairing
+//returns a string identifier
 string parser::identifier() {
-	int quote_counter = 0;
+	int quote_counter = 0; //quote counter used to determine when inside and outside of quotes
 	string id = "";
 	Token t = ts.get();
-	if (t.kind != '"') {
+	int keep_going = 1;
+	if (t.kind != '"') { //only put back character if it is an alpha
 		ts.putback(t);
 	}	
-	while (1) {
+	while (keep_going) {
 		switch (t.kind) {
 		case '9':
-			id += alpha();
+			id += alpha(); //add each letter in stream to identifier
 			t = ts.get();
 			ts.putback(t);
 			break;
+		case '7':
+			ts.putback(t);
+			if (quote_counter < 2 && quote_counter >= 1) {
+				id += alpha();
+				t = ts.get();
+				ts.putback(t);				
+			}
+			else {
+				keep_going = 0;
+				return id;
+			}
+			
+			break;
 		case '"':
 			quote_counter++;
-			if (quote_counter == 2) {
+			if (quote_counter == 2) { //second quote encountered, end of identifier
 				ts.get();
 				return id;
 			}
 			t = ts.get();
 			if (t.kind != '"') {
 				ts.putback(t);
-			}
-			
+			}			
 			break;
-		case '8':
+		case '8': //keep integers in identifier
+			id += to_string(t.value);
+			ts.get();
+			t = ts.get();
 			ts.putback(t);
-			id = t.value;
-		case '_':
+			break;
+		case '_': //keep underscores in identifier
 			id += t.kind;
 			ts.get();
 			t = ts.get();
 			ts.putback(t);
 			break;
-		default:
+		default: //done, return the string
 			return id;
 		}
 	}
@@ -156,7 +169,7 @@ comparison_obj parser::comparison() {
 	return comp;
 }
 
-//two comparisons anded together
+//comparison && comparison
 conjunction_obj parser::conjunction() {
 	conjunction_obj conjun;
 	Token t = ts.get();
@@ -183,7 +196,7 @@ conjunction_obj parser::conjunction() {
 		}
 	}
 }
-//two conjunctions or'ed together
+//conjunction || conjunction
 condition_obj parser::condition() {
 	condition_obj condit;
 	Token t = ts.get();
@@ -214,7 +227,7 @@ condition_obj parser::condition() {
 }
 
 
-//key words for COMMANDS
+//returns a keyword (uppercase strings)
 string parser::keyword() {
 
 	string id = "";
@@ -240,7 +253,7 @@ string parser::relation_name() {
 string parser::attribute_name() {
 	return identifier();
 }
-// relation name or an expression
+//relation name or an expression
 table parser::atomic_expr() {
 	Token t = ts.get();
 	int keep_going = 1;
@@ -261,7 +274,7 @@ table parser::atomic_expr() {
 		}
 	}
 }
-//any combination of tables combinations
+//returns a table based on some query
 table parser::expr() {
 	Token t = ts.get();
 	string result;
@@ -286,8 +299,12 @@ table parser::expr() {
 		ts.putback(t);
 		return projection_qry();
 	}
+	else if (result == "rename") {
+		ts.putback(t);
+		return renaming_qry();
+	}
 	else {
-		for (int i = 0; i < result.size() + 2; i++) {
+		for (int i = 0; i < result.size() + 2; i++) { //if not select/project/rename, put back characters on cin so they can be read
 			cin.unget();
 		}
 		return tables_qry();
@@ -312,7 +329,7 @@ int parser::type() {
 		}
 	}
 }
-//
+
 pair<int, int> parser::attr_type() {
 	pair<int, int> pair;
 	int which_type = type();
@@ -386,7 +403,7 @@ vector<string> parser::attribute_list() {
 		}
 	}
 }
-//list of constant values
+//list of literals
 vector<string> parser::literal_list() {
 	vector<string> list;
 	string id;
@@ -394,6 +411,7 @@ vector<string> parser::literal_list() {
 	while (1) {
 		switch (t.kind) {
 		case '"':
+			ts.putback(t);
 			id = identifier();
 			list.push_back(id);
 			t = ts.get();
@@ -408,9 +426,8 @@ vector<string> parser::literal_list() {
 		}
 	}
 }
-//command used to insert into a database
-insert_obj parser::insert_cmd()  {
-	insert_obj io;
+//insert an entity into a table
+void parser::insert_cmd()  {
 	Token t = ts.get();
 	string name;
 	vector<string> literals;
@@ -427,26 +444,20 @@ insert_obj parser::insert_cmd()  {
 			if (keyword() == "VALUESFROM") {
 				t = ts.get();
 				literals = literal_list();
-
 			}
 			keep_going = 0;
 			break;
 		}
 	}
-	io.name = name;
-	io.values = literals;
-	return io;
+	db_ptr->get_table(name).insert(literals);
 }
-//updates values based on expressions into a database
-update_obj parser::update_cmd() {
-	update_obj uo;
+//update entities that meet some condition with set values
+void parser::update_cmd() {
 	Token t = ts.get();
 	condition_obj condits;
 	string name;
 	string attr_name;
 	vector<pair<string, string>> sets; //pair<string, string> is <attribute, new-value>
-	//string condition;
-
 	int keep_going = 1;
 	while (keep_going) {
 		switch (t.kind) {
@@ -462,8 +473,7 @@ update_obj parser::update_cmd() {
 				int keep_going2 = 1;
 				pair<string, string> temp;
 				t = ts.get();
-				while (keep_going2) {
-									
+				while (keep_going2) {									
 					switch (t.kind) {
 					case '9':
 						ts.putback(t);
@@ -493,15 +503,11 @@ update_obj parser::update_cmd() {
 			break;
 		}
 	}
-	uo.rel_name = name;
-	uo.attribute_values = sets;
-	uo.condition = condits;
-	return uo;
+	db_ptr->get_table(name).update(sets, condits);
 }
 
-//creates a new table into a database
+//creates a table and adds it to database
 table parser::create_cmd() {
-
 	Token t = ts.get();
 	string name;
 	typed_attribute ta_list;
@@ -519,12 +525,9 @@ table parser::create_cmd() {
 			if (keyword() == "PRIMARYKEY") {
 				t = ts.get();
 				primary_key_list = attribute_list();
-
 			}
 			keep_going = 0;
 			break;
-
-
 		case '(':
 			ta_list = typed_attribute_list();
 			t = ts.get();
@@ -534,7 +537,7 @@ table parser::create_cmd() {
 	table temp(name, ta_list.list, primary_key_list);
 	return temp;
 }
-//displays values of a database into command line
+//calls display function on a table name
 string parser::show_cmd() {
 	Token t = ts.get();
 	string name;
@@ -542,7 +545,7 @@ string parser::show_cmd() {
 	while (keep_going) {
 		switch (t.kind) {
 		case '9':
-			ts.putback(t);//does not continue to have name
+			ts.putback(t); 
 			name = relation_name();
 			t = ts.get();
 			keep_going = 0;
@@ -561,7 +564,7 @@ string parser::show_cmd() {
 }
 //prints and saves a table into an output file, and closes table from database
 string parser::close_cmd() {
-	
+
 	table tble;
 	ofstream myfile;
 
@@ -570,10 +573,10 @@ string parser::close_cmd() {
 	ts.putback(t);//does not continue to have name
 
 	name = relation_name();
-	myfile.open(name+".db");
+	myfile.open(name + ".db");
 
 	myfile << name << endl;
-	
+
 	tble = db_ptr->get_table(name);
 
 	for (int i = 0; i < tble.attribute_names.size(); i++){
@@ -635,6 +638,7 @@ table parser::selection_qry() {
 		}
 	}
 }
+//rename query that renames entities based on some condition
 table parser::renaming_qry() {
 	int num_of_parentheses = 0;
 	Token t = ts.get();
@@ -702,9 +706,8 @@ table parser::projection_qry() {
 		}
 	}
 }
-
+//query which accepts two table names (union, difference, cross product, natural join)
 table parser::tables_qry() {
-
 	Token t = ts.get();
 	table left, right;
 	int assign_right = 0;
@@ -740,18 +743,11 @@ table parser::tables_qry() {
 			case '*':
 				return db_ptr->set_cross_product(view_name, left, right);
 				break;
-			}
-			
+			}			
 		}
 	}
 }
-
-//a request to perform a manipulation on a table
-
-
-
-delete_obj parser::delete_cmd() {
-	delete_obj del_obj;
+void parser::delete_cmd() {
 	Token t = ts.get();
 	string name;
 	condition_obj condits;
@@ -774,21 +770,17 @@ delete_obj parser::delete_cmd() {
 			break;
 		}
 	}
-	del_obj.condit = condits;
-	del_obj.rel_name = name;
-	return del_obj;
+	db_ptr->get_table(name).delete_from(condits);
+
 }
-
-
 void parser::exit_cmd() {
-	cout << "You are logging out. Have a Good Day."<<endl;
+	cout << "You are logging out. Have a Good Day." << endl;
 
 	exit(0);
 
 
 }
-
-vector<string> parser::split_on_spaces(string str) {
+vector<string> split_on_spaces(string str) {
 	istringstream iss(str);
 	string s;
 	vector<string> result;
@@ -809,10 +801,10 @@ void parser::open_cmd() {
 	ts.putback(t);
 
 	name = relation_name();				//have name to use in open statmeent
-	
+
 	string line, tmp_contents;
 	ifstream myfile(name + ".db", ifstream::in);
-	
+
 	if (myfile.is_open())
 	{
 		getline(myfile, line);
@@ -865,9 +857,8 @@ void parser::write_cmd() {
 	}
 	myfile.close();
 }
-void parser::evaluate_statement(database& db){
+void parser::evaluate_statement(){
 	Token t = ts.get();
-	db_ptr = &db;
 	ts.putback(t);
 	int keep_going = 1;
 	table query_view;
@@ -880,16 +871,15 @@ void parser::evaluate_statement(database& db){
 			ts.putback(t);
 			key_word = keyword();
 			if (key_word == "SHOW") {
-				db.get_table(show_cmd()).display_table();
+				db_ptr->get_table(show_cmd()).display_table();
 				t = ts.get();
 			}
 			else if (key_word == "DELETEFROM") {
-				del_obj = delete_cmd();
-				db.get_table(del_obj.rel_name).delete_from(del_obj.condit);
+				delete_cmd();
 				t = ts.get();
 			}
 			else if (key_word == "CREATETABLE") {
-				db.add_table(create_cmd());
+				db_ptr->add_table(create_cmd());
 				t = ts.get();
 			}
 			else if (key_word == "EXIT") {
@@ -897,24 +887,20 @@ void parser::evaluate_statement(database& db){
 			}
 			else if (key_word == "CLOSE") {
 				close_cmd();
-				t = ts.get();
 			}
 			else if (key_word == "UPDATE") {
-				uo = update_cmd();
-				db.get_table(uo.rel_name).update(uo.attribute_values, uo.condition);
+				update_cmd();			
 				t = ts.get();				
 			}
 			else if (key_word == "WRITE") {
-				write_cmd();
-				t = ts.get();
+				;
+				//write_cmd();
 			}
 			else if (key_word == "OPEN") {
-				open_cmd();
-				t = ts.get();
+				//open_cmd();
 			}
 			else if (key_word == "INSERTINTO") {
-				insert_obj io = insert_cmd();
-				db.get_table(io.name).insert(io.values);
+				insert_cmd();
 				t = ts.get();
 			}
 			break;
@@ -930,17 +916,17 @@ void parser::evaluate_statement(database& db){
 				if (operation_or_name == "select") {
 					query_view = selection_qry();
 					query_view.set_name(new_view);
-					db.add_table(query_view);
+					db_ptr->add_table(query_view);
 				}
 				else if (operation_or_name == "project") {
 					query_view = projection_qry();
 					query_view.set_name(new_view);
-					db.add_table(query_view);
+					db_ptr->add_table(query_view);
 				}
 				else if (operation_or_name == "rename") {
 					query_view = renaming_qry();
 					query_view.set_name(new_view);
-					db.add_table(query_view);
+					db_ptr->add_table(query_view);
 				}
 				else { //first token will be a table name or atomic expr
 					ts.get();
@@ -948,11 +934,10 @@ void parser::evaluate_statement(database& db){
 					//put operation_or_name back on the front of cin buffer
 					for (int i = 0; i < operation_or_name.size() + 2; i++) {
 						cin.unget();
-					}
-					
+					}					
 					query_view = tables_qry();
 					query_view.set_name(new_view);
-					db.add_table(query_view);
+					db_ptr->add_table(query_view);
 				}
 			}
 			break;
@@ -962,10 +947,6 @@ void parser::evaluate_statement(database& db){
 		default:
 			t = ts.get();
 			break;
-		
-
 		}
-	}
-
-			
+	}			
 }

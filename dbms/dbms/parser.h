@@ -6,9 +6,6 @@
 #include <string>
 #include "table.h"
 #include "typed_attribute.h"
-#include "update_obj.h"
-#include "insert_obj.h"
-#include "delete_obj.h"
 #include <sstream>
 #include <istream>
 
@@ -16,9 +13,9 @@ using namespace std;
 class parser {
 public:
 
-	update_obj uo;
-	delete_obj del_obj;
 	database* db_ptr = new database();
+	parser() {};
+	parser(database& db) { db_ptr = &db; }
 
 	char alpha();
 	std::string identifier();
@@ -35,15 +32,15 @@ public:
 	typed_attribute typed_attribute_list();
 	std::vector<string> attribute_list();
 	std::vector<string> literal_list();
-	vector<string> split_on_spaces(string str);
+	
 	//commands	
 	table create_cmd();
 	std::string close_cmd();
 	std::string show_cmd();
-	insert_obj insert_cmd();
-	update_obj update_cmd();
+	void insert_cmd();
+	void update_cmd();
 	void write_cmd();		//drops table writes to a file, name+.db
-	delete_obj delete_cmd();		//deletes entry
+	void delete_cmd();		//deletes entry
 	void open_cmd();		//loads table form a text file
 	void exit_cmd();		//exit(0)
 
@@ -56,7 +53,7 @@ public:
 	table tables_qry();
 
 
-	void evaluate_statement(database& db);
+	void evaluate_statement();
 
 };
 

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbms", "dbms\dbms.vcxproj", "{BDD3CF89-4BD3-49C2-B2C4-20B4DE75FC00}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTest1", "UnitTest1\UnitTest1.vcxproj", "{6FBF99F3-E9E3-493D-862E-47D15B922A62}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbmsMain", "dbmsMain\dbmsMain.vcxproj", "{6E809B77-8547-49CF-B51D-3B97D944DFBF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dbmsTest", "dbmsTest\dbmsTest.vcxproj", "{D887727F-9581-48A6-B858-D7791705C074}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,14 @@ Global
 		{BDD3CF89-4BD3-49C2-B2C4-20B4DE75FC00}.Debug|Win32.Build.0 = Debug|Win32
 		{BDD3CF89-4BD3-49C2-B2C4-20B4DE75FC00}.Release|Win32.ActiveCfg = Release|Win32
 		{BDD3CF89-4BD3-49C2-B2C4-20B4DE75FC00}.Release|Win32.Build.0 = Release|Win32
-		{6FBF99F3-E9E3-493D-862E-47D15B922A62}.Debug|Win32.ActiveCfg = Debug|Win32
-		{6FBF99F3-E9E3-493D-862E-47D15B922A62}.Debug|Win32.Build.0 = Debug|Win32
-		{6FBF99F3-E9E3-493D-862E-47D15B922A62}.Release|Win32.ActiveCfg = Release|Win32
-		{6FBF99F3-E9E3-493D-862E-47D15B922A62}.Release|Win32.Build.0 = Release|Win32
+		{6E809B77-8547-49CF-B51D-3B97D944DFBF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6E809B77-8547-49CF-B51D-3B97D944DFBF}.Debug|Win32.Build.0 = Debug|Win32
+		{6E809B77-8547-49CF-B51D-3B97D944DFBF}.Release|Win32.ActiveCfg = Release|Win32
+		{6E809B77-8547-49CF-B51D-3B97D944DFBF}.Release|Win32.Build.0 = Release|Win32
+		{D887727F-9581-48A6-B858-D7791705C074}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D887727F-9581-48A6-B858-D7791705C074}.Debug|Win32.Build.0 = Debug|Win32
+		{D887727F-9581-48A6-B858-D7791705C074}.Release|Win32.ActiveCfg = Release|Win32
+		{D887727F-9581-48A6-B858-D7791705C074}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

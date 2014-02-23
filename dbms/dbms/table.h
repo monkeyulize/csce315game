@@ -5,7 +5,6 @@
 #include "condition_obj.h"
 #include <vector>
 
-
 class table {
 private:
 	string name;	//stores name of table
@@ -27,7 +26,7 @@ public:
 		name = _name;
 	}
 	void set_attr_names(vector<string> _attribute_names);
-	
+	void set_pri_key(vector<string> _primary_key);
 	//accessor function
 	string get_name() {
 		return name;
@@ -55,29 +54,24 @@ public:
 
 	vector<int> eval_condition(condition_obj condit);
 
-
-
 	//overwritten boolean operator to compare two tables equality
-	bool operator == (const table &Ref) const {
-        bool found;
-		if(entity_table.size() != Ref.entity_table.size()){ 	//unequal size means unequal tables
-			return false;
-		}	
-
-		for(int i = 0; i < entity_table.size(); i++){
-			found = false;
-			for(int j = 0; j < Ref.entity_table.size(); j++){
-				if(entity_table[i] == Ref.entity_table[j]){			//check if each entry is in other table
-					found = true;
-				}
-			}	
-			if (found == false){ 								//if even one is not found return false
-				return false; 
-			}
-		}
-		return true;
-    }
-
+	bool operator == (const table &t2);
 };
 
+inline bool table::operator == (const table& t2) {
+	if (name != t2.name) {
+		return false;
+	}
+	if (entity_table != t2.entity_table) {
+		return false;
+	}
+	if (primary_key != t2.primary_key) {
+		return false;
+	}
+	if (attribute_names != t2.attribute_names) {
+		return false;
+	}
+	return true;
+
+}
 #endif

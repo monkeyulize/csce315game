@@ -11,6 +11,10 @@ void table::set_attr_names(vector<string> _attribute_names) {
 	attribute_names = _attribute_names;
 }
 
+void table::set_pri_key(vector<string> _primary_key) {
+	primary_key = _primary_key;
+}
+
 //Helper functions
 //inserts an entity into table
 void table::insert(vector<string> _field_values) {
@@ -94,14 +98,20 @@ void table::update(vector<pair<string, string>> _set_argument, condition_obj con
 void table::delete_from(condition_obj condit) {
 
 	vector<int> indices_to_update = eval_condition(condit);
-	for (int i = 0; i < indices_to_update.size(); i++) {
+	for (int i = indices_to_update.size() - 1; i >= 0; i--) {
 		int index = indices_to_update[i];
 
 		entity_table.erase(entity_table.begin() + index);
 	}
 }
 
-
+string toLower(string s) {
+	string temp;
+	for (int i = 0; i < s.size(); i++) {
+		temp.push_back(tolower(s[i]));
+	}
+	return temp;
+}
 bool do_comparison(string oper1, string op, string oper2) {
 	int d_oper1, d_oper2;
 	int integer_op_flag = 0;
@@ -112,7 +122,11 @@ bool do_comparison(string oper1, string op, string oper2) {
 		d_oper2 = atoi(oper2.c_str());
 		integer_op_flag = 1;
 	}
-
+	else {
+		oper1 = toLower(oper1);
+		oper2 = toLower(oper2);
+	}
+	
 	if (op == "<") {
 		if (integer_op_flag) {
 			if (d_oper1 < d_oper2) {
@@ -195,15 +209,13 @@ bool do_comparison(string oper1, string op, string oper2) {
 }
 
 vector<int> table::eval_condition(condition_obj condit) {
-	vector<entity> entities; //for returning
 	vector<int> condition_satisfactory_indices;
 	vector<int> conjunction_satisfactory_indices;
 	vector<int> indices_to_update;
 	//loop through every conjunction (conjunction || conjunction || ...) in condition condit
 	for (int i = 0; i < condit.conjunctions.size(); i++) { 
 		//loop through every comparison (comparison && comparison && ..) in i-th conjunction
-		for (int j = 0; j < condit.conjunctions[i].comparisons.size(); j++) {
-			
+		for (int j = 0; j < condit.conjunctions[i].comparisons.size(); j++) {			
 			string oper1 = condit.conjunctions[i].comparisons[j].oper1;
 			string oper2 = condit.conjunctions[i].comparisons[j].oper2;
 			string op = condit.conjunctions[i].comparisons[j].op;
@@ -211,22 +223,19 @@ vector<int> table::eval_condition(condition_obj condit) {
 			bool comparison_true = false;
 			//loop through every entity in table
 			//if oper1 (field of entity) satisfies op with oper2, then push index to satisfactory_indices
-			for (int y = 0; y < entity_table.size(); y++) {
-				
-				e_oper2 = entity_table[y].get_attribute(oper1); //get value of attribute "oper1" (attribute name)
-				
+			for (int y = 0; y < entity_table.size(); y++) {				
+				e_oper2 = entity_table[y].get_attribute(oper1); //get value of attribute "oper1" (attribute name)				
 				comparison_true = do_comparison(e_oper2, op, oper2);
-
 				if (comparison_true) {
 					conjunction_satisfactory_indices.push_back(y); //since entity satisfies comparison, push back
 				}
-
 				comparison_true = false;
 			}
 			//check each previous satisfactory entity with new comparison
-
 		}
-		for (int x = 0; x < conjunction_satisfactory_indices.size(); x++) {
+		sort(conjunction_satisfactory_indices.begin(), conjunction_satisfactory_indices.end());
+		conjunction_satisfactory_indices.erase(std::unique(conjunction_satisfactory_indices.begin(), conjunction_satisfactory_indices.end()), conjunction_satisfactory_indices.end());
+		for (int x = conjunction_satisfactory_indices.size() - 1; x >= 0; x--) {
 			int index = conjunction_satisfactory_indices[x];
 			for (int k = condit.conjunctions[i].comparisons.size() - 1; k > -1; k--) {
 				string e_oper2 = entity_table[index].get_attribute(condit.conjunctions[i].comparisons[k].oper1);
