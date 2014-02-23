@@ -80,19 +80,21 @@ namespace dbmsTest
 		}
 		TEST_METHOD(UnionTest)
 		{
+			//initial db setup
 			database db;
-			bool check;
+			bool check = false;
 
 			vector<string> attribute_names;
 			attribute_names.push_back("name");
 			attribute_names.push_back("kind");
 			attribute_names.push_back("years");
 
+			//primary keys for tables
 			vector<string> primary_key;
 			primary_key.push_back("name");
 			primary_key.push_back("kind");
 
-
+			//objects to be added to tables
 			vector<string> joe;
 			joe.push_back("joe");
 			joe.push_back("dog");
@@ -113,6 +115,7 @@ namespace dbmsTest
 			merlin.push_back("cat");
 			merlin.push_back("3");
 
+			//create and fill tables
 			db.create_table("cats", attribute_names, primary_key);
 			db.create_table("dogs", attribute_names, primary_key);
 
@@ -122,18 +125,21 @@ namespace dbmsTest
 			db.get_table("dogs").insert(joe);
 			db.get_table("dogs").insert(spot);
 
+			//create correct output for comparison
 			table test("animals", attribute_names, primary_key);
 			test.insert(joe);
 			test.insert(spot);
 			test.insert(fluffy);
 			test.insert(merlin);
 
+			//if two tables match (one is correct ouput) then checkk == true
 			if (test == db.set_union("animals", db.get_table("cats"), db.get_table("dogs")))
 			{
 				check = true;
 
 			}
 
+			//returns success if check == true
 			Assert::IsTrue(check);
 
 
@@ -141,19 +147,21 @@ namespace dbmsTest
 		TEST_METHOD(DifferenceTest)
 		{
 
+			//db initial setup
 			database db;
-			bool check;
+			bool check = false;
 
 			vector<string> attribute_names;
 			attribute_names.push_back("name");
 			attribute_names.push_back("kind");
 			attribute_names.push_back("years");
 
+			//primary keys for tables
 			vector<string> primary_key;
 			primary_key.push_back("name");
 			primary_key.push_back("kind");
 
-
+			//objects to be added to tables
 			vector<string> joe;
 			joe.push_back("joe");
 			joe.push_back("dog");
@@ -174,6 +182,7 @@ namespace dbmsTest
 			merlin.push_back("cat");
 			merlin.push_back("3");
 
+			//create and fill tables
 			db.create_table("cats", attribute_names, primary_key);
 			db.create_table("dogs", attribute_names, primary_key);
 
@@ -183,25 +192,26 @@ namespace dbmsTest
 			db.get_table("dogs").insert(joe);
 			db.get_table("dogs").insert(spot);
 
-			db.set_difference("animals", db.get_table("dogs"), db.get_table("cats"));
-
+			//create correct output
 			table test("check", attribute_names, primary_key);
 			test.insert(fluffy);
 			test.insert(joe);
 			test.insert(spot);
 
+			//if tables match (to correct output) then bool check == true
 			if (db.set_difference("animals", db.get_table("dogs"), db.get_table("cats")) == test)
 			{
 				check = true;
 			}
 
+			//returns success if check == true
 			Assert::IsTrue(check);
 
 		}
 		/*TEST_METHOD(ProductTest)
 		{
 		database db;
-		bool check;
+		bool check = false;
 
 		vector<string> attribute_names;
 		attribute_names.push_back("name");
@@ -278,22 +288,26 @@ namespace dbmsTest
 
 
 		}*/
+
+
 		TEST_METHOD(NaturalJoinTest)
 		{
-
+			
+			//db initial setup
 			database db;
-			bool check;
+			bool check = false;
 
 			vector<string> attribute_names;
 			attribute_names.push_back("name");
 			attribute_names.push_back("kind");
 			attribute_names.push_back("years");
 
+			//primary key for tables
 			vector<string> primary_key;
 			primary_key.push_back("name");
 			primary_key.push_back("kind");
 
-
+			//objects to be added to tables
 			vector<string> joe;
 			joe.push_back("joe");
 			joe.push_back("dog");
@@ -324,9 +338,11 @@ namespace dbmsTest
 			rascal.push_back("cat");
 			rascal.push_back("2");
 
+
 			db.create_table("cats", attribute_names, primary_key);
 			db.create_table("dogs", attribute_names, primary_key);
 
+			//create tables to be natural joined
 			db.get_table("cats").insert(fluffy);
 			db.get_table("cats").insert(joe);
 			db.get_table("cats").insert(merlin);
@@ -339,22 +355,25 @@ namespace dbmsTest
 			db.get_table("dogs").insert(fluffy);
 			db.get_table("dogs").insert(merlin);
 
-
+			//create correct output
 			table test("check", attribute_names, primary_key);
 			test.insert(fluffy);
 			test.insert(joe);
 			test.insert(parker);
 
+			//if tables are same, bool check == true
 			if (db.set_natural_join("animals", db.get_table("dogs"), db.get_table("cats")) == test)
 			{
 				check = true;
 			}
 
+			//if true, success
 			Assert::IsTrue(check);
 
 		}
 		TEST_METHOD(InsertionTest)
 		{
+			//initial setup of db
 			database db;
 			string name = "animals";
 			vector<string> attribute_names;
@@ -362,26 +381,31 @@ namespace dbmsTest
 			attribute_names.push_back("kind");
 			attribute_names.push_back("years");
 
+			//create primary keys for tables
 			vector<string> primary_key;
 			primary_key.push_back("name");
 			primary_key.push_back("kind");
 
-
+			//create objects to be added to table
 			vector<string> joe;
 			joe.push_back("joe");
 			joe.push_back("dog");
 			joe.push_back("4");
 
+			
 			vector<string> spot;
 			spot.push_back("spot");
 			spot.push_back("dog");
 			spot.push_back("6");
 
+			//create an exact copy of joe to test that
+			//no two exact entries can be added.
 			vector<string> duplicate;
 			duplicate.push_back("joe");
 			duplicate.push_back("dog");
 			duplicate.push_back("1");
 
+			//create table and add objects
 			db.create_table("dogs", attribute_names, primary_key);
 			db.get_table("dogs").insert(joe);
 			db.get_table("dogs").insert(spot);
