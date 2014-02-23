@@ -197,18 +197,12 @@ class Application{
 			cin >> table1;
 			return table1;
 		}
-		void initialize(){
-<<<<<<< HEAD
-			
+		void initialize(){	
 			string parsed_name;						//used for achievement, player, and game names
-=======
 			string parsed_inst;						//used for achievement, player, and game names
->>>>>>> APP, working on new table atm, no tsure of direction of app atm
 			string command;							//used to keep track of switch case
 			bool exit = false;
-
 			display_menu();
-
 			while (!exit){
 				cout << "What would you like to do=>" << endl;
 				cin >> command;
@@ -242,7 +236,7 @@ class Application{
 				else if (command == "SaveAndCLose<FILL>"){
 					parsed_inst = prompt_close();
 				}
-				else if (command == "Help"){		//works
+				else if (command == "Help"){	
 					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
 					display_detailed_menu();
 					continue;
@@ -257,13 +251,9 @@ class Application{
 				}
 				eval_input << parsed_inst;
 				cin.rdbuf(eval_input.rdbuf());
-<<<<<<< HEAD
-				p.evaluate_statement();
 
-=======
-				p.evaluate_statement(db);
+				p.evaluate_statement();
 				cin.ignore(numeric_limits<streamsize>::max(), '\n');
->>>>>>> APP, working on new table atm, no tsure of direction of app atm
 			}
 		}
 };
