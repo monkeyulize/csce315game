@@ -28,11 +28,12 @@ public:
 	conjunction_obj conjunction();
 	comparison_obj comparison();
 	int type();
-	std::pair<int, int> attr_type();
+	pair<int, int> attr_type();
 	typed_attribute typed_attribute_list();
-	std::vector<string> attribute_list();
-	std::vector<string> literal_list();
-	
+	vector<string> attribute_list();
+	vector<string> literal_list();
+	vector<string> split_on_spaces(string);
+
 	//commands	
 	table create_cmd();
 	std::string close_cmd();

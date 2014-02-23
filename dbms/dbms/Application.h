@@ -214,7 +214,7 @@ class Application{
 			string command;							//used to keep track of switch case
 			bool exit = false;
 			display_menu();
-			while (!exit){
+			while (1){
 				cout << "What would you like to do=>" << endl;
 				cin >> command;
 				stringstream eval_input;
@@ -264,7 +264,7 @@ class Application{
 				cin.rdbuf(eval_input.rdbuf());
 
 				p.evaluate_statement();
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+				cin.clear();
 			}
 		}
 };

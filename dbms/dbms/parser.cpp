@@ -780,7 +780,7 @@ void parser::exit_cmd() {
 
 
 }
-vector<string> split_on_spaces(string str) {
+vector<string> parser::split_on_spaces(string str) {
 	istringstream iss(str);
 	string s;
 	vector<string> result;
@@ -821,7 +821,7 @@ void parser::open_cmd() {
 		}
 		myfile.close();
 	}
-	else cout << "Unable to open file";
+	else cout << "Unable to open file" << endl;
 
 }
 void parser::write_cmd() {
