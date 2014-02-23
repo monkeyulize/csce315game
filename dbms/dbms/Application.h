@@ -46,7 +46,7 @@ class Application{
 			cout << "        Exit(To terminate)	: Terminates Application    								" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 		}
-		void prompt_add(){
+		string prompt_add(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to add to?                          	" << endl;
@@ -54,8 +54,9 @@ class Application{
 			print_tables();
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
+			return table1;
 		}
-		void prompt_combine(){
+		string prompt_combine(){
 			string table1, table2;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
@@ -65,8 +66,9 @@ class Application{
 			cin >> table1;
 			cout << "----------Enter the second tables name----------------------------------------------------------" << endl;
 			cin >> table2;
+			return "test";
 		}
-		void prompt_remove(){
+		string prompt_remove(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to remove from?                          	" << endl;
@@ -74,8 +76,9 @@ class Application{
 			print_tables();
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
+			return table1;
 		}
-		void prompt_display(){
+		string prompt_display(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> do you want to display				                        	" << endl;
@@ -83,15 +86,17 @@ class Application{
 			print_tables();
 			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
 			cin >> table1;
+			return table1;
 		}
-		void prompt_new_table(){
+		string prompt_new_table(){
 			string table1, table2;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        What is the name of the new <Fill> Collection		                         	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cin >> table1;
+			return table1;
 		}
-		void prompt_save(){
+		string prompt_save(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "				 Which <Fill> would you like to save?                  					" << endl;
@@ -99,15 +104,17 @@ class Application{
 			print_tables();
 			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
+			return table1;
 		}
-		void prompt_open(){
+		string prompt_open(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        What is the name of the <Fill> you would like to open?                       	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cin >> table1;
+			return table1;
 		}
-		void prompt_close(){
+		string prompt_close(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <Fill> would you like to save and close?                          					" << endl;
@@ -115,6 +122,7 @@ class Application{
 			print_tables();
 			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
 			cin >> table1;
+			return table1;
 		}
 		void initialize(){
 			string parsed_name;						//used for achievement, player, and game names
@@ -126,42 +134,51 @@ class Application{
 			while (!exit){
 				cout << "What would you like to do=>" << endl;
 				cin >> command;
-
+				stringstream eval_input;
+				eval_input.clear();
+				eval_input.str(string());
+				
+				
 				if (command == "Add<FILL>"){
-					prompt_add();
+					eval_input << prompt_add();
 				}
 				else if (command == "Remove<FILL>"){
-					prompt_remove();
+					eval_input << prompt_remove();
 				}
 				else if (command == "Combine"){
-					prompt_combine();
+					eval_input << prompt_combine();
 				}
 				else if (command == "Display<FILL>"){
-					prompt_display();
+					eval_input << prompt_display();
 				}
 				else if (command == "New<FILL>Collection"){
-					prompt_new_table();
+					eval_input << prompt_new_table();
 				}
 				else if (command == "Save<FILL>"){
-					prompt_save();
+					eval_input << prompt_save();
 				}
 				else if (command == "Open<FILL>"){
-					prompt_open();
+					eval_input << prompt_open();
 				}
 				else if (command == "SaveAndCLose<FILL>"){
-					prompt_close();
+					eval_input << prompt_close();
 				}
 				else if (command == "Help"){		//works
 					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
 					display_detailed_menu();
+					continue;
 				}
 				else if (command == "Exit"){
-					p.exit_cmd();
+					eval_input << "EXIT";
 				}
 				else{
 					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
 					display_detailed_menu();
+					continue;
 				}
+
+				cin.rdbuf(eval_input.rdbuf());
+				p.evaluate_statement(db);
 
 			}
 		}
