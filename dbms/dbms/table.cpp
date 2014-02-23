@@ -22,10 +22,12 @@ void table::insert(vector<string> _field_values) {
 	vector<bool> found;
 	bool present = true;
 
+	//fill e with field values
 	for (int i = 0; i < _field_values.size(); i++){
 		e.set_attribute(attribute_names[i], _field_values[i]);
 	}
 
+	//checks entity values from entity_table against entity's values using primary key
 	for (int i = 0; i < primary_key.size(); i++){
 		found.push_back(false);
 		for (int j = 0; j < entity_table.size(); j++){
@@ -35,16 +37,18 @@ void table::insert(vector<string> _field_values) {
 		}
 	}
 
+	//checks if found
 	for (int k = 0; k < found.size(); k++){
 		if (found[k] == false){
 			present = false;
 		}
 	}
-
+	//if not found, push into table
 	if (present == false){
 		entity_table.push_back(e);
 	}
 
+	//if found, print out message
 	if (present){
 		cout << "Duplicate entity detected. Insert FAILED." << endl;
 	}
@@ -55,12 +59,15 @@ void table::insert(vector<string> _field_values) {
 //prints table for user
 void table::display_table() {
 	cout << name << endl;
+
+	//print out attribute names
 	for(int i = 0; i < attribute_names.size(); i++){
 		cout << attribute_names[i] << '\t';
 	}
 	
 	cout << endl;
 	
+	//print out field values
 	for(int i = 0; i < entity_table.size(); i++){		
 		entity_table[i].show_attributes(attribute_names);
 		cout << endl;
@@ -105,6 +112,7 @@ void table::delete_from(condition_obj condit) {
 	}
 }
 
+//converts string to all lowercase
 string toLower(string s) {
 	string temp;
 	for (int i = 0; i < s.size(); i++) {
@@ -112,6 +120,8 @@ string toLower(string s) {
 	}
 	return temp;
 }
+
+
 bool do_comparison(string oper1, string op, string oper2) {
 	int d_oper1, d_oper2;
 	int integer_op_flag = 0;
