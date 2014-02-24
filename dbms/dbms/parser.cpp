@@ -890,7 +890,7 @@ void parser::evaluate_statement(){
 				exit_cmd();
 			}
 			else if (key_word == "CLOSE") {
-				db_ptr->add_table(db_ptr->get_table(close_cmd())); 
+				db_ptr->delete_table(db_ptr->get_table(close_cmd())); 
 				t = ts.get();
 			}
 			else if (key_word == "UPDATE") {
