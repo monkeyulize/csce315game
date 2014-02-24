@@ -421,6 +421,8 @@ vector<string> parser::literal_list() {
 			break;
 		case '8':
 			list.push_back(to_string(t.value));
+			t = ts.get();
+			break;
 		case ')':
 			return list;
 		}
