@@ -7,8 +7,12 @@
 
 class table {
 private:
-	string name;	//stores name of table
+
+	//stores name of table
+	string name;	
+
 public:
+
 	//storage variables
 	vector<entity> entity_table;				//stores tuples
 	vector<string> attribute_names;				//stores column titles
@@ -27,6 +31,7 @@ public:
 	}
 	void set_attr_names(vector<string> _attribute_names);
 	void set_pri_key(vector<string> _primary_key);
+
 	//accessor function
 	string get_name() {
 		return name;
@@ -59,18 +64,32 @@ public:
 };
 
 inline bool table::operator == (const table& t2) {
-	if (name != t2.name) {
+	
+	//table name check
+	if (name != t2.name) 
+	{
 		return false;
 	}
-	if (entity_table != t2.entity_table) {
+
+	//table equality check
+	if (entity_table != t2.entity_table) 
+	{
 		return false;
 	}
-	if (primary_key != t2.primary_key) {
+
+	//table's primary key check
+	if (primary_key != t2.primary_key) 
+	{
 		return false;
 	}
-	if (attribute_names != t2.attribute_names) {
+
+	//table's attribute name check
+	if (attribute_names != t2.attribute_names) 
+	{
 		return false;
 	}
+
+	//tables are the same
 	return true;
 
 }
