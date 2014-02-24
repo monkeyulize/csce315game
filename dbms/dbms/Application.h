@@ -215,12 +215,16 @@ class Application{
 			return "CLOSE " + table1;
 		}
 		void initialize(){	
+			streambuf * buf = cin.rdbuf();
 			string parsed_inst;						//used for achievement, player, and game names
 			string command;							//used to keep track of switch case
 			bool exit = false;
 			display_menu();
 			while (1){
+				command = "test3";
 				cout << "What would you like to do=>" << endl;
+				cin.clear();
+				cin.rdbuf(buf);
 				cin >> command;
 				stringstream eval_input;
 				eval_input.clear();
@@ -266,12 +270,8 @@ class Application{
 					continue;
 				}
 				eval_input << parsed_inst;
-				cout << eval_input.rdbuf()<<endl;
 				cin.rdbuf(eval_input.rdbuf());
-
 				p.evaluate_statement();
-				cin.clear();
-				cin.ignore(10000, '\n');
 			}
 		}
 };
