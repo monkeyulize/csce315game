@@ -102,6 +102,9 @@ class Application{
 				else if (conj[i] == "less"){
 					ss << "<";
 				}
+				if (isalpha(literals[i][0])){		//value is a varchar
+					literals[i] = '"' + literals[i] + '"';
+				}
 				ss << literals[i];
 
 				if (i < split_list.size() - 1){
