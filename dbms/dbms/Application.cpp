@@ -139,7 +139,7 @@ string Application::prompt_reattributes(){
 	cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	getline(cin, attr_list); //delimited by spaces
 	split_list = split_on_spaces(attr_list);
-
+	
 	ss << " (";
 	for (int i = 0; i < split_list.size(); i++){
 		ss << split_list[i];
@@ -314,9 +314,13 @@ string Application::prompt_filter(){
 	return ss.str();
 }
 string Application::prompt_rename(){
+	string view;
 	string table1;
 	stringstream ss;
 	string attributes = "";
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "        What would you like to call this renamed collection?                         	" << endl;
+	cin >> view;
 	cout << "-------------------------------------------------------------------------------		" << endl;
 	cout << "	     Which <Fill> would you like to rename the descriptors of?    					" << endl;
 	cout << "-------------------------------------------------------------------------------		" << endl;
@@ -324,7 +328,7 @@ string Application::prompt_rename(){
 	cout << "----------Enter the Tables name -----------------------------------------------		" << endl;
 	cin >> table1;
 	attributes = prompt_reattributes();
-	ss << table1 << " <-" << " rename " << attributes;
+	ss << view << " <-" << " rename " << attributes << table1;
 	cout << ss.str() << endl;
 	return ss.str();
 }

@@ -125,6 +125,7 @@ class Application{
 			cout << "----------Enter the tables name------------------------------------------------" << endl;
 			cin >> table1;
 			string condition = prompt_condition(table1);
+			condition = condition.substr(2, condition.size() - 4);
 			ss << "DELETE FROM " << table1 << " WHERE " << condition;
 			cout << ss.str();
 			return ss.str();
