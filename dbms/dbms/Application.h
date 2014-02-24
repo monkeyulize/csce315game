@@ -7,35 +7,44 @@ class Application{
 		parser * p;
 	public:
 		Application(database& _db, parser& _p) { db = &_db; p = &_p; }
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//											Display Functions
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 		void print_tables();
 		void print_size();
 		void display_menu();
 		void display_detailed_menu();
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//											Helper Functions
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
-		vector<string> split_on_spaces(string str) {
+		
+		vector<string> split_on_spaces(string str) 
+		{
 			istringstream iss(str);
 			string s;
 			vector<string> result;
 
-			while (getline(iss, s, ' ')){
+			while (getline(iss, s, ' '))
+			{
 				result.push_back(s.c_str());
 			}
 
 			return result;
 		}
+
 		string prompt_tuple(string name);
 		string prompt_primary();
 		string prompt_type(string attr);
 		string prompt_attributes();
 		string prompt_reattributes();
+
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//											Query Functions
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		string prompt_select(string name);
 		string prompt_project(string name);
 		string prompt_filter();
@@ -51,7 +60,9 @@ class Application{
 			cin >> table2;
 			return "test";
 		}
-		string prompt_condition(string name){
+
+		string prompt_condition(string name)
+		{
 
 			vector<string> split_list;		//full command split into a vector of attributes names
 			vector<string> literals;		//strings containing &&, or, or ==, each pairing with a key specified
@@ -64,9 +75,11 @@ class Application{
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "What descriptors do you want to check against?" << endl;
 			cout << "choices:  	";
-			for (int j = 0; j < table_attr_list.size(); j++){
+			for (int j = 0; j < table_attr_list.size(); j++)
+			{
 				cout << table_attr_list[j]<<" ";
 			}
+
 			cout << endl;
 
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -76,7 +89,8 @@ class Application{
 
 			cout << "-------------------------------------------------------------------------------		" << endl;
 
-			for (int i = 0; i < split_list.size(); i++){
+			for (int i = 0; i < split_list.size(); i++)
+			{
 				cout << "For " << split_list[i] << ", what value do you want to compare to?" << endl;
 				cin >> value;
 				literals.push_back(value);
@@ -88,26 +102,39 @@ class Application{
 
 
 			ss << " (";
-			for (int i = 0; i < split_list.size(); i++){
+			for (int i = 0; i < split_list.size(); i++)
+			{
 				ss << split_list[i];
-				if (conj[i] == "equal"){
+
+				if (conj[i] == "equal")
+				{
 					ss << "==";
 				}
-				else if (conj[i] == "nequal"){
+
+				else if (conj[i] == "nequal")
+				{
 					ss << "!=";
 				}
-				else if (conj[i] == "greater"){
+
+				else if (conj[i] == "greater")
+				{
 					ss << ">";
 				}
-				else if (conj[i] == "less"){
+
+				else if (conj[i] == "less")
+				{
 					ss << "<";
 				}
-				if (isalpha(literals[i][0])){		//value is a varchar
+
+				if (isalpha(literals[i][0]))
+				{		//value is a varchar
 					literals[i] = '"' + literals[i] + '"';
 				}
+
 				ss << literals[i];
 
-				if (i < split_list.size() - 1){
+				if (i < split_list.size() - 1)
+				{
 					ss << " && ";
 				}
 
@@ -115,23 +142,28 @@ class Application{
 			ss << ") ";
 			return ss.str();
 		}
-		string prompt_remove(){
+		string prompt_remove()
+		{
 			string table1;
 			stringstream ss;
+
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "        Which <FILL> would you like to remove from?      	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
 			cout << "----------Enter the tables name------------------------------------------------" << endl;
 			cin >> table1;
+
 			string condition = prompt_condition(table1);
 			condition = condition.substr(2, condition.size() - 4);
 			ss << "DELETE FROM " << table1 << " WHERE " << condition;
 			cout << ss.str();
 			return ss.str();
 		}
+
 		string prompt_rename();
-		string prompt_update(){
+		string prompt_update()
+		{
 			string table1;
 			stringstream ss;
 			cout << "-------------------------------------------------------------------------------		" << endl;
@@ -144,17 +176,21 @@ class Application{
 			ss << "REMOVE FROM " << table1 << " VALUES FROM " << attributes;
 			return ss.str();
 		}
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//											Command Functions
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		string prompt_add();
 		string prompt_new_table();
 		string prompt_save();
 		string prompt_open();
 		string prompt_close();
 		string prompt_display();
+		
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//									MAIN INITIALIZATION FUNCTION
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		void initialize();
 };
