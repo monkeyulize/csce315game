@@ -593,7 +593,7 @@ string parser::close_cmd() {
 
 	for (int i = 0; i < tble.entity_table.size(); i++){
 		for (int j = 0; j <tble.attribute_names.size(); j++){
-			myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << '\t';
+			myfile << tble.entity_table[i].attributes[tble.attribute_names[j]] << ' ';
 		}
 		myfile << endl;
 	}
