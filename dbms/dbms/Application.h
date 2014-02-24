@@ -100,7 +100,6 @@ class Application{
 			cin >> table1;
 			string attributes = prompt_tuple(table1);
 			ss << "INSERT INTO " << table1 << " VALUES FROM " << attributes;
-			cout << ss.str() << endl;
 			return ss.str();
 		}
 		string prompt_combine(){
@@ -118,12 +117,106 @@ class Application{
 		string prompt_remove(){
 			string table1;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			cout << "        Which <Fill> would you like to remove from?                          	" << endl;
+			cout << "        From which <Fill> would you like to remove?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
 			cout << "----------Enter the first tables name-----------------------------------------" << endl;
 			cin >> table1;
 			return table1;
+		}
+		string prompt_rename(){
+			string table1;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "        From which <Fill> would you like to remove?                          	" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			print_tables();
+			cout << "----------Enter the first tables name-----------------------------------------" << endl;
+			cin >> table1;
+			return table1;
+		}
+		string prompt_update(){
+			string table1;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "        From which <Fill> would you like to remove?                          	" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			print_tables();
+			cout << "----------Enter the first tables name-----------------------------------------" << endl;
+			cin >> table1;
+			return table1;
+		}
+		string prompt_select(string name){
+			string table1;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "        From which <Fill> would you like to remove?                          	" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			print_tables();
+			cout << "----------Enter the first tables name-----------------------------------------" << endl;
+			cin >> table1;
+			return table1;
+		}
+		string prompt_project(string name){
+			string attr_list;			//full command of space delimited attributes
+			vector<string> split_list;		//full command split into a vector of attributes names
+			stringstream ss;		//used for final return including braces and brackets
+			vector <string> table_attr_list = db->get_table(name).attribute_names;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "What descriptors in " << name << " would you like to filter by?  " << endl;
+			cout << "Enter all to filter by seperated by spaces i.e. \"name age color\" without quotes." << endl;
+			
+			for (int i = 0; i < table_attr_list.size(); i++){				//print out the attribute list
+				cout << table_attr_list[i]<<" ";
+			}
+			cout << endl;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			getline(cin, attr_list); 							//delimited by spaces
+			split_list = split_on_spaces(attr_list);
+			
+			ss << " (";
+			for (int i = 0; i < split_list.size(); i++){
+				ss << split_list[i];
+				if (i < split_list.size() - 1){
+					ss << ", ";
+				}
+			}
+			ss << ")";
+			cout << ss.str();
+			return ss.str();
+		}
+		string prompt_filter(){
+			string table1, view;	//name of both tables, table1 for existing, view for new name
+			string filter;		//the value entered by user to define project or select
+			string elements;		//can be attributes or a tuple
+			stringstream ss;
+			
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "        From which <Fill> would you like to filter?                          			" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			print_tables();
+			
+			cout << "----------Enter the tables name------------------------------------------------		" << endl;
+			cin >> table1;
+			
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "        What would you like to call this filtered collection?                         	" << endl;
+			cin >> view;
+			
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "        How would you like to filter "<<table1 <<"                         			" << endl;
+			cout << "Filter by description(name, age) or by values (name is bob)                        	" << endl;
+			cout << "Enter \"Description\" or \"value\" without the parentheses                      		" << endl;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cin >> filter;
+			
+			if (filter == "Description"){
+				filter = "project";
+				elements = prompt_project(table1);
+			}
+			else if (filter == "Value"){
+				filter = "select";
+				elements = prompt_select(table1);
+			}
+			ss << view <<" <- " << filter << elements << table1;
+			return ss.str();
 		}
 		string prompt_display(){
 			string table1;
@@ -291,11 +384,8 @@ class Application{
 				else if (command == "SaveAndClose<FILL>"){
 					parsed_inst = prompt_close();
 				}
-				else if (command == "Update<FILL>"){
-					parsed_inst = prompt_close();
-				}
-				else if (command == "select<FILL>"){
-					parsed_inst = prompt_close();
+				else if (command == "Filter<FILL>"){
+					parsed_inst = prompt_filter();
 				}
 				else if (command == "Help"){	
 					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
