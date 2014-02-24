@@ -449,6 +449,8 @@ void parser::insert_cmd()  {
 			break;
 		}
 	}
+	for (int i = 0; i < literals.size(); i++)
+		cout << "literals "<<i<<literals[i] << endl;
 	db_ptr->get_table(name).insert(literals);
 }
 //update entities that meet some condition with set values

@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <cctype>
 
 class Application{
 	private:
@@ -42,8 +43,8 @@ class Application{
 			cout << "        Display<FILL> : Display the contents of a collection with specified 			" << endl;
 			cout << "		                 name.		"                                                     << endl;
 			cout << "        New<FILL>Collection : Creates a new collection of <Fills> 						" << endl;
-			cout << "        Save<FILL>    :	Saves values to a file for future reading						" << endl;
-			cout << "        Open<FILL>    : Opens and reads from a file a <Fill>       						" << endl;
+			cout << "        Save<FILL> : Saves values to a file for future reading						" << endl;
+			cout << "        Open<FILL> : Opens and reads from a file a <Fill>       						" << endl;
 			cout << "        SaveAndClose<FILL> : Closes and saves values to a file 						" << endl;
 			cout << "        Help          :	You should know you are here, but it prints						" << endl;
 			cout << "    					detailed description of each instruction						" << endl;
@@ -61,15 +62,46 @@ class Application{
 
 			return result;
 		}
+		string prompt_tuple(string name){
+			string attribute;			//full command of space delimited attributes
+			vector<string> split_list;		//full command split into a vector of attributes names
+			stringstream ss;		//used for final return including braces and brackets
+			vector <string> table_attr_list = db->get_table(name).attribute_names;
+			cout << "-------------------------------------------------------------------------------		" << endl;
+			cout << "What values would you like for ";
+			for (int i = 0; i < table_attr_list.size(); i++){
+				cout << table_attr_list[i]<<"?"<<endl;
+				cin >> attribute;
+				split_list.push_back(attribute);
+			}
+			
+			ss << " (";
+			for (int i = 0; i < split_list.size(); i++){
+				if (isalpha(split_list[i][0])){		//value is a varchar
+					split_list[i] = '"' + split_list[i] + '"';
+				}
+				ss << split_list[i];
+				if (i < split_list.size() - 1){
+					ss << ", ";
+				}
+
+			}
+			ss << ")";
+			return ss.str();
+		}
 		string prompt_add(){
 			string table1;
+			stringstream ss;
 			cout << "-------------------------------------------------------------------------------		" << endl;
-			cout << "        Which <Fill> would you like to add to?                          	" << endl;
+			cout << "        Which <FILL> would you like to add to?      	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the first tables name------------------------------------------" << endl;
+			cout << "----------Enter the tables name------------------------------------------------" << endl;
 			cin >> table1;
-			return table1;
+			string attributes = prompt_tuple(table1);
+			ss << "INSERT INTO " << table1 << " VALUES FROM " << attributes;
+			cout << ss.str() << endl;
+			return ss.str();
 		}
 		string prompt_combine(){
 			string table1, table2;
@@ -135,7 +167,7 @@ class Application{
 			cout << "i.e. color is a word such as blue or green, age would be a number like 3" << endl;
 			cin >> type;
 			if (type == "word"){
-				cout << "-------------------------------------------------------------------------------		" << endl;
+				cout << "---------------------------------------------------------------------------		" << endl;
 				cout << "What is the maximum length " << attr << " can have?" << endl; 
 				cout << "i.e. name can only be 8 letters long" << endl;
 				cin >> length;
@@ -196,7 +228,7 @@ class Application{
 			cout << "				 Which <Fill> would you like to save?                  					" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
+			cout << "----------Enter the Tables name -----------------------------------------------" << endl;
 			cin >> table1;
 			return "WRITE " + table1;
 		}
@@ -214,7 +246,7 @@ class Application{
 			cout << "        Which <Fill> would you like to save and close?                          					" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the Tables name -------------------------------------------------------" << endl;
+			cout << "----------Enter the Tables name -----------------------------------------------" << endl;
 			cin >> table1;
 			return "CLOSE " + table1;
 		}
@@ -259,6 +291,12 @@ class Application{
 				else if (command == "SaveAndClose<FILL>"){
 					parsed_inst = prompt_close();
 				}
+				else if (command == "Update<FILL>"){
+					parsed_inst = prompt_close();
+				}
+				else if (command == "select<FILL>"){
+					parsed_inst = prompt_close();
+				}
 				else if (command == "Help"){	
 					cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
 					display_detailed_menu();
@@ -272,11 +310,9 @@ class Application{
 					display_detailed_menu();
 					continue;
 				}
-				print_size();
 				eval_input << parsed_inst;
 				cin.rdbuf(eval_input.rdbuf());
 				p->evaluate_statement();
-				print_size();
 			}
 		}
 };
