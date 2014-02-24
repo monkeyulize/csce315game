@@ -535,6 +535,7 @@ table parser::create_cmd() {
 		}
 	}
 	table temp(name, ta_list.list, primary_key_list);
+	cout << "table created succesfully" << endl;
 	return temp;
 }
 //calls display function on a table name
@@ -580,13 +581,13 @@ string parser::close_cmd() {
 	tble = db_ptr->get_table(name);
 
 	for (int i = 0; i < tble.attribute_names.size(); i++){
-		myfile << tble.attribute_names[i] << '\t';
+		myfile << tble.attribute_names[i] << ' ';
 	}
 
 	myfile << endl;
 
 	for (int i = 0; i < tble.primary_key.size(); i++){
-		myfile << tble.primary_key[i] << '\t';
+		myfile << tble.primary_key[i] << ' ';
 	}
 	myfile << endl;
 
@@ -817,6 +818,7 @@ void parser::open_cmd() {
 		db_ptr->create_table(tbl_name, attr_list, prmy_key);
 		while (getline(myfile, line))
 		{
+			cout << line << endl;
 			db_ptr->get_table(name).insert(split_on_spaces(line));
 		}
 		myfile.close();
@@ -843,12 +845,12 @@ void parser::write_cmd() {
 	}
 
 	for (int i = 0; i < tble.attribute_names.size(); i++){
-		myfile << tble.attribute_names[i] << '\t';
+		myfile << tble.attribute_names[i] << ' ';
 	}
 
 	myfile << endl;
 	for (int i = 0; i < tble.primary_key.size(); i++){
-		myfile << tble.primary_key[i] << '\t';
+		myfile << tble.primary_key[i] << ' ';
 	}
 	myfile << endl;
 	for (int i = 0; i < tble.entity_table.size(); i++){
@@ -888,7 +890,7 @@ void parser::evaluate_statement(){
 				exit_cmd();
 			}
 			else if (key_word == "CLOSE") {
-				close_cmd();
+				db_ptr->add_table(db_ptr->get_table(close_cmd())); 
 				t = ts.get();
 			}
 			else if (key_word == "UPDATE") {

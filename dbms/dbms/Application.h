@@ -2,17 +2,17 @@
 
 class Application{
 	private:
-		database db;
-		parser p;
+		database * db;
+		parser * p;
 	public:
-		Application(database& _db, parser& _p) { db = _db; p = _p; }
+		Application(database& _db, parser& _p) { db = &_db; p = &_p; }
 		void print_tables(){
-			for (int i = 0; i < db.get_tables_vector().size(); i++){
-				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name() << endl;
+			for (int i = 0; i < db->get_tables_vector().size(); i++){
+				cout << "Table " << i+1 << ": " << db->get_tables_vector()[i].get_name() << endl;
 			}
 		}
 		void print_size(){
-			cout<<db.get_tables_vector().size();
+			cout<<db->get_tables_vector().size();
 		}
 		void display_menu(){
 			cout << "-------------------------------------------------------------------------------		" << endl;
@@ -25,7 +25,7 @@ class Application{
 			cout << "                                   New<FILL>Collection                  				" << endl;
 			cout << "                                        Save<FILL>										" << endl;
 			cout << "                                        Open<FILL>               						" << endl;
-			cout << "                                     SaveAndCLose<FILL>								" << endl;
+			cout << "                                     SaveAndClose<FILL>								" << endl;
 			cout << "                                     Help(For testing)									" << endl;
 			cout << "                                     Exit(To terminate)								" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
@@ -44,7 +44,7 @@ class Application{
 			cout << "        New<FILL>Collection : Creates a new collection of <Fills> 						" << endl;
 			cout << "        Save<FILL>    :	Saves values to a file for future reading						" << endl;
 			cout << "        Open<FILL>    : Opens and reads from a file a <Fill>       						" << endl;
-			cout << "        SaveAndCLose<FILL> : Closes and saves values to a file 						" << endl;
+			cout << "        SaveAndClose<FILL> : Closes and saves values to a file 						" << endl;
 			cout << "        Help          :	You should know you are here, but it prints						" << endl;
 			cout << "    					detailed description of each instruction						" << endl;
 			cout << "        Exit(To terminate)	: Terminates Application    								" << endl;
@@ -256,7 +256,7 @@ class Application{
 				else if (command == "Open<FILL>"){
 					parsed_inst = prompt_open();
 				}
-				else if (command == "SaveAndCLose<FILL>"){
+				else if (command == "SaveAndClose<FILL>"){
 					parsed_inst = prompt_close();
 				}
 				else if (command == "Help"){	
@@ -275,7 +275,7 @@ class Application{
 				print_size();
 				eval_input << parsed_inst;
 				cin.rdbuf(eval_input.rdbuf());
-				p.evaluate_statement();
+				p->evaluate_statement();
 				print_size();
 			}
 		}
