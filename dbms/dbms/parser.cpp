@@ -35,6 +35,7 @@ string parser::identifier() {
 			break;
 		case '7':
 			ts.putback(t);
+
 			if (quote_counter < 2 && quote_counter >= 1) {
 				id += alpha();
 				t = ts.get();
@@ -385,10 +386,16 @@ vector<string> parser::attribute_list() {
 	vector<string> list;
 	string attr;
 	Token t = ts.get();
-	ts.putback(t);
+	if (t.kind != '"') {
+		ts.putback(t);
+	}	
 	while (1) {
 		switch (t.kind) {
+		case '"':
+			t = ts.get();
+			break;
 		case '9':
+			ts.putback(t);
 			attr = attribute_name();
 			t = ts.get();
 			break;
@@ -398,6 +405,7 @@ vector<string> parser::attribute_list() {
 			ts.putback(t);
 			break;
 		case ')':
+			ts.putback(t);
 			list.push_back(attr);
 			return list;
 		}
