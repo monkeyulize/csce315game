@@ -181,6 +181,14 @@ string Application::prompt_tuple(string name){
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //											Query Functions
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
+bool check_if_string(string s) {
+	for (int i = 0; i < s.size(); i++) {
+		if (!isalpha(s.at(i))) {
+			return false;
+		}
+	}
+	return true;
+}
 
 string Application::prompt_select(string name){
 
@@ -205,6 +213,9 @@ string Application::prompt_select(string name){
 	for (int i = 0; i < split_list.size(); i++){
 		cout << "For " << split_list[i] << ", what value do you want to compare to?" << endl;
 		cin >> value;
+		if (check_if_string(value)) {
+			value = '"' + value + '"';
+		}
 		literals.push_back(value);
 		cout << "For " << split_list[i] << ", Do want want values lower, equal to, not equal, or greater?" << endl;
 		cout << "Enter \"less\", \"equal\",\"nequal\", or \"greater\".	  	" << endl;
@@ -448,6 +459,7 @@ void Application::initialize(){
 			display_detailed_menu();
 			continue;
 		}
+		parsed_inst = parsed_inst + ';';
 		eval_input << parsed_inst;
 		cin.rdbuf(eval_input.rdbuf());
 		p->evaluate_statement();
