@@ -25,6 +25,7 @@ void Application::display_menu(){
 	cout << "                                        Open<FILL>               						" << endl;
 	cout << "                                     SaveAndClose<FILL>								" << endl;
 	cout << "                                     Help(For testing)									" << endl;
+	cout << "                                       Rename<FILL>									" << endl;
 	cout << "                                       Filter<FILL>									" << endl;
 	cout << "                                     Exit(To terminate)								" << endl;
 	cout << "-------------------------------------------------------------------------------		" << endl;
@@ -40,6 +41,7 @@ void Application::display_detailed_menu(){
 	cout << "                       Add, Cross, Difference." << endl;
 	cout << "        Display<FILL> : Display the contents of a collection with specified 			" << endl;
 	cout << "		                 name.		" << endl;
+	cout << "        Rename<FILL>  : Renames a <FILL> to users specifications						" << endl;
 	cout << "        New<FILL>Collection : Creates a new collection of <Fills> 						" << endl;
 	cout << "        Save<FILL> : Saves values to a file for future readi	ng						" << endl;
 	cout << "        Open<FILL> : Opens and reads from a file a <Fill>       						" << endl;
@@ -51,7 +53,9 @@ void Application::display_detailed_menu(){
 	cout << "-------------------------------------------------------------------------------		" << endl;
 }
 
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//											Helper Functions
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
 string Application::prompt_primary(){
 	string attr_list;			//full command of space delimited primary keys
 	vector<string> split_list;		//full command of primary keys in vector
@@ -125,6 +129,28 @@ string Application::prompt_attributes(){
 	ss << ")";
 	return ss.str();
 }
+string Application::prompt_reattributes(){
+	string attr_list;			//full command of space delimited attributes
+	vector<string> split_list;		//full command split into a vector of attributes names
+	stringstream ss;		//used for final return including braces and brackets
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "What descriptions do you want your collection's current ones renamed to?" << endl;
+	cout << "i.e. name age color statistics	  	" << endl;
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	getline(cin, attr_list); //delimited by spaces
+	split_list = split_on_spaces(attr_list);
+
+	ss << " (";
+	for (int i = 0; i < split_list.size(); i++){
+		ss << split_list[i];
+		if (i < split_list.size() - 1){
+			ss << ", ";
+		}
+
+	}
+	ss << ")";
+	return ss.str();
+}
 string Application::prompt_tuple(string name){
 	string attribute;			//full command of space delimited attributes
 	vector<string> split_list;		//full command split into a vector of attributes names
@@ -150,6 +176,145 @@ string Application::prompt_tuple(string name){
 
 	}
 	ss << ")";
+	return ss.str();
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//											Query Functions
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+string Application::prompt_select(string name){
+
+	vector<string> split_list;		//full command split into a vector of attributes names
+	vector<string> literals;		//strings containing &&, or, or ==, each pairing with a key specified
+	vector<string> conj;		//strings containing &&, or, or ==, each pairing with a key specified
+	string attr_list;			//full command of space delimited attributes
+	string conjugate;					//value contianing equals, not equals, greater than, or less than
+	string value;				//value to compare a attribute to
+	stringstream ss;		//used for final return including braces and brackets
+	vector <string> table_attr_list = db->get_table(name).attribute_names;
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "What descriptors do you want to filter your collection by?" << endl;
+	cout << "i.e. name age color statistics	  	" << endl;
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	getline(cin, attr_list); //delimited by spaces					//grabs whole line to split up
+	split_list = split_on_spaces(attr_list);				//now has a vector of strings
+
+
+	cout << "-------------------------------------------------------------------------------		" << endl;
+
+	for (int i = 0; i < split_list.size(); i++){
+		cout << "For " << split_list[i] << ", what value do you want to compare to?" << endl;
+		cin >> value;
+		literals.push_back(value);
+		cout << "For " << split_list[i] << ", Do want want values lower, equal to, not equal, or greater?" << endl;
+		cout << "Enter \"less\", \"equal\",\"nequal\", or \"greater\".	  	" << endl;
+		cin >> conjugate;
+		conj.push_back(conjugate);
+	}
+
+
+	ss << " (";
+	for (int i = 0; i < split_list.size(); i++){
+		ss << split_list[i];
+		if (conj[i] == "equal"){
+			ss << "==";
+		}
+		else if (conj[i] == "nequal"){
+			ss << "!=";
+		}
+		else if (conj[i] == "greater"){
+			ss << ">";
+		}
+		else if (conj[i] == "less"){
+			ss << "<";
+		}
+		ss << literals[i];
+
+		if (i < split_list.size() - 1){
+			ss << " && ";
+		}
+
+	}
+	ss << ") ";
+	return ss.str();
+}
+string Application::prompt_project(string name){
+	string attr_list;			//full command of space delimited attributes
+	vector<string> split_list;		//full command split into a vector of attributes names
+	stringstream ss;		//used for final return including braces and brackets
+	vector <string> table_attr_list = db->get_table(name).attribute_names;
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "What descriptors in " << name << " would you like to filter by?  " << endl;
+	cout << "Enter all to filter by seperated by spaces i.e. \"name age color\" without quotes." << endl;
+
+	for (int i = 0; i < table_attr_list.size(); i++){				//print out the attribute list
+		cout << table_attr_list[i] << " ";
+	}
+	cout << endl;
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	getline(cin, attr_list); 							//delimited by spaces
+	split_list = split_on_spaces(attr_list);
+
+	ss << " (";
+	for (int i = 0; i < split_list.size(); i++){
+		ss << split_list[i];
+		if (i < split_list.size() - 1){
+			ss << ", ";
+		}
+	}
+	ss << ") ";
+	return ss.str();
+}
+string Application::prompt_filter(){
+	string table1, view;	//name of both tables, table1 for existing, view for new name
+	string filter;		//the value entered by user to define project or select
+	string elements;		//can be attributes or a tuple
+	stringstream ss;
+
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "        From which <Fill> would you like to filter?                          			" << endl;
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	print_tables();
+
+	cout << "----------Enter the tables name------------------------------------------------		" << endl;
+	cin >> table1;
+
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "        What would you like to call this filtered collection?                         	" << endl;
+	cin >> view;
+
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "        How would you like to filter " << table1 << "                         			" << endl;
+	cout << "Filter by description(name, age) or by values (name is bob)                        	" << endl;
+	cout << "Enter \"Description\" or \"Value\" without the parentheses                      		" << endl;
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cin >> filter;
+
+	if (filter == "Description"){
+		filter = "project";
+		elements = prompt_project(table1);
+	}
+	else if (filter == "Value"){
+		filter = "select";
+		elements = prompt_select(table1);
+	}
+	ss << view << " <- " << filter << elements << table1;
+	cout << ss.str();
+	return ss.str();
+}
+string Application::prompt_rename(){
+	string table1;
+	stringstream ss;
+	string attributes = "";
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	cout << "	     Which <Fill> would you like to rename the descriptors of?    					" << endl;
+	cout << "-------------------------------------------------------------------------------		" << endl;
+	print_tables();
+	cout << "----------Enter the Tables name -----------------------------------------------		" << endl;
+	cin >> table1;
+	attributes = prompt_reattributes();
+	ss << table1 << " <-" << " rename " << attributes;
+	cout << ss.str() << endl;
 	return ss.str();
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,6 +436,9 @@ void Application::initialize(){
 			cout << "Type In The Keyword Of The Action You Would Like To Perform." << endl;
 			display_detailed_menu();
 			continue;
+		}
+		else if (command == "Rename<FILL>"){
+			parsed_inst = prompt_rename();
 		}
 		else if (command == "Exit"){
 			parsed_inst = "EXIT";
