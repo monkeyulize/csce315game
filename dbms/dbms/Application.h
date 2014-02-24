@@ -11,6 +11,9 @@ class Application{
 				cout << "Table " << i << ": " << db.get_tables_vector()[i].get_name() << endl;
 			}
 		}
+		void print_size(){
+			cout<<db.get_tables_vector().size();
+		}
 		void display_menu(){
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "                                    Commands and Queries                              	" << endl;
@@ -64,7 +67,7 @@ class Application{
 			cout << "        Which <Fill> would you like to add to?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the first tables name------------------------------------------" << endl;
 			cin >> table1;
 			return table1;
 		}
@@ -74,9 +77,9 @@ class Application{
 			cout << "        Which <Fill> would you like to perform a combine on?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the first tables name-------------------------------------------" << endl;
 			cin >> table1;
-			cout << "----------Enter the second tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the second tables name------------------------------------------" << endl;
 			cin >> table2;
 			return "test";
 		}
@@ -86,7 +89,7 @@ class Application{
 			cout << "        Which <Fill> would you like to remove from?                          	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the first tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the first tables name-----------------------------------------" << endl;
 			cin >> table1;
 			return table1;
 		}
@@ -96,7 +99,7 @@ class Application{
 			cout << "        Which <Fill> do you want to display				                        	" << endl;
 			cout << "-------------------------------------------------------------------------------		" << endl;
 			print_tables();
-			cout << "----------Enter the tables name----------------------------------------------------------" << endl;
+			cout << "----------Enter the tables name------------------------------------------------" << endl;
 			cin >> table1;
 			return "SHOW "+ table1;
 		}
@@ -104,6 +107,7 @@ class Application{
 			string attr_list;			//full command of space delimited primary keys
 			vector<string> split_list;		//full command of primary keys in vector
 			stringstream ss;		//used for final return including braces and brackets
+			cout << "-------------------------------------------------------------------------------		" << endl;
 			cout << "What key values would you like to use to specify unique entries? " << endl;
 			cout << "i.e. two entries cannot have the same name and age	  	" << endl;
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
@@ -142,7 +146,7 @@ class Application{
 			}
 
 			//store the attribute and the type into final return
-			ss << attr << type;
+			ss << attr <<" "<< type;
 			
 			//if its a word will have a length parameter too
 			if (type == "VARCHAR"){
@@ -183,7 +187,7 @@ class Application{
 			attributes = prompt_attributes();
 			string primary = prompt_primary();
 			ss << "CREATE TABLE " << table1 << attributes << primary;
-			cout << ss.str();
+			cout << ss.str()<<endl;
 			return ss.str();
 		}
 		string prompt_save(){
@@ -251,7 +255,6 @@ class Application{
 				}
 				else if (command == "Open<FILL>"){
 					parsed_inst = prompt_open();
-					cout <<	"&" <<	parsed_inst	<<	"&";
 				}
 				else if (command == "SaveAndCLose<FILL>"){
 					parsed_inst = prompt_close();
@@ -269,9 +272,11 @@ class Application{
 					display_detailed_menu();
 					continue;
 				}
+				print_size();
 				eval_input << parsed_inst;
 				cin.rdbuf(eval_input.rdbuf());
 				p.evaluate_statement();
+				print_size();
 			}
 		}
 };
