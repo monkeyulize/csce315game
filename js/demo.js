@@ -1,21 +1,48 @@
+var stage, 
+	canvas, 
+	hero, 
+	img = new Image();
+
+	
+if ('ontouchstart' in document.documentElement) {
+	canvas.addEventListener('touchstart', function(e) {
+		handleKeyDown();
+	}, false);
+} else {
+	document.onkeydown = handleKeyDown;
+	document.onmousedown = handleKeyDown;
+}
+
+	
 function init() {
 	canvas = document.createElement("canvas");
-	canvas.width = 500;
-	canvas.height = 250;
+	canvas.width = getWidth();
+	canvas.height = getHeight();
 	document.body.appendChild(canvas);
-	var stage = new createjs.Stage(canvas);
-	var circle = new createjs.Shape();
-	circle.graphics.beginFill("blue").drawCircle(0, 0, 50);
-	circle.x = 100;
-	circle.y = 100;
-	stage.addChild(circle);
-	stage.update();
+	
+	stage = new createjs.Stage(canvas);
 
+	img.onload = onImageLoaded;
+	img.src = 'assets/test.png';
 }
 
-Ticker.setFPS(30);
-Ticker.addListener(tick);
-function tick(e) {
+function onImageLoaded(e) {
+	hero = new Hero(img);
+	stage.addChild(hero);
+	hero.reset();
+	
+	createjs.Ticker.setFPS(30);
+	createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick() {
+	hero.tick();
 	stage.update();
 }
 
+
+function handleKeyDown(e) {
+	hero.reset();
+}
+
+init();
