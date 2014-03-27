@@ -47,7 +47,8 @@ function init() {
 			stage.update();
 	})
 	createjs.Ticker.on("tick", tick);
-
+	var socket = io.connect('http://compute.cse.tamu.edu:11111');
+		
 }
 
 function tick(event) {
@@ -64,6 +65,10 @@ function tick(event) {
 				cont_circle.alpha = 1;
 			}
 			stage.update(event);
+			socket.on('coords', function (data) {
+			console.log(data);
+			socket.emit('i am here');
+		});
 		}
 
 init();
