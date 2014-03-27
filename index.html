@@ -10,31 +10,30 @@
 	</body>
 
     <script src="libs/easeljs-0.7.1.min.js"></script>
-<<<<<<< HEAD
-    <script src="js/demo.js"></script>
-</head>
-<body onload="init();">
+	<script src="libs/Box2dWeb-2.1.a.3.min.js"></script>
+    <script src="js/utils.js"></script>
+	<script src="js/hero.js"></script>
+	<script src="js/demo.js"></script>
 	
-</body>
-=======
-	<!script src="libs/Box2dWeb-2.1.a.3.min.js"></script>
-    <script src="js/collission_mouse_demo.js"></script>
-	<!script src="js/utils.js"></script>
-	<!script src="js/hero.js"></script>
-	<!script src="js/demo.js"></script>
-	<!script>
+	<script>
+
+		
+		
+		
 		var    b2Vec2 = Box2D.Common.Math.b2Vec2
-,      b2BodyDef = Box2D.Dynamics.b2BodyDef
-,      b2Body = Box2D.Dynamics.b2Body
-,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-,      b2World = Box2D.Dynamics.b2World
-,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
-,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-,      b2Fixture = Box2D.Dynamics.b2Fixture
-,      b2AABB = Box2D.Collision.b2AABB;
+		,      b2BodyDef = Box2D.Dynamics.b2BodyDef
+		,      b2Body = Box2D.Dynamics.b2Body
+		,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+		,      b2World = Box2D.Dynamics.b2World
+		,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+		,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+		,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
+		,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+		,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+		,      b2Fixture = Box2D.Dynamics.b2Fixture
+		,      b2AABB = Box2D.Collision.b2AABB;
+		
+		
 		
 		var world = new b2World(new b2Vec2(0, 0), true);
 	
@@ -53,8 +52,8 @@
 		
 		var myFixture = new b2FixtureDef;
 		myFixture.shape = new b2CircleShape(2);
-		myFixture.density = 10;
-		myFixture.friction = .5;
+		myFixture.density = 1;
+		myFixture.friction = 0;
 		myFixture.restitution = .6;
 		
 		myBody.CreateFixture(myFixture);
@@ -70,50 +69,26 @@
 		window.setInterval(update, 1000/60);
 		
 		var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
-var canvasPosition = getElementPosition(document.getElementById("canvas")); 
- 
-document.addEventListener("mousedown", function(e) {
-   isMouseDown = true;
-   handleMouseMove(e);
-   document.addEventListener("mousemove", handleMouseMove, true);
-}, true);
- 
-document.addEventListener("mouseup", function() {
+		var canvasPosition = getElementPosition(document.getElementById("canvas")); 
+		
+		document.addEventListener("mousedown", function(e) {
+			isMouseDown = true;
+			handleMouseMove(e);
+			document.addEventListener("mousemove", handleMouseMove, true);
+		}, true);
+		
+		document.addEventListener("mouseup", function() {
    document.removeEventListener("mousemove", handleMouseMove, true);
    isMouseDown = false;
    mouseX = undefined;
    mouseY = undefined;
 }, true);
- 
-function handleMouseMove(e) {
-   mouseX = (e.clientX - canvasPosition.x) / 30;
-   mouseY = (e.clientY - canvasPosition.y) / 30;
-};
- 
-function getBodyAtMouse() {
-   mousePVec = new b2Vec2(mouseX, mouseY);
-   var aabb = new b2AABB();
-   aabb.lowerBound.Set(mouseX - 0.001, mouseY - 0.001);
-   aabb.upperBound.Set(mouseX + 0.001, mouseY + 0.001);
- 
-   // Query the world for overlapping shapes.
- 
-   selectedBody = null;
-   world.QueryAABB(getBodyCB, aabb);
-   return selectedBody;
-}
- 
-function getBodyCB(fixture) {
-   if(fixture.GetBody().GetType() != 0) { //Static Bodies have type 0
-      if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
-         selectedBody = fixture.GetBody();
-         return false;
-      }
-   }
-   return true;
-}
- 
-function getElementPosition(element) {
+		
+		function handleMouseMove(e) {
+			mouseX = (e.clientX - canvasPosition.x) / 30;
+			mouseY = (e.clientY - canvasPosition.y) / 30;
+		};
+		function getElementPosition(element) {
     var elem=element, tagname="", x=0, y=0;
     while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
         y += elem.offsetTop;
@@ -130,29 +105,10 @@ function getElementPosition(element) {
 }
 		
 		
-		
 		function update() {
-			if(isMouseDown && (!mouseJoint)) {
-				var body = getBodyAtMouse();
-				if(body) {
-					var md = new b2MouseJointDef();
-					md.bodyA = world.GetGroundBody();
-					md.bodyB = body;
-					md.target.Set(mouseX, mouseY);
-					md.collideConnected = true;
-					md.maxForce = 300.0 * body.GetMass();
-					mouseJoint = world.CreateJoint(md);
-					body.SetAwake(true);
-				}
-			}
-			if(mouseJoint) {
-				if(isMouseDown) {
-					mouseJoint.SetTarget(new b2Vec2(mouseX, mouseY));
-				} 
-				else {
-					world.DestroyJoint(mouseJoint);
-					mouseJoint = null;
-				}
+			
+			if(isMouseDown) {
+				myBody.ApplyForce(new b2Vec2((mouseX - myBody.GetPosition().x)*10, (mouseY - myBody.GetPosition().y)*10), myBody.GetPosition());
 			}
 			
 			world.Step(1/60, 10, 10);
@@ -168,5 +124,4 @@ function getElementPosition(element) {
 	
 	</script>
 
->>>>>>> 76d5e61031b938b9d957626efff2a47ffba032e9
 </html>
