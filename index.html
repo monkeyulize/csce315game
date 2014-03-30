@@ -151,3 +151,57 @@
 	</script>
 
 </html>
+
+	<!--Network Stuffs-->
+	<!--this part may not be needed-->
+	<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+	
+	<script src="/socket.io/socket.io.js"></script>
+	
+	<!--3 requests to send and catch, send connection, update, disconnect-->
+	<!--catch welcome, chat, notification-->
+	<script 
+	//listens for connection communciation
+	io.sockets.on(
+		'connection',
+		function(client) {
+			//reply to the client
+			client.emit('welcome', 'Welcome to my chat room!');
+
+    
+
+			//listen for update
+			client.on(
+				'update',
+				function(message) {
+				// This function tries to get the user name from the client object, and
+				// use that to form a chat message that will be sent to all clients.
+				if (message && message.msg) {
+					client.get(
+						'user_name', 
+						function(err, name) {
+						if (!err) {
+						// io.sockets.emit() will send the message to all clients,
+						// including the current client. See socket.io FAQ for more
+						// examples.
+							io.sockets.emit('chat', { user_name: name, msg: message.msg });
+						}
+						});
+					}
+				});
+
+		// Print a message when somebody left.
+		client.on(
+			'disconnect',
+			function() {
+			client.get(
+				'user_name',
+				function(err, name) {
+					if (name) {
+						io.sockets.emit('notification', name + ' left the room.');
+					}
+				});
+			});
+		});
+	</script>
+	
