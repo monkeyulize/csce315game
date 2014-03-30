@@ -118,6 +118,8 @@
 			var angle1_act = Math.atan2(a1, b1);
 			var angle1;
 			
+			var turning_speed = Math.PI*1.5;
+			
 			var angle2 = myBody.GetAngle();
 
 			if(angle2 < 0) {
@@ -141,20 +143,20 @@
 				if(angle2 >= Math.PI) {
 					if(angle1 <= angle2) {
 					//console.log("1");
-						myBody.SetAngularVelocity(-Math.PI);
+						myBody.SetAngularVelocity(-turning_speed)
 					}else if(angle1 > angle2) {
 					//console.log("2");
-						myBody.SetAngularVelocity(Math.PI);
+						myBody.SetAngularVelocity(turning_speed);
 					}
 					//console.log("angle 2 is greater than angle 1");
 					canMove = false;				
 				} else if(angle2 < Math.PI) {
 					if(angle1 <= (angle2 + Math.PI)) {
 					//console.log("1");
-						myBody.SetAngularVelocity(Math.PI);
+						myBody.SetAngularVelocity(turning_speed);
 					}else if(angle1 > (angle2 + Math.PI)) {
 					//console.log("2");
-						myBody.SetAngularVelocity(-Math.PI);
+						myBody.SetAngularVelocity(-turning_speed);
 					}
 					//console.log("angle 2 is greater than angle 1");
 					canMove = false;
@@ -165,20 +167,20 @@
 				if(angle2 >= Math.PI) {
 					if(angle1 <= (angle2 - Math.PI)) {
 					//console.log("1");
-						myBody.SetAngularVelocity(Math.PI);
+						myBody.SetAngularVelocity(turning_speed);
 					}else if(angle1 > (angle2 - Math.PI)) {
 					//console.log("2");
-						myBody.SetAngularVelocity(-Math.PI);
+						myBody.SetAngularVelocity(-turning_speed);
 					}
 					//console.log("angle 2 is greater than angle 1");
 					canMove = false;				
 				} else if(angle2 < Math.PI) {
 					if(angle1 <= angle2) {
 					//console.log("1");
-						myBody.SetAngularVelocity(-Math.PI);
+						myBody.SetAngularVelocity(-turning_speed);
 					}else if(angle1 > angle2) {
 					//console.log("2");
-						myBody.SetAngularVelocity(Math.PI);
+						myBody.SetAngularVelocity(turning_speed);
 					}
 					//console.log("angle 2 is greater than angle 1");
 					canMove = false;
@@ -204,7 +206,7 @@
 				myBody.SetAngularVelocity(0);
 			}		
 			if(isMouseDown && canMove == true) {
-				//myBody.ApplyForce(new b2Vec2((mouseX - myBody.GetPosition().x)*10, (mouseY - myBody.GetPosition().y)*10), myBody.GetPosition());
+				myBody.ApplyForce(new b2Vec2((mouseX - myBody.GetPosition().x)*10, (mouseY - myBody.GetPosition().y)*10), myBody.GetPosition());
 				
 				rotate_to_mouse();
 			} else if(isMouseDown && canMove == false) {
