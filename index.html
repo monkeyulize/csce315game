@@ -50,9 +50,7 @@
 		,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 		,      b2Fixture = Box2D.Dynamics.b2Fixture
 		,      b2AABB = Box2D.Collision.b2AABB;
-		
-		
-		
+				
 		var world = new b2World(new b2Vec2(0, 0), false);
 
 		var listener = new Box2D.Dynamics.b2ContactListener;
@@ -60,15 +58,16 @@
 		listener.BeginContact = function(contact) {
 			console.log("you hit something!");
 			console.log("impact velocity = " + myBody.GetLinearVelocity().Length());
-			console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
-			
-			isStunned = true;
-			console.log("isStunned = " + isStunned);
-			myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
-			
+			if(myBody.GetLinearVelocity().Length() > 10) {
+				console.log("hit wall too hard!");
+				console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
+				isStunned = true;
+				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
+				
+			}
+			console.log("isStunned = " + isStunned);			
 		}
 		
-	
 		var bodyDef = new b2BodyDef;
 		bodyDef.type = b2Body.b2_dynamicBody;
 		bodyDef.position.Set(4, 8);
