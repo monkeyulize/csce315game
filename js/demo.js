@@ -16,15 +16,15 @@ if ('ontouchstart' in document.documentElement) {
 	
 function init() {
 	canvas = document.createElement("canvas");
-<<<<<<< HEAD
-	canvas {
-		padding-left: 0;
-		padding-right: 0;
-		margin-left: auto;
-		margin-right: auto;
-		display: block;
-		width: 800px;
-	}
+
+	//canvas {
+	//	padding-left: 0;
+	//	padding-right: 0;
+	//	margin-left: auto;
+	//	margin-right: auto;
+	//	display: block;
+	//	width: 800px;
+	//}
 	document.body.appendChild(canvas);
 	var stage = new createjs.Stage(canvas);
 	var circle = new createjs.Shape();
@@ -39,19 +39,17 @@ function init() {
 		stage.update();
 	})
 	stage.update();
-=======
+
 	canvas.width = getWidth();
 	canvas.height = getHeight();
 	document.body.appendChild(canvas);
 	
 	stage = new createjs.Stage(canvas);
->>>>>>> 76d5e61031b938b9d957626efff2a47ffba032e9
 
 	img.onload = onImageLoaded;
 	img.src = 'assets/test.png';
 }
-<<<<<<< HEAD
-=======
+
 
 function onImageLoaded(e) {
 	hero = new Hero(img);
@@ -73,4 +71,4 @@ function handleKeyDown(e) {
 }
 
 init();
->>>>>>> 76d5e61031b938b9d957626efff2a47ffba032e9
+

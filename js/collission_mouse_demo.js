@@ -36,7 +36,7 @@ function init() {
 			var mouse_x = evt.stageX;
 			var mouse_y = evt.stageY;
 			circle.x += (mouse_x-circle.x)/100;
-			circle.y += (mouse_y-circle.y)/100;
+			 += (mouse_y-circle.y)/100;
 			if(mouse_x>circle.x)
 				circle.rotation = (Math.atan((mouse_y-circle.y)/(mouse_x-circle.x)))*57.2957795-90;
 			if(mouse_x<circle.x)
