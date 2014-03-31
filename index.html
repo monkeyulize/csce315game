@@ -71,10 +71,10 @@
 		
 		
 		var myFixture = new b2FixtureDef;
-		myFixture.shape = new b2CircleShape(2);
+		myFixture.shape = new b2CircleShape(3);
 		myFixture.density = 1;
 		myFixture.friction = 0.5;
-		myFixture.restitution = .6;
+		myFixture.restitution = .8;
 		
 		myBody.CreateFixture(myFixture);
 		
@@ -100,7 +100,7 @@
 		var debugDraw = new b2DebugDraw();
 		debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
 		debugDraw.SetDrawScale(10);
-		debugDraw.SetFillAlpha(0.3); //define transparency
+		debugDraw.SetFillAlpha(0.5); //define transparency
 		debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
 		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 		world.SetDebugDraw(debugDraw);
@@ -150,12 +150,12 @@
 			var pos = new b2Vec2(myBody.GetPosition().x, myBody.GetPosition().y);
 			var a1 = mouseY - pos.y;
 			var b1 = mouseX - pos.x;
-			circle.x = pos.x;
-			circle.y = pos.y;
+			//circle.x = pos.x;
+			//circle.y = pos.y;
 			var angle1_act = Math.atan2(a1, b1);
 			var angle1;
 			
-			var turning_speed = Math.PI*1.5;
+			var turning_speed = Math.PI*3;
 			
 			var angle2 = myBody.GetAngle();
 
