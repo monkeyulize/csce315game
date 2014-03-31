@@ -59,7 +59,12 @@
 		world.SetContactListener(listener);
 		listener.BeginContact = function(contact) {
 			console.log("you hit something!");
-			myBody.SetLinearDamping(1);
+			console.log("impact velocity = " + myBody.GetLinearVelocity().Length());
+			console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
+			
+			isStunned = true;
+			console.log("isStunned = " + isStunned);
+			myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
 			
 		}
 		
@@ -94,7 +99,7 @@
 		var bodyDef = new b2BodyDef;
 		bodyDef.type = b2Body.b2_staticBody;
 		Wall_one.shape = new b2PolygonShape;
-		Wall_one.shape.SetAsBox(canvas.width/2,2);
+		Wall_one.shape.SetAsBox(canvas.width/2,4);
 		bodyDef.position.Set(canvas.width/2, 0);
 		world.CreateBody(bodyDef).CreateFixture(Wall_one);
 		bodyDef.position.Set(canvas.width/2, (canvas.height/10));
@@ -153,6 +158,7 @@
 		}
 		
 		var canMove = false;
+		var isStunned = false;
 		
 		function rotate_to_mouse() {
 			var pos = new b2Vec2(myBody.GetPosition().x, myBody.GetPosition().y);
@@ -232,7 +238,7 @@
 				}
 			}
 			//console.log(Math.abs(angle2 - angle1));
-			if((Math.abs(angle2 - angle1) <= 0.07) || (Math.abs(angle2 - angle1) >= 6.20)) {
+			if((Math.abs(angle2 - angle1) <= 0.1) || (Math.abs(angle2 - angle1) >= 6.1)) {
 				//console.log(canMove);
 				myBody.SetAngularVelocity(0);
 				canMove = true;
@@ -253,15 +259,18 @@
 			
 		function update() {
 		
-			if(myBody.GetLinearVelocity().Length() < 0.1 && myBody.GetLinearDamping() != 0) {
-				console.log("resetting damping");
+			if(myBody.GetLinearVelocity().Length() < 0.8 && myBody.GetLinearDamping() != 0) {
+				myBody.SetLinearVelocity(new b2Vec2(0, 0));
+				console.log("resetting damping to 0");
 				myBody.SetLinearDamping(0);
+				isStunned = false;
+				console.log("isStunned = " + canMove);
 			}
 			
 			if(!isMouseDown) {
 				myBody.SetAngularVelocity(0);
 			}		
-			if(isMouseDown && canMove == true) {
+			if(isMouseDown && canMove == true && isStunned == false) {
 				myBody.ApplyForce(new b2Vec2((mouseX - myBody.GetPosition().x)*10, (mouseY - myBody.GetPosition().y)*10), myBody.GetPosition());
 				
 				rotate_to_mouse();
