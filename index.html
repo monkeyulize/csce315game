@@ -54,7 +54,15 @@
 		
 		
 		var world = new b2World(new b2Vec2(0, 0), false);
-	
+
+		var listener = new Box2D.Dynamics.b2ContactListener;
+		world.SetContactListener(listener);
+		listener.BeginContact = function(contact) {
+			console.log("you hit something!");
+			myBody.SetLinearDamping(1);
+			
+		}
+		
 	
 		var bodyDef = new b2BodyDef;
 		bodyDef.type = b2Body.b2_dynamicBody;
@@ -74,7 +82,7 @@
 		myFixture.shape = new b2CircleShape(3);
 		myFixture.density = 1;
 		myFixture.friction = 0.5;
-		myFixture.restitution = .8;
+		myFixture.restitution = 0.5;
 		
 		myBody.CreateFixture(myFixture);
 		
@@ -224,21 +232,32 @@
 				}
 			}
 			//console.log(Math.abs(angle2 - angle1));
-			if((Math.abs(angle2 - angle1) <= 0.05) || (Math.abs(angle2 - angle1) >= 6.23)) {
+			if((Math.abs(angle2 - angle1) <= 0.07) || (Math.abs(angle2 - angle1) >= 6.20)) {
 				//console.log(canMove);
 				myBody.SetAngularVelocity(0);
 				canMove = true;
 			} else {
 				//console.log(canMove);
 			}
-			console.log("a1: " + angle1);	
-			console.log("a2: " + angle2);
+			//console.log("a1: " + angle1);	
+			//console.log("a2: " + angle2);
 			
 		}
+
+
 		
-		
+	 
+
+			
+
 			
 		function update() {
+		
+			if(myBody.GetLinearVelocity().Length() < 0.1 && myBody.GetLinearDamping() != 0) {
+				console.log("resetting damping");
+				myBody.SetLinearDamping(0);
+			}
+			
 			if(!isMouseDown) {
 				myBody.SetAngularVelocity(0);
 			}		
