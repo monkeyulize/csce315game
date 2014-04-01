@@ -1,0 +1,63 @@
+<html>
+
+<head>
+</head>
+
+<body>
+<canvas width="500" height="500" id="canvas"></canvas>
+</body>
+
+<script>
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+	
+	var mouseX, mouseY, mousePVec, isMouseDown;
+	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
+	document.addEventListener("mousedown", function(e) {
+		isMouseDown = true;
+		handleMouseMove(e);
+		document.addEventListener("mousemove", handleMouseMove, true);
+	}, true);
+	
+	document.addEventListener("mouseup", function() {
+		document.removeEventListener("mousemove", handleMouseMove, true);
+		isMouseDown = false;
+		mouseX = undefined;
+		mouseY = undefined;
+	}, true);
+	
+	function handleMouseMove(e) {
+		mouseX = (e.clientX - canvasPosition.x) / 10;
+		mouseY = (e.clientY - canvasPosition.y) / 10;
+		console.log(mouseX + " " + mouseY);
+	};
+	function getElementPosition(element) {
+		var elem=element, tagname="", x=0, y=0;
+		while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
+			y += elem.offsetTop;
+			x += elem.offsetLeft;
+			tagname = elem.tagName.toUpperCase();
+			if(tagname == "BODY")
+				elem=0;
+			if(typeof(elem) == "object") {
+				if(typeof(elem.offsetParent) == "object") {
+					elem = elem.offsetParent;
+				}
+			}
+		}
+		return {x: x, y: y};
+	}
+	
+	
+	
+	
+</script>
+
+
+
+
+
+
+
+
+</html>
