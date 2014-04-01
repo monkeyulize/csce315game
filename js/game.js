@@ -1,23 +1,4 @@
-<html>
-	<head>
 
-	</head>
-	
-	
-	<body>
-	<canvas width="500" height="500" id="canvas"></canvas>
-	</body>
-	
-	<script type="text/html"src="js/demo.js"></script>
-    <script type="text/html"src="libs/easeljs-0.7.1.min.js"></script>
-	<!-script type="text/html" src="libs/Box2dWeb-2.1.a.3.min.js"><!-/script>
-	<script type="text/javascript" src="http://lufylegend.com/js/Box2dWeb-2.1.a.3.min.js"></script> 
-	<script type="text/html"src="js/utils.js"></script>
-	<script type="text/html"src="js/hero.js"></script>
-	
-	
-	<script>
-	
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 		
@@ -52,8 +33,8 @@
 		,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
 		,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 		,      b2Fixture = Box2D.Dynamics.b2Fixture
-		,      b2AABB = Box2D.Collision.b2AABB;		
-		
+		,      b2AABB = Box2D.Collision.b2AABB;
+				
 		var world = new b2World(new b2Vec2(0, 0), false);
 
 		var listener = new Box2D.Dynamics.b2ContactListener;
@@ -306,66 +287,3 @@
 			world.ClearForces();
 			
 		}
-
-	
-	</script>
-
-	<!--
-jQuery is a JavaScript library that provides many handy tools, e.g. for
-manipulating HTML elements, handling events, etc.
--->
-<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-
-<!--
-socket.io.js will be provided by the node.js server that you will run.
--->
-<script src="/socket.io/socket.io.js"></script>
-
-<script>
-  // $(document) returns a jQuery object representing the whole document (page).
-  // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
-  // document is loaded.
-  $(document).ready(function() {
-   
-    // Initialize socket.io.
-    // document.location.host returns the host of the current page.
-    var socket = io.connect('http://' + document.location.host);
-
-    // If a welcome message is received, it means the chat room is available.
-    // The Log In button will be then enabled.
-    socket.on(
-      'welcome',
-      function(message) {
-		console.log("you are greeted!");
-      });
-
-
-    // If a chat message is received, display it.
-    socket.on(
-      'chat',
-      function(message) {
-        if (message) {
-          console.log("you hit something!");
-        }
-      });
-
-    // When the Log In button is clicked, the provided function will be called,
-    // which sends a chat message to the server.
-    $('#send').click(function() {
-      var data = $('#msg').val();
-      if (data) {
-        data = data.trim();
-        if (data.length > 0) {
-          socket.emit('chat', {lives: "My Lives : " + myLives});
-        }
-      }
-    });
-
-  });
-</script>
-	
-	
-</html>
-
-
-	
