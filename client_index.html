@@ -7,9 +7,18 @@
 <canvas width="500" height="500" id="canvas"></canvas>
 </body>
 
+<script src="/socket.io/socket.io.js"></script>
 <script>
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+	
+	
+	var socket = io.connect('http://compute.cse.tamu.edu:24130');
+	
+	socket.on('ready', function() {
+		console.log("connected");		
+	});
+	
 	
 	var mouseX, mouseY, mousePVec, isMouseDown;
 	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
@@ -30,6 +39,7 @@
 		mouseX = (e.clientX - canvasPosition.x) / 10;
 		mouseY = (e.clientY - canvasPosition.y) / 10;
 		console.log(mouseX + " " + mouseY);
+		socket.emit('mouse data', {mouseX: mouseX, mouseY: mouseY });
 	};
 	function getElementPosition(element) {
 		var elem=element, tagname="", x=0, y=0;
