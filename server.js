@@ -1,9 +1,10 @@
 var server = require('http').createServer(handler);
 var io = require('socket.io').listen(server);
 var fs = require('fs')	
+var game = require('./game');
 server.listen(24130);
 
-var players = new Array();
+
 
 
 function handler (req, res) {
@@ -19,16 +20,17 @@ function handler (req, res) {
   });
 }
 var p_id = 1;
-
+var players = new Array();
 io.sockets.on('connection', function (socket) {
 	socket.emit('ready', { playerID: p_id });
-	players[p_id - 1] = p_id
+	players[p_id-1] = p_id;
 	p_id++;
-	
+	game.init(players);
 	
 	
 	socket.on('mouse data', function (data) {
 		console.log(data);
+		game.update(data.playerID, data.mouseX, data.mouseY);
 	});
 	
 });
