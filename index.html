@@ -27,13 +27,13 @@
 		//	back.y = 0;
 		
 		
-		circle = new createjs.Shape();
-		circle.graphics.beginFill("blue").drawCircle(0, 0, 50);
-			circle.graphics.beginStroke("black");
-		circle.graphics.moveTo(circle.x, circle.y).lineTo(circle.x-50, circle.y).lineTo(circle.x, circle.y+100).lineTo(circle.x+50, circle.y).lineTo(circle.x, circle.y);
-			circle.x = canvas.width/4;
-			circle.y = canvas.height/2;
-		stage.addChild(circle);
+		//circle = new createjs.Shape();
+		//circle.graphics.beginFill("blue").drawCircle(0, 0, 50);
+		//	circle.graphics.beginStroke("black");
+		//circle.graphics.moveTo(circle.x, circle.y).lineTo(circle.x-50, circle.y).lineTo(circle.x, circle.y+100).lineTo(circle.x+50, circle.y).lineTo(circle.x, circle.y);
+		//	circle.x = canvas.width/4;
+		//	circle.y = canvas.height/2;
+		//stage.addChild(circle);
 		
 		var    b2Vec2 = Box2D.Common.Math.b2Vec2
 		,	   b2Cross = Box2D.Common.Math.b2Cross
@@ -61,9 +61,10 @@
 			if(myBody.GetLinearVelocity().Length() > 10) {
 				console.log("hit wall too hard!");
 				console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
+				console.log("My Lives : " + myLives);
 				isStunned = true;
 				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
-				
+				myLives= myLives - 1;
 			}
 			console.log("isStunned = " + isStunned);			
 		}
@@ -88,7 +89,26 @@
 		myFixture.friction = 0.5;
 		myFixture.restitution = 0.5;
 		
+		var myLives = 3;
+		
 		myBody.CreateFixture(myFixture);
+		
+		//Crack at pseudoplayer
+		var yourBody = world.CreateBody(bodyDef);
+		
+		yourBody.SetPositionAndAngle(new b2Vec2(100,100),0);
+		yourBody.SetLinearVelocity(new b2Vec2(-2, -2));
+		yourBody.SetFixedRotation(false);
+		yourBody.SetAngularVelocity(0);
+		
+		
+		var yourFixture = new b2FixtureDef;
+		yourFixture.shape = new b2CircleShape(3);
+		yourFixture.density = 1;
+		yourFixture.friction = 0.5;
+		yourFixture.restitution = 0.5;
+		
+		yourBody.CreateFixture(yourFixture);
 		
 		//attempting wall_1
 		var Wall_one = new b2FixtureDef;
