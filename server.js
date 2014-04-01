@@ -3,7 +3,7 @@ var io = require('socket.io').listen(server);
 var fs = require('fs')	
 server.listen(24130);
 
-var players = {};
+var players = new Array();
 
 
 function handler (req, res) {
@@ -22,7 +22,7 @@ var p_id = 1;
 
 io.sockets.on('connection', function (socket) {
 	socket.emit('ready', { playerID: p_id });
-	players{p_id - 1} = p_id
+	players[p_id - 1] = p_id
 	p_id++;
 	
 	
