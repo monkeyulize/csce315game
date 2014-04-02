@@ -19,18 +19,25 @@ function handler (req, res) {
     res.end(data);
   });
 }
-var p_id = 1;
+var p_id = 0;
 var players = new Array();
 io.sockets.on('connection', function (socket) {
 	socket.emit('ready', { playerID: p_id });
-	players[p_id-1] = p_id;
+	players[p_id] = p_id;
 	p_id++;
-	game.init(players);
 	
 	
+	socket.on('wh', function(data) {
+		game.init(players, data.width, data.height);
+	});
 	socket.on('mouse data', function (data) {
 		console.log(data);
-		game.update(data.playerID, data.mouseX, data.mouseY);
+		game.update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
+	});
+	
+	socket.on('disconnect', function () {
+		io.sockets.emit('user disconnected');
+		p_id--;
 	});
 	
 });

@@ -28,8 +28,9 @@ myFixture.shape = new b2CircleShape(3);
 myFixture.density = 1;
 myFixture.friction = 0.5;
 myFixture.restitution = 0.5;
-	
-var init = function(players) {
+var world = new b2World(new b2Vec2(0, 0), false);	
+var init = function(players, width, height) {
+	console.log("IN THE INIT");
 	for(i = 0; i < players.length; i++) {
 		myBodies[i] = world.CreateBody(bodyDef);			
 	}
@@ -39,13 +40,37 @@ var init = function(players) {
 		myBodies[i].SetFixedRotation(false);
 		myBodies[i].SetAngularVelocity(0);
 		myBodies[i].CreateFixture(myFixture);
+		console.log(i);
 	}
+	console.log(width);
+	console.log(height);
+	
+	
+	var Wall_one = new b2FixtureDef;
+	Wall_one.density = .5;
+	Wall_one.friction = 0.4;
+	Wall_one.restitution = 0.2;
+	var bodyDef2 = new b2BodyDef;
+	bodyDef2.type = b2Body.b2_staticBody;
+	
+ 	Wall_one.shape = new b2PolygonShape;
+	Wall_one.shape.SetAsBox(width/2,4);
+	bodyDef.position.Set(width/2, 0);
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	bodyDef.position.Set(width/2, (height/10));
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	Wall_one.shape.SetAsBox(2,height/2);
+	bodyDef.position.Set(0, height/2);
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	bodyDef.position.Set(width/10, height/2);
+	world.CreateBody(bodyDef).CreateFixture(Wall_one); 
+	
 }
 
 	
 		
 
-var world = new b2World(new b2Vec2(0, 0), false);
+
 
 var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
@@ -55,7 +80,7 @@ listener.BeginContact = function(contact) {
 	if(myBodies[playerID].GetLinearVelocity().Length() > 10) {
 		console.log("hit wall too hard!");
 		console.log("setting damping to: " + Math.log(myBodies[playerID].GetLinearVelocity().Length())/2);
-		console.log("My Lives : " + myLives);
+		//console.log("My Lives : " + myLives);
 		isStunned = true;
 		myBodies[playerID].SetLinearDamping(Math.log(myBodies[playerID].GetLinearVelocity().Length())/2);
 		myLives= myLives - 1;
@@ -72,44 +97,20 @@ var myLives = 3;
 
 /*
 //attempting wall_1
-var Wall_one = new b2FixtureDef;
-Wall_one.density = .5;
-Wall_one.friction = 0.4;
-Wall_one.restitution = 0.2;
-var bodyDef = new b2BodyDef;
-bodyDef.type = b2Body.b2_staticBody;
-Wall_one.shape = new b2PolygonShape;
-Wall_one.shape.SetAsBox(canvas.width/2,4);
-bodyDef.position.Set(canvas.width/2, 0);
-world.CreateBody(bodyDef).CreateFixture(Wall_one);
-bodyDef.position.Set(canvas.width/2, (canvas.height/10));
-world.CreateBody(bodyDef).CreateFixture(Wall_one);
-Wall_one.shape.SetAsBox(2,canvas.height/2);
-bodyDef.position.Set(0, canvas.height/2);
-world.CreateBody(bodyDef).CreateFixture(Wall_one);
-bodyDef.position.Set(canvas.width/10, canvas.height/2);
-world.CreateBody(bodyDef).CreateFixture(Wall_one);
+
 */
 
-var debugDraw = new b2DebugDraw();
-debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
-debugDraw.SetDrawScale(10);
-debugDraw.SetFillAlpha(0.5); //define transparency
-debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
-debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-world.SetDebugDraw(debugDraw);
 
-window.setInterval(update, 1000/60);
+
+
 
 var canMove = false;
 var isStunned = false;
 
-function rotate_to_mouse(playerID) {
+function rotate_to_mouse(playerID, mouseX, mouseY) {
 	var pos = new b2Vec2(myBodies[playerID].GetPosition().x, myBodies[playerID].GetPosition().y);
 	var a1 = mouseY - pos.y;
 	var b1 = mouseX - pos.x;
-	//circle.x = pos.x;
-	//circle.y = pos.y;
 	var angle1_act = Math.atan2(a1, b1);
 	var angle1;
 	
@@ -194,7 +195,7 @@ function rotate_to_mouse(playerID) {
 	
 }
 	
-var update = function(playerID, mouseX, mouseY) {
+var update = function(playerID, isMouseDown, mouseX, mouseY) {
 
 	if(myBodies[playerID].GetLinearVelocity().Length() < 0.8 && myBodies[playerID].GetLinearDamping() != 0) {
 		myBodies[playerID].SetLinearVelocity(new b2Vec2(0, 0));
@@ -210,15 +211,15 @@ var update = function(playerID, mouseX, mouseY) {
 	if(isMouseDown && canMove == true && isStunned == false) {
 		myBodies[playerID].ApplyForce(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x)*10, (mouseY - myBodies[playerID].GetPosition().y)*10), myBodies[playerID].GetPosition());
 		
-		rotate_to_mouse(playerID);
+		rotate_to_mouse(playerID, mouseX, mouseY);
 	} else if(isMouseDown && canMove == false) {
-		rotate_to_mouse(playerID);
+		rotate_to_mouse(playerID, mouseX, mouseY);
 	}
 	
-	world.Step(1/60, 10, 10);
-	world.DrawDebugData();			
+	//world.Step(1/60, 10, 10);
+	//world.DrawDebugData();			
 	//stage.update();
-	world.ClearForces();
+	//world.ClearForces();
 	
 }
 

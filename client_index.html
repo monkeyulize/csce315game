@@ -15,13 +15,13 @@
 	canvas.height = window.innerHeight;
 	
 	
-	var socket = io.connect('http://compute.cse.tamu.edu:24130');
+	var socket = io.connect('http://localhost:24130');
 	
 	socket.on('ready', function(data) {
 		console.log("connected");
 		p_id = data.playerID;
 		console.log(p_id);
-		
+		socket.emit('wh', {width : canvas.width, height : canvas.height });		
 		
 	});
 	
@@ -45,7 +45,7 @@
 		mouseX = (e.clientX - canvasPosition.x) / 10;
 		mouseY = (e.clientY - canvasPosition.y) / 10;
 		console.log(mouseX + " " + mouseY);
-		socket.emit('mouse data', {playerID: p_id, mouseX: mouseX, mouseY: mouseY });
+		socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY });
 	};
 	function getElementPosition(element) {
 		var elem=element, tagname="", x=0, y=0;
@@ -63,7 +63,15 @@
 		}
 		return {x: x, y: y};
 	}
-	
+	var debugDraw = new b2DebugDraw();
+debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
+debugDraw.SetDrawScale(10);
+debugDraw.SetFillAlpha(0.5); //define transparency
+debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
+debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+world.SetDebugDraw(debugDraw);
+
+window.setInterval(update, 1000/60);
 	
 	
 	
