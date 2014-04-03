@@ -83,14 +83,14 @@
 		console.log(ang);
 	});
 	
-	
+	var started = false;
 	var mouseX, mouseY, mousePVec, isMouseDown;
 	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
 	document.addEventListener("mousedown", function(e) {
 		isMouseDown = true;
 		handleMouseMove(e);
 		document.addEventListener("mousemove", handleMouseMove, true);
-		socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
+		started = true;
 	}, true);
 	
 	document.addEventListener("mouseup", function() {
@@ -131,7 +131,13 @@
 	world.SetDebugDraw(debugDraw);
 	
 	window.setInterval(update, 1000/60);
+	window.setInterval(function() {
+		if(started == true) {
+			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
+		}			
+	}, 1000/60);
 	
+
 	
 	function update() {
 		
