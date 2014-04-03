@@ -5,7 +5,7 @@
 	
 	
 	<body>
-	<canvas width="500" height="500" id="canvas"></canvas>
+	<canvas width="500" height="500" id="canvas"style="background-color:#00CCCC;"></canvas>
 	</body>
 	
 	<script type="text/html"src="js/demo.js"></script>
@@ -20,24 +20,7 @@
 	
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
-		
-		//var stage = new createjs.Stage("canvas");
-		//stage.enableDOMEvents(true);
-	
-		//var back = stage.addChild(new createjs.Shape());
-		//back.graphics.beginFill("green").drawRect(0,0,canvas.width,canvas.height);
-		//	back.x = 0;
-		//	back.y = 0;
-		
-		
-		//circle = new createjs.Shape();
-		//circle.graphics.beginFill("blue").drawCircle(0, 0, 50);
-		//	circle.graphics.beginStroke("black");
-		//circle.graphics.moveTo(circle.x, circle.y).lineTo(circle.x-50, circle.y).lineTo(circle.x, circle.y+100).lineTo(circle.x+50, circle.y).lineTo(circle.x, circle.y);
-		//	circle.x = canvas.width/4;
-		//	circle.y = canvas.height/2;
-		//stage.addChild(circle);
-		
+				
 		var    b2Vec2 = Box2D.Common.Math.b2Vec2
 		,	   b2Cross = Box2D.Common.Math.b2Cross
 		,      b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -57,17 +40,32 @@
 		var world = new b2World(new b2Vec2(0, 0), false);
 
 		var listener = new Box2D.Dynamics.b2ContactListener;
+		
 		world.SetContactListener(listener);
 		listener.BeginContact = function(contact) {
+			console.log(contact.GetFixtureA().GetShape().m_type);
+			console.log(contact.GetFixtureB().GetShape());
+			//console.log(contact.GetFixtureB().GetBody().GetUserData());
 			console.log("you hit something!");
 			console.log("impact velocity = " + myBody.GetLinearVelocity().Length());
-			if(myBody.GetLinearVelocity().Length() > 10) {
-				console.log("hit wall too hard!");
+			if(contact.GetFixtureA().GetShape().m_type == 1 &&  contact.GetFixtureB().GetShape().m_type==0 && contact.GetFixtureA().GetBody().GetUserData() != "WALL" && contact.GetFixtureB().GetBody().GetUserData() != "WALL")
+			{
+				console.log("hit other player");
 				console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
-				console.log("My Lives : " + myLives);
+				contact.GetFixtureB().GetBody().SetUserData((parseInt(contact.GetFixtureB().GetBody().GetUserData())-1).toString());
+				console.log("My Lives : " + contact.GetFixtureA().GetBody().GetUserData());
+				console.log("Their Lives : " + contact.GetFixtureB().GetBody().GetUserData());
 				isStunned = true;
 				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
-				myLives= myLives - 1;
+			}
+			//hit a wall too hard
+			if(myBody.GetLinearVelocity().Length() > 25 && contact.GetFixtureB().GetBody().GetUserData() == "WALL") {
+				console.log("hit wall too hard!");
+				console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
+				console.log("My Lives : " + contact.GetFixtureA().GetBody().GetUserData());
+				console.log("Their Lives : " + contact.GetFixtureB().GetBody().GetUserData());
+				isStunned = true;
+				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
 			}
 			console.log("isStunned = " + isStunned);			
 		}
@@ -75,7 +73,7 @@
 		var bodyDef = new b2BodyDef;
 		bodyDef.type = b2Body.b2_dynamicBody;
 		bodyDef.position.Set(4, 8);
-		bodyDef.userData = 'BOX';
+		bodyDef.userData = '3';
 		
 		
 		var myBody = world.CreateBody(bodyDef);
@@ -96,19 +94,22 @@
 		myHorn.shape = new b2PolygonShape;
  	  	myHorn.shape.SetAsArray([
 		  new b2Vec2(5*0.866 ,0),
-		  new b2Vec2(0, 3*1.33),
-		  new b2Vec2(0, 3*-1.33),
+		  new b2Vec2(0, 3*1.5),
+		  new b2Vec2(0, 3*-1.5),
 		  ]);
 		myHorn.density = 1;
 		myHorn.friction = 0.5;
 		myHorn.restitution = 0.5;
+		myHorn.isSensor = false;
 		
 		var myLives = 3;
 		
 		myBody.CreateFixture(myFixture);
 		myBody.CreateFixture(myHorn);
 		
+
 		//Crack at pseudoplayer
+		bodyDef.userData = '3';
 		var yourBody = world.CreateBody(bodyDef);
 		
 		yourBody.SetPositionAndAngle(new b2Vec2(100,100),0);
@@ -126,11 +127,13 @@
 		yourBody.CreateFixture(yourFixture);
 		
 		//attempting wall_1
+		
 		var Wall_one = new b2FixtureDef;
 		Wall_one.density = .5;
 		Wall_one.friction = 0.4;
 		Wall_one.restitution = 0.2;
 		var bodyDef = new b2BodyDef;
+		bodyDef.userData = 'WALL';
 		bodyDef.type = b2Body.b2_staticBody;
 		Wall_one.shape = new b2PolygonShape;
 		Wall_one.shape.SetAsBox(canvas.width/2,4);
@@ -142,12 +145,13 @@
 		bodyDef.position.Set(0, canvas.height/2);
 		world.CreateBody(bodyDef).CreateFixture(Wall_one);
 		bodyDef.position.Set(canvas.width/10, canvas.height/2);
+		
 		world.CreateBody(bodyDef).CreateFixture(Wall_one);
 		
 		var debugDraw = new b2DebugDraw();
 		debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
 		debugDraw.SetDrawScale(10);
-		debugDraw.SetFillAlpha(0.5); //define transparency
+		debugDraw.SetFillAlpha(.95); //define transparency
 		debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
 		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 		world.SetDebugDraw(debugDraw);
@@ -284,13 +288,6 @@
 			
 		}
 
-
-		
-	 
-
-			
-
-			
 		function update() {
 		
 			if(myBody.GetLinearVelocity().Length() < 0.8 && myBody.GetLinearDamping() != 0) {
@@ -331,9 +328,9 @@ manipulating HTML elements, handling events, etc.
 <!--
 socket.io.js will be provided by the node.js server that you will run.
 -->
-<!-script src="/socket.io/socket.io.js"></script>
+<!script src="/socket.io/socket.io.js"><!/script>
 
-<!-script>
+<!script>
   // $(document) returns a jQuery object representing the whole document (page).
   // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
   // document is loaded.
@@ -374,7 +371,7 @@ socket.io.js will be provided by the node.js server that you will run.
     });
 
   });
-<!-/script>
+<!/script>
 	
 	
 </html>
