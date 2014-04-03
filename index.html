@@ -91,16 +91,21 @@
 			console.log("isStunned = " + isStunned);
 			
 		}
-		window.setInterval(destroyPlayer, 1000/90);
 		
+		//interval to check for players deleting
+		window.setInterval(destroyPlayer, 1000/90); 
+		
+		// deleting players function
 		function destroyPlayer() 
 		{
+			//delete bodies
 			for(var i = 0; i < deletingNum; i++)
 			{
 				world.DestroyBody(scheduledForDestruction[i]);
 				scheduledForDestruction[i] = null;
 			}
 			
+			//reset variables
 			scheduledForRemoval = Array();
 			deletingNum = 0;
 		}
