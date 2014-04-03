@@ -40,7 +40,9 @@
 		var world = new b2World(new b2Vec2(0, 0), false);
 
 		var listener = new Box2D.Dynamics.b2ContactListener;
-		
+		var scheduledForDestruction = Array();
+		var deletingNum = 0;
+			
 		world.SetContactListener(listener);
 		listener.BeginContact = function(contact) {
 			console.log(contact.GetFixtureA().GetShape().m_type);
@@ -48,6 +50,8 @@
 			//console.log(contact.GetFixtureB().GetBody().GetUserData());
 			console.log("you hit something!");
 			console.log("impact velocity = " + myBody.GetLinearVelocity().Length());
+			
+			
 			if(contact.GetFixtureA().GetShape().m_type == 1 &&  contact.GetFixtureB().GetShape().m_type==0 && contact.GetFixtureA().GetBody().GetUserData() != "WALL" && contact.GetFixtureB().GetBody().GetUserData() != "WALL")
 			{
 				console.log("hit other player");
@@ -57,7 +61,24 @@
 				console.log("Their Lives : " + contact.GetFixtureB().GetBody().GetUserData());
 				isStunned = true;
 				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
+				
+				//fixture A's deletion upon no lives remaining
+				if (parseInt(contact.GetFixtureA().GetBody().GetUserData()) < 1) 
+				{
+					//add body to array for bodies scheduled to be removed
+					scheduledForDestruction.push(contact.GetFixtureA().GetBody());
+					deletingNum++;
+				}
+				
+				//fixture B's deletion upon no lives remaining
+				if (parseInt(contact.GetFixtureB().GetBody().GetUserData()) < 1) 
+				{
+					//add bodyB to array for bodies scheduled to be removed
+					scheduledForDestruction.push(contact.GetFixtureB().GetBody());
+					deletingNum++;
+				}
 			}
+			
 			//hit a wall too hard
 			if(myBody.GetLinearVelocity().Length() > 25 && contact.GetFixtureB().GetBody().GetUserData() == "WALL") {
 				console.log("hit wall too hard!");
@@ -67,7 +88,21 @@
 				isStunned = true;
 				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
 			}
-			console.log("isStunned = " + isStunned);			
+			console.log("isStunned = " + isStunned);
+			
+		}
+		window.setInterval(destroyPlayer, 1000/90);
+		
+		function destroyPlayer() 
+		{
+			for(var i = 0; i < deletingNum; i++)
+			{
+				world.DestroyBody(scheduledForDestruction[i]);
+				scheduledForDestruction[i] = null;
+			}
+			
+			scheduledForRemoval = Array();
+			deletingNum = 0;
 		}
 		
 		var bodyDef = new b2BodyDef;
@@ -330,48 +365,7 @@ socket.io.js will be provided by the node.js server that you will run.
 -->
 <!script src="/socket.io/socket.io.js"><!/script>
 
-<!script>
-  // $(document) returns a jQuery object representing the whole document (page).
-  // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
-  // document is loaded.
-  $(document).ready(function() {
-   
-    // Initialize socket.io.
-    // document.location.host returns the host of the current page.
-    var socket = io.connect('http://' + document.location.host);
 
-    // If a welcome message is received, it means the chat room is available.
-    // The Log In button will be then enabled.
-    socket.on(
-      'welcome',
-      function(message) {
-		console.log("you are greeted!");
-      });
-
-
-    // If a chat message is received, display it.
-    socket.on(
-      'chat',
-      function(message) {
-        if (message) {
-          console.log("you hit something!");
-        }
-      });
-
-    // When the Log In button is clicked, the provided function will be called,
-    // which sends a chat message to the server.
-    $('#send').click(function() {
-      var data = $('#msg').val();
-      if (data) {
-        data = data.trim();
-        if (data.length > 0) {
-          socket.emit('chat', {lives: "My Lives : " + myLives});
-        }
-      }
-    });
-
-  });
-<!/script>
 	
 	
 </html>
