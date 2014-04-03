@@ -95,11 +95,10 @@
 		var myHorn = new b2FixtureDef;
 		myHorn.shape = new b2PolygonShape;
  	  	myHorn.shape.SetAsArray([
-		  new b2Vec2(3*0.866 ,3*0.5),
-		  new b2Vec2(3*-0.866, 3*0.5),
-		  new b2Vec2(0, 3*-1),
+		  new b2Vec2(5*0.866 ,0),
+		  new b2Vec2(0, 3*1.33),
+		  new b2Vec2(0, 3*-1.33),
 		  ]);
-		//myHorn.shape.m_centroid = (-205,10); //in the middle
 		myHorn.density = 1;
 		myHorn.friction = 0.5;
 		myHorn.restitution = 0.5;
@@ -107,7 +106,6 @@
 		var myLives = 3;
 		
 		myBody.CreateFixture(myFixture);
-		bodyDef.position.Set(4, 25);
 		myBody.CreateFixture(myHorn);
 		
 		//Crack at pseudoplayer
