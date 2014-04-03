@@ -1,4 +1,5 @@
 var Box2D = require('./Box2d.js');
+
 var myBodies = [];
 var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,	   b2Cross = Box2D.Common.Math.b2Cross
@@ -35,7 +36,7 @@ var init = function(players, width, height) {
 		myBodies[i] = world.CreateBody(bodyDef);			
 	}
 	for(i = 0; i < myBodies.length; i++) {
-		myBodies[i].SetPositionAndAngle(new b2Vec2(i*10 + 10,10),0);
+		myBodies[i].SetPositionAndAngle(new b2Vec2(10,10),0);
 		myBodies[i].SetLinearVelocity(new b2Vec2(0, 0));
 		myBodies[i].SetFixedRotation(false);
 		myBodies[i].SetAngularVelocity(0);
@@ -53,7 +54,7 @@ var init = function(players, width, height) {
 	var bodyDef2 = new b2BodyDef;
 	bodyDef2.type = b2Body.b2_staticBody;
 	
- 	Wall_one.shape = new b2PolygonShape;
+/*  	Wall_one.shape = new b2PolygonShape;
 	Wall_one.shape.SetAsBox(width/2,4);
 	bodyDef.position.Set(width/2, 0);
 	world.CreateBody(bodyDef).CreateFixture(Wall_one);
@@ -63,7 +64,7 @@ var init = function(players, width, height) {
 	bodyDef.position.Set(0, height/2);
 	world.CreateBody(bodyDef).CreateFixture(Wall_one);
 	bodyDef.position.Set(width/10, height/2);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one); 
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);  */
 	
 }
 
@@ -72,7 +73,7 @@ var init = function(players, width, height) {
 
 
 
-var listener = new Box2D.Dynamics.b2ContactListener;
+/* var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
 	console.log("you hit something!");
@@ -86,7 +87,7 @@ listener.BeginContact = function(contact) {
 		myLives= myLives - 1;
 	}
 	console.log("isStunned = " + isStunned);			
-}
+} */
 
 
 
@@ -108,7 +109,9 @@ var canMove = false;
 var isStunned = false;
 
 function rotate_to_mouse(playerID, mouseX, mouseY) {
+	
 	var pos = new b2Vec2(myBodies[playerID].GetPosition().x, myBodies[playerID].GetPosition().y);
+	//console.log(pos);
 	var a1 = mouseY - pos.y;
 	var b1 = mouseX - pos.x;
 	var angle1_act = Math.atan2(a1, b1);
@@ -196,7 +199,10 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 }
 	
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
-
+	/* console.log("playerID: " + playerID);
+	console.log("isMouseDown: " + isMouseDown);
+	console.log("mouseX: " + mouseX);
+	console.log("mouseY: " + mouseY); */
 	if(myBodies[playerID].GetLinearVelocity().Length() < 0.8 && myBodies[playerID].GetLinearDamping() != 0) {
 		myBodies[playerID].SetLinearVelocity(new b2Vec2(0, 0));
 		console.log("resetting damping to 0");
@@ -208,18 +214,25 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	if(!isMouseDown) {
 		myBodies[playerID].SetAngularVelocity(0);
 	}		
-	if(isMouseDown && canMove == true && isStunned == false) {
+	if(isMouseDown/*  && canMove == true && isStunned == false */) {
+		//console.log("moving");
 		myBodies[playerID].ApplyForce(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x)*10, (mouseY - myBodies[playerID].GetPosition().y)*10), myBodies[playerID].GetPosition());
 		
 		rotate_to_mouse(playerID, mouseX, mouseY);
 	} else if(isMouseDown && canMove == false) {
+		//console.log("rotating");
 		rotate_to_mouse(playerID, mouseX, mouseY);
 	}
+	var angle = myBodies[playerID].GetAngle();
+	var positionX = myBodies[playerID].GetPosition().x;
+	var positionY = myBodies[playerID].GetPosition().y;
+		
+	//console.log(ret);
 	
-	//world.Step(1/60, 10, 10);
-	//world.DrawDebugData();			
-	//stage.update();
-	//world.ClearForces();
+	world.Step(1/60, 10, 10);
+
+	world.ClearForces();
+	return {positionX : positionX, positionY : positionY, angle : angle}
 	
 }
 

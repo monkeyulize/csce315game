@@ -30,9 +30,19 @@ io.sockets.on('connection', function (socket) {
 	socket.on('wh', function(data) {
 		game.init(players, data.width, data.height);
 	});
+	
+	
 	socket.on('mouse data', function (data) {
 		console.log(data);
-		game.update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
+		var posX, posY, ang;
+		var pos_data = game.update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
+		posX = pos_data.positionX;
+		posY = pos_data.positionY;
+		ang = pos_data.angle;
+		/* console.log(posX);
+		console.log(posY);
+		console.log(ang); */
+		socket.emit('pos data', pos_data);
 	});
 	
 	socket.on('disconnect', function () {

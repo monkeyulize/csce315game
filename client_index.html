@@ -10,19 +10,77 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 	var p_id;
-	
+	var socket = io.connect('http://localhost:24130');
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
+	var width = canvas.width;
+	var height = canvas.height;
+	var    b2Vec2 = Box2D.Common.Math.b2Vec2
+	,	   b2Cross = Box2D.Common.Math.b2Cross
+	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
+	,      b2Body = Box2D.Dynamics.b2Body
+	,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+	,      b2World = Box2D.Dynamics.b2World
+	,      b2BoxDef = Box2D.Dynamics.b2BoxDef
+	,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+	,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+	,	   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape
+	,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
+	,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+	,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+	,      b2Fixture = Box2D.Dynamics.b2Fixture
+	,      b2AABB = Box2D.Collision.b2AABB;
+	var bodyDef = new b2BodyDef;
+	bodyDef.type = b2Body.b2_dynamicBody;
+	bodyDef.position.Set(4, 8);
+	bodyDef.userData = 'BOX';
+	var myFixture = new b2FixtureDef;
+	myFixture.shape = new b2CircleShape(3);
+	myFixture.density = 1;
+	myFixture.friction = 0.5;
+	myFixture.restitution = 0.5;
 	
-	
-	var socket = io.connect('http://localhost:24130');
-	
+	var world = new b2World(new b2Vec2(0, 0), false);	
+	myBody = world.CreateBody(bodyDef);
+	myBody.SetPositionAndAngle(new b2Vec2(10,10),0);
+	myBody.SetLinearVelocity(new b2Vec2(0, 0));
+	myBody.SetFixedRotation(false);
+	myBody.SetAngularVelocity(0);
+	myBody.CreateFixture(myFixture);
+	var Wall_one = new b2FixtureDef;
+	Wall_one.density = .5;
+	Wall_one.friction = 0.4;
+	Wall_one.restitution = 0.2;
+	var bodyDef2 = new b2BodyDef;
+	bodyDef2.type = b2Body.b2_staticBody;
+	/*
+ 	Wall_one.shape = new b2PolygonShape;
+	Wall_one.shape.SetAsBox(width/2,4);
+	bodyDef.position.Set(width/2, 0);
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	bodyDef.position.Set(width/2, (height/10));
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	Wall_one.shape.SetAsBox(2,height/2);
+	bodyDef.position.Set(0, height/2);
+	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	bodyDef.position.Set(width/10, height/2);
+	world.CreateBody(bodyDef).CreateFixture(Wall_one); 
+	*/
+	var posX, posY, ang;
 	socket.on('ready', function(data) {
 		console.log("connected");
 		p_id = data.playerID;
 		console.log(p_id);
 		socket.emit('wh', {width : canvas.width, height : canvas.height });		
 		
+	});
+	
+	socket.on('pos data', function(data) {
+		posX = data.positionX;
+		posY = data.positionY;
+		ang = data.angle;
+		//console.log(data.positionX);
+		console.log(ang);
 	});
 	
 	
@@ -32,6 +90,7 @@
 		isMouseDown = true;
 		handleMouseMove(e);
 		document.addEventListener("mousemove", handleMouseMove, true);
+		socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
 	}, true);
 	
 	document.addEventListener("mouseup", function() {
@@ -45,7 +104,7 @@
 		mouseX = (e.clientX - canvasPosition.x) / 10;
 		mouseY = (e.clientY - canvasPosition.y) / 10;
 		console.log(mouseX + " " + mouseY);
-		socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY });
+		
 	};
 	function getElementPosition(element) {
 		var elem=element, tagname="", x=0, y=0;
@@ -64,15 +123,26 @@
 		return {x: x, y: y};
 	}
 	var debugDraw = new b2DebugDraw();
-debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
-debugDraw.SetDrawScale(10);
-debugDraw.SetFillAlpha(0.5); //define transparency
-debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
-debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-world.SetDebugDraw(debugDraw);
-
-window.setInterval(update, 1000/60);
+	debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
+	debugDraw.SetDrawScale(10);
+	debugDraw.SetFillAlpha(0.5); //define transparency
+	debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
+	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+	world.SetDebugDraw(debugDraw);
 	
+	window.setInterval(update, 1000/60);
+	
+	
+	function update() {
+		
+		myBody.SetPositionAndAngle(new b2Vec2(posX,posY), ang);
+		
+		world.Step(1/60, 10, 10);
+		world.DrawDebugData();			
+	
+		world.ClearForces();
+		
+	}	
 	
 	
 </script>
