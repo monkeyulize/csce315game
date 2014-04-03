@@ -92,9 +92,23 @@
 		myFixture.friction = 0.5;
 		myFixture.restitution = 0.5;
 		
+		var myHorn = new b2FixtureDef;
+		myHorn.shape = new b2PolygonShape;
+ 	  	myHorn.shape.SetAsArray([
+		  new b2Vec2(3*0.866 ,3*0.5),
+		  new b2Vec2(3*-0.866, 3*0.5),
+		  new b2Vec2(0, 3*-1),
+		  ]);
+		//myHorn.shape.m_centroid = (-205,10); //in the middle
+		myHorn.density = 1;
+		myHorn.friction = 0.5;
+		myHorn.restitution = 0.5;
+		
 		var myLives = 3;
 		
 		myBody.CreateFixture(myFixture);
+		bodyDef.position.Set(4, 25);
+		myBody.CreateFixture(myHorn);
 		
 		//Crack at pseudoplayer
 		var yourBody = world.CreateBody(bodyDef);
@@ -319,9 +333,9 @@ manipulating HTML elements, handling events, etc.
 <!--
 socket.io.js will be provided by the node.js server that you will run.
 -->
-<script src="/socket.io/socket.io.js"></script>
+<!-script src="/socket.io/socket.io.js"></script>
 
-<script>
+<!-script>
   // $(document) returns a jQuery object representing the whole document (page).
   // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
   // document is loaded.
@@ -362,7 +376,7 @@ socket.io.js will be provided by the node.js server that you will run.
     });
 
   });
-</script>
+<!-/script>
 	
 	
 </html>
