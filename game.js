@@ -1,5 +1,9 @@
 var Box2D = require('./Box2d.js');
-
+var start_positions = new Array();
+start_positions[0] = {x: 10, y: 10};
+start_positions[1] = {x: 50, y: 10};
+start_positions[2] = {x: 10, y: 20};
+start_positions[3] = {x: 20, y: 20};
 var myBodies = [];
 var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,	   b2Cross = Box2D.Common.Math.b2Cross
@@ -30,19 +34,27 @@ myFixture.density = 1;
 myFixture.friction = 0.5;
 myFixture.restitution = 0.5;
 var world = new b2World(new b2Vec2(0, 0), false);	
-var init = function(players, width, height) {
+var add_player = function(num_players, width, height) {
 	console.log("IN THE INIT");
-	for(i = 0; i < players.length; i++) {
+	console.log("num_players: " + num_players);
+	myBodies[num_players-1] = world.CreateBody(bodyDef);	
+	myBodies[num_players-1].SetPositionAndAngle(
+		new b2Vec2(start_positions[num_players-1].x, start_positions[num_players-1].y),0);
+	myBodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+	myBodies[num_players-1].SetFixedRotation(false);
+	myBodies[num_players-1].SetAngularVelocity(0);
+	myBodies[num_players-1].CreateFixture(myFixture); 	
+	/* for(i = 0; i < num_players; i++) {
 		myBodies[i] = world.CreateBody(bodyDef);			
 	}
 	for(i = 0; i < myBodies.length; i++) {
-		myBodies[i].SetPositionAndAngle(new b2Vec2(10,10),0);
+		myBodies[i].SetPositionAndAngle(new b2Vec2(start_positions[i].x, start_positions[i].y),0);
 		myBodies[i].SetLinearVelocity(new b2Vec2(0, 0));
 		myBodies[i].SetFixedRotation(false);
 		myBodies[i].SetAngularVelocity(0);
 		myBodies[i].CreateFixture(myFixture);
 		console.log(i);
-	}
+	}  */
 	console.log(width);
 	console.log(height);
 	
@@ -67,6 +79,8 @@ var init = function(players, width, height) {
 	world.CreateBody(bodyDef).CreateFixture(Wall_one);  */
 	
 }
+
+
 
 	
 		
@@ -230,11 +244,10 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	//console.log(ret);
 	
 	world.Step(1/60, 10, 10);
-
 	world.ClearForces();
 	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID}
 	
 }
 
-module.exports.init = init;
+module.exports.add_player = add_player;
 module.exports.update = update;
