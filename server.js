@@ -26,8 +26,9 @@ io.sockets.on('connection', function (socket) {
 	clients[p_id] = {"socket" : socket.id};
 	players[p_id] = p_id;
 	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
+	socket.broadcast.emit('player joined', {num_players : players.length, other_playerID : p_id});
 	p_id++;
-	//socket.emit('player connected', {num_players : players.length});
+	
 	socket.on('wh', function(data) {
 		game.init(players, data.width, data.height);
 	});
@@ -36,14 +37,14 @@ io.sockets.on('connection', function (socket) {
 	socket.on('mouse data', function (data) {
 		console.log(data);
 		var posX, posY, ang;
-		var pos_data = game.update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
+		//var pos_data = game.update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
 		posX = pos_data.positionX;
 		posY = pos_data.positionY;
 		ang = pos_data.angle;
 		/* console.log(posX);
 		console.log(posY);
 		console.log(ang); */
-		socket.emit('pos data', pos_data);
+		//socket.emit('pos data', pos_data);
 	});
 	
 	socket.on('disconnect', function () {

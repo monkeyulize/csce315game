@@ -73,7 +73,7 @@
 	var bodies = new Array();
 	var posX, posY, ang;
 	socket.on('player connected', function(data) {
-		console.log("connected");
+		console.log("player connected");
 		p_id = data.playerID;
 			
 		
@@ -89,10 +89,44 @@
 		bodies[num_players-1].CreateFixture(myFixture);
 		bodies[num_players-1]["playerID"] = p_id;
 		console.log("num_players: " + num_players);		
-		console.log("player ID: " + bodies[num_players-1]["playerID"]);
+		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
+		
+		for(i = num_players-2; i >= 0; i--) {
+			bodies[i] = world.CreateBody(bodyDef); 
+			bodies[i].SetPositionAndAngle(new b2Vec2(10,10),0);
+			bodies[i].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[i].SetFixedRotation(false);
+			bodies[i].SetAngularVelocity(0);
+			bodies[i].CreateFixture(myFixture);
+			bodies[i]["playerID"] = i;
+			console.log("i: " + i);
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[i]["playerID"]);
+		
+		}
+		
 		
 		socket.emit('wh', {width : canvas.width, height : canvas.height });		
 		
+	});
+	
+	socket.on('player joined', function(data) {
+		console.log("another player joined");
+		if(data.num_players > num_players) {
+			num_players = data.num_players;
+			bodies[num_players-1] = world.CreateBody(bodyDef); 
+			bodies[num_players-1].SetPositionAndAngle(new b2Vec2(10,10),0);
+			bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[num_players-1].SetFixedRotation(false);
+			bodies[num_players-1].SetAngularVelocity(0);
+			bodies[num_players-1].CreateFixture(myFixture);
+			bodies[num_players-1]["playerID"] = data.other_playerID;
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[num_players-1]["playerID"]);
+		
+		}
+	
+	
 	});
 	function positionAndAngle(positionX, positionY, angle) {
 		this.positionX = positionX;
@@ -188,18 +222,18 @@
 
 	
 	function update() {
-		var posXo, posYo, ango;
-		//console.log("bodies.length: " + bodies.length);
-		for(i = 0; i < bodies.length; i++) {
-			if (bodies[i]["playerID"] == p_id) {
-				bodies[i].SetPositionAndAngle(new b2Vec2(posX,posY), ang);
-			} else {
-				posXo = posAngArray[i].positionX;
-				posYo = posAngArray[i].positionY;
-				ango = posAngArray[i].angle;
-				bodies[i].SetPositionAndAngle(new b2Vec2(posXo,posYo), ango);
-			}		
-		}
+		//var posXo, posYo, ango;
+		////console.log("bodies.length: " + bodies.length);
+		//for(i = 0; i < bodies.length; i++) {
+		//	if (bodies[i]["playerID"] == p_id) {
+		//		bodies[i].SetPositionAndAngle(new b2Vec2(posX,posY), ang);
+		//	} else {
+		//		posXo = posAngArray[i].positionX;
+		//		posYo = posAngArray[i].positionY;
+		//		ango = posAngArray[i].angle;
+		//		bodies[i].SetPositionAndAngle(new b2Vec2(posXo,posYo), ango);
+		//	}		
+		//}
 		
 		world.Step(1/60, 10, 10);
 		world.DrawDebugData();			
