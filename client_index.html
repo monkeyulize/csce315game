@@ -13,6 +13,7 @@
 	var num_players;
 	//var socket = io.connect('http://compute.cse.tamu.edu:24130');
 	var socket = io.connect('http://192.168.1.100:24130');
+	//var socket = io.connect('http://74.192.6.170:24130');
 	var start_positions = new Array();
 	start_positions[0] = {x: 10, y: 10};
 	start_positions[1] = {x: 50, y: 10};
@@ -20,8 +21,8 @@
 	start_positions[3] = {x: 20, y: 20};
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-	var width = canvas.width;
-	var height = canvas.height;
+	var width = 800;
+	var height = 600;
 	var    b2Vec2 = Box2D.Common.Math.b2Vec2
 	,	   b2Cross = Box2D.Common.Math.b2Cross
 	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -55,19 +56,19 @@
 	Wall_one.restitution = 0.2;
 	var bodyDef2 = new b2BodyDef;
 	bodyDef2.type = b2Body.b2_staticBody;
-	/*
+	
  	Wall_one.shape = new b2PolygonShape;
 	Wall_one.shape.SetAsBox(width/2,4);
-	bodyDef.position.Set(width/2, 0);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);
-	bodyDef.position.Set(width/2, (height/10));
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	bodyDef2.position.Set(width/2, 0);
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
+	bodyDef2.position.Set(width/2, (height/10));
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
 	Wall_one.shape.SetAsBox(2,height/2);
-	bodyDef.position.Set(0, height/2);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);
-	bodyDef.position.Set(width/10, height/2);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one); 
-	*/
+	bodyDef2.position.Set(0, height/2);
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
+	bodyDef2.position.Set(width/10, height/2);
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one); 
+	
 	var started = false;
 	var bodies = new Array();
 	var posX, posY, ang;
@@ -134,21 +135,9 @@
 		this.angle = angle;	
 	}
 	
-	//var posAngArray = new Array();
+
 	socket.on('pos data', function(data) {
-		//console.log(data.playerID);
-		//posAngArray[data.playerID] = new positionAndAngle(data.positionX, data.positionY, data.angle);
-		console.log("receiving position data for ID: " + data.playerID);
 		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
-		//console.log("player ID " + p_id + " detects movement of " + data.playerID);
-		/*
-		for(i = 0; i < posAngArray.length; i++) {
-			posX = posAngArray[i].positionX;
-			posY = posAngArray[i].positionY;
-			ang = posAngArray[i].angle;
-			bodies[i].SetPositionAndAngle(new b2Vec2(posX,posY), ang);					
-		}
-		*/
 		world.Step(1/60, 10, 10);
 		world.DrawDebugData();			
 	

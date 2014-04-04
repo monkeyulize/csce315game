@@ -31,12 +31,12 @@ io.sockets.on('connection', function (socket) {
 	p_id++;
 	
 	socket.on('wh', function(data) {
-		game.add_player(players.length, data.width, data.height);
+		game.add_player(players.length, 800, 600);
 	});
 	
 	
 	socket.on('mouse data', function (data) {
-		console.log(data);
+		//console.log(data);
 		var pos_data = game.update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
 		io.sockets.emit('pos data', pos_data);
 	});

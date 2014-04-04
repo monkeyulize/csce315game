@@ -66,17 +66,17 @@ var add_player = function(num_players, width, height) {
 	var bodyDef2 = new b2BodyDef;
 	bodyDef2.type = b2Body.b2_staticBody;
 	
-/*  	Wall_one.shape = new b2PolygonShape;
+  	Wall_one.shape = new b2PolygonShape;
 	Wall_one.shape.SetAsBox(width/2,4);
-	bodyDef.position.Set(width/2, 0);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);
-	bodyDef.position.Set(width/2, (height/10));
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);
+	bodyDef2.position.Set(width/2, 0);
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
+	bodyDef2.position.Set(width/2, (height/10));
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
 	Wall_one.shape.SetAsBox(2,height/2);
-	bodyDef.position.Set(0, height/2);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);
-	bodyDef.position.Set(width/10, height/2);
-	world.CreateBody(bodyDef).CreateFixture(Wall_one);  */
+	bodyDef2.position.Set(0, height/2);
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
+	bodyDef2.position.Set(width/10, height/2);
+	world.CreateBody(bodyDef2).CreateFixture(Wall_one);  
 	
 }
 
