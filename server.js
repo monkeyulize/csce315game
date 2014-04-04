@@ -21,12 +21,13 @@ function handler (req, res) {
 }
 var p_id = 0;
 var players = new Array();
+var clients = [];
 io.sockets.on('connection', function (socket) {
-	socket.emit('ready', { playerID: p_id });
+	clients[p_id] = {"socket" : socket.id};
 	players[p_id] = p_id;
+	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
 	p_id++;
-	
-	
+	//socket.emit('player connected', {num_players : players.length});
 	socket.on('wh', function(data) {
 		game.init(players, data.width, data.height);
 	});
@@ -48,6 +49,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		io.sockets.emit('user disconnected');
 		p_id--;
+		players.pop();
 	});
 	
 });

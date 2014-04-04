@@ -10,6 +10,8 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
 	var p_id;
+	var num_players;
+	//var socket = io.connect('http://compute.cse.tamu.edu:24130');
 	var socket = io.connect('http://localhost:24130');
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
@@ -41,12 +43,14 @@
 	myFixture.restitution = 0.5;
 	
 	var world = new b2World(new b2Vec2(0, 0), false);	
+	/*
 	myBody = world.CreateBody(bodyDef);
 	myBody.SetPositionAndAngle(new b2Vec2(10,10),0);
 	myBody.SetLinearVelocity(new b2Vec2(0, 0));
 	myBody.SetFixedRotation(false);
 	myBody.SetAngularVelocity(0);
 	myBody.CreateFixture(myFixture);
+	*/
 	var Wall_one = new b2FixtureDef;
 	Wall_one.density = .5;
 	Wall_one.friction = 0.4;
@@ -66,22 +70,66 @@
 	bodyDef.position.Set(width/10, height/2);
 	world.CreateBody(bodyDef).CreateFixture(Wall_one); 
 	*/
+	var bodies = new Array();
 	var posX, posY, ang;
-	socket.on('ready', function(data) {
+	socket.on('player connected', function(data) {
 		console.log("connected");
 		p_id = data.playerID;
-		console.log(p_id);
+			
+		
+		
+					
+		num_players = data.num_players;	
+		
+		bodies[num_players-1] = world.CreateBody(bodyDef); 
+		bodies[num_players-1].SetPositionAndAngle(new b2Vec2(10,10),0);
+		bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+		bodies[num_players-1].SetFixedRotation(false);
+		bodies[num_players-1].SetAngularVelocity(0);
+		bodies[num_players-1].CreateFixture(myFixture);
+		bodies[num_players-1]["playerID"] = p_id;
+		console.log("num_players: " + num_players);		
+		console.log("player ID: " + bodies[num_players-1]["playerID"]);
+		
 		socket.emit('wh', {width : canvas.width, height : canvas.height });		
 		
 	});
+	function positionAndAngle(positionX, positionY, angle) {
+		this.positionX = positionX;
+		this.positionY = positionY;
+		this.angle = angle;	
+	}
 	
+	var posAngArray = new Array();
 	socket.on('pos data', function(data) {
-		posX = data.positionX;
-		posY = data.positionY;
-		ang = data.angle;
+		if(data.playerID == p_id) {
+			
+			posX = data.positionX;
+			posY = data.positionY;
+			ang = data.angle;
+			var posAng = new positionAndAngle(data.positionX, data.positionY, data.angle);
+			posAngArray[p_id] = posAng;
+		} else {
+			var posAng = new positionAndAngle(data.positionX, data.positionY, data.angle);			
+			posAngArray[data.playerID] = posAng;			
+		}
+		
 		//console.log(data.positionX);
-		console.log(ang);
+		//console.log(ang);
 	});
+	
+	/*
+	socket.on('player connected', function(data) {
+		num_players = data.num_players;	
+		otherBodies[num_players] = world.CreateBody(bodyDef); 
+		otherBodies[num_players].SetPositionAndAngle(new b2Vec2(10,10),0);
+		otherBodies[num_players].SetLinearVelocity(new b2Vec2(0, 0));
+		otherBodies[num_players].SetFixedRotation(false);
+		otherBodies[num_players].SetAngularVelocity(0);
+		otherBodies[num_players].CreateFixture(myFixture);
+		console.log(num_players);
+	});
+	*/
 	
 	var started = false;
 	var mouseX, mouseY, mousePVec, isMouseDown;
@@ -103,7 +151,7 @@
 	function handleMouseMove(e) {
 		mouseX = (e.clientX - canvasPosition.x) / 10;
 		mouseY = (e.clientY - canvasPosition.y) / 10;
-		console.log(mouseX + " " + mouseY);
+		//console.log(mouseX + " " + mouseY);
 		
 	};
 	function getElementPosition(element) {
@@ -140,8 +188,18 @@
 
 	
 	function update() {
-		
-		myBody.SetPositionAndAngle(new b2Vec2(posX,posY), ang);
+		var posXo, posYo, ango;
+		//console.log("bodies.length: " + bodies.length);
+		for(i = 0; i < bodies.length; i++) {
+			if (bodies[i]["playerID"] == p_id) {
+				bodies[i].SetPositionAndAngle(new b2Vec2(posX,posY), ang);
+			} else {
+				posXo = posAngArray[i].positionX;
+				posYo = posAngArray[i].positionY;
+				ango = posAngArray[i].angle;
+				bodies[i].SetPositionAndAngle(new b2Vec2(posXo,posYo), ango);
+			}		
+		}
 		
 		world.Step(1/60, 10, 10);
 		world.DrawDebugData();			

@@ -232,7 +232,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	world.Step(1/60, 10, 10);
 
 	world.ClearForces();
-	return {positionX : positionX, positionY : positionY, angle : angle}
+	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID}
 	
 }
 
