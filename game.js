@@ -211,6 +211,10 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 	//console.log("a2: " + angle2);
 	
 }
+var destroy_body = function(playerID) {
+	world.DestroyBody(myBodies[playerID]);
+}
+	
 	
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	/* console.log("playerID: " + playerID);
@@ -244,6 +248,8 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	//console.log(ret);
 	
 	world.Step(1/60, 10, 10);
+	
+	
 	world.ClearForces();
 	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID}
 	
@@ -251,3 +257,4 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 
 module.exports.add_player = add_player;
 module.exports.update = update;
+module.exports.destroy_body = destroy_body;

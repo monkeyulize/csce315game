@@ -42,9 +42,19 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	socket.on('disconnect', function () {
-		io.sockets.emit('user disconnected');
+		
+		//console.log(socket.id + " disconnected");
+		for(i = 0; i < clients.length; i++) {
+			//console.log("socket ID " + clients[i].socket);
+			if(clients[i].socket == socket.id) {
+				game.destroy_body(i);
+				io.sockets.emit('player disconnected', {id_to_destroy : i});
+			}
+		}
+		
 		p_id--;
 		players.pop();
+		
 	});
 	
 });

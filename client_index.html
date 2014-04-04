@@ -126,9 +126,14 @@
 			console.log("player ID: " + bodies[num_players-1]["playerID"]);
 		
 		}
-	
-	
 	});
+	
+	socket.on('player disconnected', function(data) {
+		world.DestroyBody(bodies[data.id_to_destroy]);	
+		num_players--;
+	});
+	
+	
 	function positionAndAngle(positionX, positionY, angle) {
 		this.positionX = positionX;
 		this.positionY = positionY;
