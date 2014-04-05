@@ -11,9 +11,7 @@
 <script>
 	var p_id;
 	var num_players;
-	//var socket = io.connect('http://compute.cse.tamu.edu:24130');
-	var socket = io.connect('http://192.168.1.100:24130');
-	//var socket = io.connect('http://74.192.6.170:24130');
+	var socket = io.connect('http://localhost:24130');
 	var start_positions = new Array();
 	start_positions[0] = {x: 10, y: 10};
 	start_positions[1] = {x: 50, y: 10};
@@ -75,9 +73,6 @@
 	socket.on('player connected', function(data) {
 		console.log("player connected");
 		p_id = data.playerID;
-			
-		
-		
 					
 		num_players = data.num_players;	
 		
@@ -148,9 +143,7 @@
 	
 		world.ClearForces();
 	});
-	
-	
-	
+		
 	var mouseX, mouseY, mousePVec, isMouseDown;
 	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
 	document.addEventListener("mousedown", function(e) {
@@ -197,31 +190,12 @@
 	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 	world.SetDebugDraw(debugDraw);
 	
-	//window.setInterval(update, 1000/60);
 	window.setInterval(function() {
 		if(started == true) {
 			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
 		}			
 	}, 1000/60);
-	
 
-	/*
-	function update() {
-		//console.log("bodies.length: " + bodies.length);
-		for(i = 0; i < posAngArray.length; i++) {
-			posX = posAngArray[i].positionX;
-			posY = posAngArray[i].positionY;
-			ang = posAngArray[i].angle;
-			bodies[i].SetPositionAndAngle(new b2Vec2(posX,posY), ang);					
-		}
-		
-		world.Step(1/60, 10, 10);
-		world.DrawDebugData();			
-	
-		world.ClearForces();
-		
-	}	
-	*/
 	
 </script>
 

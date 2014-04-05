@@ -5,9 +5,6 @@ var game = require('./game');
 server.listen(24130);
 io.set('log level', 1);
 
-
-
-
 function handler (req, res) {
   fs.readFile(__dirname + '/client_index.html',
   function (err, data) {
@@ -24,6 +21,8 @@ var p_id = 0;
 var players = new Array();
 var clients = [];
 io.sockets.on('connection', function (socket) {
+	console.log("player connected");
+	console.log("socket ID: " + socket.id);
 	clients[p_id] = {"socket" : socket.id};
 	players[p_id] = p_id;
 	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
@@ -47,6 +46,7 @@ io.sockets.on('connection', function (socket) {
 		for(i = 0; i < clients.length; i++) {
 			//console.log("socket ID " + clients[i].socket);
 			if(clients[i].socket == socket.id) {
+				console.log("player " + i + " disconnected");
 				game.destroy_body(i);
 				io.sockets.emit('player disconnected', {id_to_destroy : i});
 			}

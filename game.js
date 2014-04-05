@@ -35,7 +35,6 @@ myFixture.friction = 0.5;
 myFixture.restitution = 0.5;
 var world = new b2World(new b2Vec2(0, 0), false);	
 var add_player = function(num_players, width, height) {
-	console.log("IN THE INIT");
 	console.log("num_players: " + num_players);
 	myBodies[num_players-1] = world.CreateBody(bodyDef);	
 	myBodies[num_players-1].SetPositionAndAngle(
@@ -44,17 +43,6 @@ var add_player = function(num_players, width, height) {
 	myBodies[num_players-1].SetFixedRotation(false);
 	myBodies[num_players-1].SetAngularVelocity(0);
 	myBodies[num_players-1].CreateFixture(myFixture); 	
-	/* for(i = 0; i < num_players; i++) {
-		myBodies[i] = world.CreateBody(bodyDef);			
-	}
-	for(i = 0; i < myBodies.length; i++) {
-		myBodies[i].SetPositionAndAngle(new b2Vec2(start_positions[i].x, start_positions[i].y),0);
-		myBodies[i].SetLinearVelocity(new b2Vec2(0, 0));
-		myBodies[i].SetFixedRotation(false);
-		myBodies[i].SetAngularVelocity(0);
-		myBodies[i].CreateFixture(myFixture);
-		console.log(i);
-	}  */
 	console.log(width);
 	console.log(height);
 	
@@ -87,21 +75,33 @@ var add_player = function(num_players, width, height) {
 
 
 
-/* var listener = new Box2D.Dynamics.b2ContactListener;
+var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
+	//for(i = 0; i < myBodies.length; i++) {
+	//	if(myBodies[i] == 
+	//
+	//}
+	var temp_body = contact.GetFixtureB().GetBody();
+	console.log(temp_body.GetLinearVelocity().Length());
+	//contact.GetFixtureB().GetBody().SetLinearDamping(
+	//	Math.log(temp_body.GetLinearVelocity().Length())/2
+	//);
+	
 	console.log("you hit something!");
-	console.log("impact velocity = " + myBodies[playerID].GetLinearVelocity().Length());
-	if(myBodies[playerID].GetLinearVelocity().Length() > 10) {
+	console.log("impact velocity = " + temp_body.GetLinearVelocity().Length());
+	if(temp_body.GetLinearVelocity().Length() > 10) {
 		console.log("hit wall too hard!");
-		console.log("setting damping to: " + Math.log(myBodies[playerID].GetLinearVelocity().Length())/2);
+		console.log("setting damping to: " + Math.log(temp_body.GetLinearVelocity().Length())/2);
 		//console.log("My Lives : " + myLives);
 		isStunned = true;
-		myBodies[playerID].SetLinearDamping(Math.log(myBodies[playerID].GetLinearVelocity().Length())/2);
-		myLives= myLives - 1;
+		contact.GetFixtureB().GetBody().SetLinearDamping(
+			Math.log(temp_body.GetLinearVelocity().Length())/2
+		);
+		//myLives= myLives - 1;
 	}
 	console.log("isStunned = " + isStunned);			
-} */
+} 
 
 
 
@@ -110,10 +110,7 @@ listener.BeginContact = function(contact) {
 
 var myLives = 3;
 
-/*
-//attempting wall_1
 
-*/
 
 
 
@@ -141,8 +138,6 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 	if(angle2 > 2*Math.PI) {
 		angle2 -= 2*Math.PI;
 	}
-
-	
 	
 	if (angle1_act < 0) {
 		angle1 = 2*Math.PI - (-1 * angle1_act);
@@ -175,7 +170,6 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 			canMove = false;
 		}
 		
-
 	}else if(angle1 < Math.PI) {
 		if(angle2 >= Math.PI) {
 			if(angle1 <= (angle2 - Math.PI)) {
@@ -214,8 +208,7 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 var destroy_body = function(playerID) {
 	world.DestroyBody(myBodies[playerID]);
 }
-	
-	
+		
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	/* console.log("playerID: " + playerID);
 	console.log("isMouseDown: " + isMouseDown);
@@ -232,7 +225,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	if(!isMouseDown) {
 		myBodies[playerID].SetAngularVelocity(0);
 	}		
-	if(isMouseDown/*  && canMove == true && isStunned == false */) {
+	if(isMouseDown && canMove == true && isStunned == false ) {
 		//console.log("moving");
 		myBodies[playerID].ApplyForce(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x)*10, (mouseY - myBodies[playerID].GetPosition().y)*10), myBodies[playerID].GetPosition());
 		
@@ -251,8 +244,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	
 	
 	world.ClearForces();
-	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID}
-	
+	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID}	
 }
 
 module.exports.add_player = add_player;
