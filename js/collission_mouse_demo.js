@@ -71,4 +71,4 @@ function tick(event) {
 		});
 		}
 
-init();
+//init();

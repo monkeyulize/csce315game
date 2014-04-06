@@ -1,0 +1,126 @@
+<html>
+	<head>
+
+	</head>
+	
+	
+	<body>
+	</body>
+	
+<style>
+body {
+  font-family: sans-serif;
+}
+
+#status {
+  font-size: 14pt;
+  color: gray;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+#board {
+  width: 800px;
+  height: 600px;
+  border: 1px solid gray;
+  padding: 3px;
+}
+
+#board div {
+  margin-top: 5px;
+}
+
+#msg {
+  width: 740px;
+  margin-right: 10px;
+}
+
+#send {
+  width: 50px;
+}
+
+#login_section, #chat_section {
+  display: none;
+}
+
+.user_name {
+  font-size: 10pt;
+  font-weight: bold;
+  color: blue;
+}
+
+.says {
+  font-size: 10pt;
+  color: gray;
+}
+
+.msg {
+  font-size: 12pt;
+  font-family: serif;
+}
+
+.notification {
+  color: green;
+}
+</style>
+
+
+
+
+<div id="warning">
+  JavaScript is required to run this app.
+</div>
+
+<div id="login_section">
+  <div id="status">Connecting to the chat room ...</div>
+  Your name:
+  <input id="name" type="text"></input>
+  <input id="login" type="button" value="Log In" disabled="true"></input>
+</div>
+
+<div id="chat_section">
+  <div id="board">
+  </div>
+  <input id="msg" type="text"></input>
+  <input id="send" type="button" value="Send"></input>
+</div>
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script>
+  // $(document) returns a jQuery object representing the whole document (page).
+  // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
+  // document is loaded.
+  $(document).ready(function() {
+    // Hide the warning section and show the login section.
+    $('#warning').css('display', 'none');
+    $('#login_section').css('display', 'block');
+
+
+
+    // When Enter is pressed in the name field, it should be treated as clicking
+    // on the Log In button.
+    $('#name').keyup(function(event) {
+      if (event.keyCode == 13) {
+        $('#login').click();
+		$('#login_section').css('display', 'none');
+        $('#chat_section').css('display', 'block');
+        $('#status').text('Logged In.');
+      }
+    });
+
+    // When Enter is pressed in the message field, it should be treated as
+    // clicking on the Send button.
+    $('#msg').keyup(function(event) {
+      if (event.keyCode == 13) {
+        $('#send').click();
+      }
+    });
+  });
+</script>
+
+
+	
+	
+</html>
+
+
+	
