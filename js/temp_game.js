@@ -1,8 +1,10 @@
 function init() {
 		canvas.style="background-color:#00CCCC;"
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-				
+		//canvas.width = window.innerWidth;
+		//canvas.height = window.innerHeight;
+		canvas.width = 4000;
+		canvas.height = 2000;	
+		
 		var    b2Vec2 = Box2D.Common.Math.b2Vec2
 		,	   b2Cross = Box2D.Common.Math.b2Cross
 		,      b2BodyDef = Box2D.Dynamics.b2BodyDef

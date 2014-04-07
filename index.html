@@ -26,7 +26,9 @@
 		}
 
 		#game {
-		  
+		  position: absolute;
+			top: 0;
+			z-index:-1;
 		}
 
 		#board div {
@@ -67,9 +69,13 @@
 	</div>
 
 	<div id="background">
-	  <img src="./assets/bg.png" alt="Background" width="window.height" height="window.width">
+	  <img src="./assets/bg.png" alt="Background" width="4000" height="2000">
 	</div>
-
+	
+	<div id="game">
+	  <img src="./assets/board.png" alt="Board" width="4000" height="2000">
+	</div>
+	
 	<div id="login_section">
 	  Your name:
 	  <input id="name" type="text"></input>
@@ -88,6 +94,7 @@
 			$('#warning').css('display', 'none');
 			$('#login_section').css('display', 'block');
 			$('#background').css('display', 'block');
+			$('#game').css('display', 'none');
 			
 
 
@@ -97,11 +104,12 @@
 			if (event.keyCode == 13) {
 				$('#login').click();
 				$('#login_section').css('display', 'none');
+				init();
 				$('#game').css('display', 'block');
 				$('#background').css('display', 'none');
 				$('#status').text('Logged In.');
 				
-				init();
+				
 			}
 		});
 
