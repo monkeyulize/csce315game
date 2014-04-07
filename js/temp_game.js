@@ -1,4 +1,5 @@
 function init() {
+		canvas.style="background-color:#00CCCC;"
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 				

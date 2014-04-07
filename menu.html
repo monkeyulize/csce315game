@@ -13,50 +13,37 @@ body {
 }
 
 #status {
+  position: absolute;
+	top: -50;
+	right: 20;
   font-size: 14pt;
-  color: gray;
-  margin-top: 12px;
-  margin-bottom: 12px;
+  color: blue;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+#background{
+  
 }
 
-#board {
-  width: 800px;
-  height: 600px;
-  border: 1px solid gray;
-  padding: 3px;
+#game {
+  
 }
 
 #board div {
   margin-top: 5px;
 }
 
-#msg {
-  width: 740px;
-  margin-right: 10px;
-}
-
-#send {
-  width: 50px;
-}
-
-#login_section, #chat_section {
+#login_section{
   display: none;
-}
+  position: absolute;
+	top: 250;
+	right: 600;
+	}
 
 .user_name {
   font-size: 10pt;
   font-weight: bold;
   color: blue;
-}
-
-.says {
-  font-size: 10pt;
-  color: gray;
-}
-
-.msg {
-  font-size: 12pt;
-  font-family: serif;
 }
 
 .notification {
@@ -71,19 +58,17 @@ body {
   JavaScript is required to run this app.
 </div>
 
-<div id="login_section">
-  <div id="status">Connecting to the chat room ...</div>
-  Your name:
-  <input id="name" type="text"></input>
-  <input id="login" type="button" value="Log In" disabled="true"></input>
+<div id="background">
+  <img src="./assets/bg.png" alt="Background" width="window.height" height="window.width">
 </div>
 
-<div id="chat_section">
-  <div id="board">
-  </div>
-  <input id="msg" type="text"></input>
-  <input id="send" type="button" value="Send"></input>
+<div id="login_section">
+  Your name:
+  <input id="name" type="text"></input>
+  <div></div>
+  <input id="login" type="button" value="Join Game" disabled="true" horizontal-align: text-center></input>
 </div>
+
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 <script>
   // $(document) returns a jQuery object representing the whole document (page).
@@ -92,8 +77,9 @@ body {
   $(document).ready(function() {
     // Hide the warning section and show the login section.
     $('#warning').css('display', 'none');
-    $('#login_section').css('display', 'block');
-
+	$('#login_section').css('display', 'block');
+	$('#background').css('display', 'block');
+	
 
 
     // When Enter is pressed in the name field, it should be treated as clicking
@@ -102,18 +88,12 @@ body {
       if (event.keyCode == 13) {
         $('#login').click();
 		$('#login_section').css('display', 'none');
-        $('#chat_section').css('display', 'block');
+        $('#game').css('display', 'block');
+		$('#background').css('display', 'none');
         $('#status').text('Logged In.');
       }
     });
 
-    // When Enter is pressed in the message field, it should be treated as
-    // clicking on the Send button.
-    $('#msg').keyup(function(event) {
-      if (event.keyCode == 13) {
-        $('#send').click();
-      }
-    });
   });
 </script>
 
