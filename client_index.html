@@ -6,7 +6,7 @@
 <body>
 <canvas width="500" height="500" id="canvas"></canvas>
 </body>
-<script type="text/javascript" src="http://lufylegend.com/js/Box2dWeb-2.1.a.3.min.js"></script> 
+<script type="text/javascript" src="Box2d.js"></script> 
 <script src="/socket.io/socket.io.js"></script>
 <script>
 	var p_id;
@@ -102,7 +102,7 @@
 		
 		started = true;
 		socket.emit('wh', {width : canvas.width, height : canvas.height });		
-		
+		requestAnimFrame(update);
 	});
 	
 	socket.on('player joined', function(data) {
@@ -122,7 +122,16 @@
 		
 		}
 	});
-	
+	window.requestAnimFrame = (function(){
+		return window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function(/* function */ callback, /* DOMElement */ element){
+		window.setTimeout(callback, 1000 / 60);
+		};
+	})();		
 	socket.on('player disconnected', function(data) {
 		world.DestroyBody(bodies[data.id_to_destroy]);	
 		num_players--;
@@ -138,10 +147,11 @@
 
 	socket.on('pos data', function(data) {
 		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
-		world.Step(1/60, 10, 10);
-		world.DrawDebugData();			
+		//requestAnimFrame(update);
+		//world.Step(1/60, 10, 10);
+		//world.DrawDebugData();			
 	
-		world.ClearForces();
+		//world.ClearForces();
 	});
 		
 	var mouseX, mouseY, mousePVec, isMouseDown;
@@ -182,6 +192,7 @@
 		}
 		return {x: x, y: y};
 	}
+	
 	var debugDraw = new b2DebugDraw();
 	debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
 	debugDraw.SetDrawScale(10);
@@ -190,11 +201,19 @@
 	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 	world.SetDebugDraw(debugDraw);
 	
-	window.setInterval(function() {
+	function update() {
 		if(started == true) {
 			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
-		}			
-	}, 1000/60);
+		}
+		world.DrawDebugData();
+		requestAnimFrame(update);
+	
+	}
+	//window.setInterval(function() {
+	//	if(started == true) {
+	//		socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
+	//	}			
+	//}, 1000/60);
 
 	
 </script>

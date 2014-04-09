@@ -6,16 +6,33 @@ server.listen(24130);
 io.set('log level', 1);
 
 function handler (req, res) {
-  fs.readFile(__dirname + '/client_index.html',
-  function (err, data) {
-    if (err) {
-      res.writeHead(500);
-      return res.end('Error loading index.html');
-    }
-
-    res.writeHead(200);
-    res.end(data);
-  });
+  
+  
+  //console.log(req.url);
+	if(req.url == "/") {
+		fs.readFile(__dirname + '/client_index.html',
+		function (err, data) {
+			if (err) {
+				res.writeHead(500);
+				return res.end('Error loading index.html');
+			}
+		
+			res.writeHead(200);
+			res.end(data);
+		});
+		} else if(req.url == "/Box2d.js") {
+			fs.readFile(__dirname + '/Box2d.js',
+			function (err, data) {
+				if (err) {
+					res.writeHead(500);
+					return res.end('Error loading index.html');
+				}
+			
+				res.writeHead(200);
+				res.end(data);
+			});
+		}
+	
 }
 var p_id = 0;
 var players = new Array();
