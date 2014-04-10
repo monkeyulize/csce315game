@@ -78,16 +78,8 @@ var add_player = function(num_players, width, height) {
 var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
-	//for(i = 0; i < myBodies.length; i++) {
-	//	if(myBodies[i] == 
-	//
-	//}
 	var temp_body = contact.GetFixtureB().GetBody();
 	console.log(temp_body.GetLinearVelocity().Length());
-	//contact.GetFixtureB().GetBody().SetLinearDamping(
-	//	Math.log(temp_body.GetLinearVelocity().Length())/2
-	//);
-	
 	console.log("you hit something!");
 	console.log("impact velocity = " + temp_body.GetLinearVelocity().Length());
 	if(temp_body.GetLinearVelocity().Length() > 10) {
@@ -102,20 +94,7 @@ listener.BeginContact = function(contact) {
 	}
 	console.log("isStunned = " + isStunned);			
 } 
-
-
-
-
-
-
 var myLives = 3;
-
-
-
-
-
-
-
 var canMove = false;
 var isStunned = false;
 
@@ -219,7 +198,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 		console.log("resetting damping to 0");
 		myBodies[playerID].SetLinearDamping(0);
 		isStunned = false;
-		console.log("isStunned = " + canMove);
+		console.log("isStunned = " + isStunned);
 	}
 	
 	if(!isMouseDown) {

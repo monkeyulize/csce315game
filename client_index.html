@@ -11,7 +11,7 @@
 <script>
 	var p_id;
 	var num_players;
-	var socket = io.connect('http://localhost:24130');
+	var socket = io.connect('http://' + window.location.hostname + ':24130');
 	var start_positions = new Array();
 	start_positions[0] = {x: 10, y: 10};
 	start_positions[1] = {x: 50, y: 10};
@@ -147,11 +147,6 @@
 
 	socket.on('pos data', function(data) {
 		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
-		//requestAnimFrame(update);
-		//world.Step(1/60, 10, 10);
-		//world.DrawDebugData();			
-	
-		//world.ClearForces();
 	});
 		
 	var mouseX, mouseY, mousePVec, isMouseDown;
@@ -208,21 +203,6 @@
 		world.DrawDebugData();
 		requestAnimFrame(update);
 	
-	}
-	//window.setInterval(function() {
-	//	if(started == true) {
-	//		socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
-	//	}			
-	//}, 1000/60);
-
-	
+	}	
 </script>
-
-
-
-
-
-
-
-
 </html>

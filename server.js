@@ -38,7 +38,7 @@ var p_id = 0;
 var players = new Array();
 var clients = [];
 io.sockets.on('connection', function (socket) {
-	console.log("player connected");
+	console.log("player " + p_id + " connected");
 	console.log("socket ID: " + socket.id);
 	clients[p_id] = {"socket" : socket.id};
 	players[p_id] = p_id;
