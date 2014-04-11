@@ -29,7 +29,22 @@
 		,      b2Fixture = Box2D.Dynamics.b2Fixture
 		,      b2AABB = Box2D.Collision.b2AABB;		
 		
-		var world = new b2World(new b2Vec2(0, 0), false);
+	var bodyDef = new b2BodyDef;
+	var myFixture = new b2FixtureDef;
+	var world = new b2World(new b2Vec2(0, 0), false);	
+	function createWall(x, y, w, h) {
+		bodyDef.type = b2Body.b2_staticBody;
+		bodyDef.position.x = x + w/2;
+		bodyDef.position.y = y + h/2;
+		myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		myFixture.shape.SetAsBox(w/2, h/2);
+		world.CreateBody(bodyDef).CreateFixture(myFixture);	
+	}
+	
+    createWall(0, 0, 150, 1);	//top wall
+    createWall(0, 0, 1, 100);	//left wall
+    createWall(150, 0, 1, 100);	//right wall
+    createWall(0, 99, 150, 1);	//bottom wall
 
 		var listener = new Box2D.Dynamics.b2ContactListener;
 		world.SetContactListener(listener);
@@ -47,7 +62,7 @@
 			console.log("isStunned = " + isStunned);			
 		}
 		
-		var bodyDef = new b2BodyDef;
+
 		bodyDef.type = b2Body.b2_dynamicBody;
 		bodyDef.position.Set(4, 8);
 		bodyDef.userData = 'BOX';
@@ -60,8 +75,7 @@
 		myBody.SetFixedRotation(false);
 		myBody.SetAngularVelocity(0);
 		
-		myBody.fillStyle = "#FF0000";
-		var myFixture = new b2FixtureDef;
+
 		myFixture.shape = new b2CircleShape(3);
 		myFixture.density = 1;
 		myFixture.friction = 0.5;
@@ -71,41 +85,7 @@
 		
 		myBody.CreateFixture(myFixture);
 		
-		//Crack at pseudoplayer
-		var yourBody = world.CreateBody(bodyDef);
-		
-		yourBody.SetPositionAndAngle(new b2Vec2(100,100),0);
-		yourBody.SetLinearVelocity(new b2Vec2(-2, -2));
-		yourBody.SetFixedRotation(false);
-		yourBody.SetAngularVelocity(0);
-		
-		
-		var yourFixture = new b2FixtureDef;
-		yourFixture.shape = new b2CircleShape(3);
-		yourFixture.density = 1;
-		yourFixture.friction = 0.5;
-		yourFixture.restitution = 0.5;
-		
-		yourBody.CreateFixture(yourFixture);
-		
-		//attempting wall_1
-		var Wall_one = new b2FixtureDef;
-		Wall_one.density = .5;
-		Wall_one.friction = 0.4;
-		Wall_one.restitution = 0.2;
-		var bodyDef = new b2BodyDef;
-		bodyDef.type = b2Body.b2_staticBody;
-		Wall_one.shape = new b2PolygonShape;
-		Wall_one.shape.SetAsBox(canvas.width/2,4);
-		bodyDef.position.Set(canvas.width/2, 0);
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
-		bodyDef.position.Set(canvas.width/2, (canvas.height/10));
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
-		Wall_one.shape.SetAsBox(2,canvas.height/2);
-		bodyDef.position.Set(0, canvas.height/2);
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
-		bodyDef.position.Set(canvas.width/10, canvas.height/2);
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
+
 		
 		var debugDraw = new b2DebugDraw();
 		debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
