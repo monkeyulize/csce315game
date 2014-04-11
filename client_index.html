@@ -12,11 +12,7 @@
 	var p_id;
 	var num_players;
 	var socket = io.connect('http://' + window.location.hostname + ':24130');
-	var start_positions = new Array();
-	start_positions[0] = {x: 10, y: 10};
-	start_positions[1] = {x: 50, y: 10};
-	start_positions[2] = {x: 10, y: 20};
-	start_positions[3] = {x: 20, y: 20};
+
 	canvas.width = window.innerWidth;
 	
 	canvas.height = window.innerHeight;
@@ -50,11 +46,19 @@
 		myFixture.shape.SetAsBox(w/2, h/2);
 		world.CreateBody(bodyDef).CreateFixture(myFixture);	
 	}
+	var start_positions = new Array();	
+	function createArena(x, y, w, h) {
+		createWall(x, y, w, 1);	//top wall
+		createWall(x, y, 1, h);	//left wall
+		createWall(x + w, y, 1, h);	//right wall
+		createWall(x, y + h - 1, w, 1);	//bottom wall
 	
-    createWall(0, 0, 150, 1);	//top wall
-    createWall(0, 0, 1, 100);	//left wall
-    createWall(150, 0, 1, 100);	//right wall
-    createWall(0, 99, 150, 1);	//bottom wall
+		start_positions[0] = {x: x + 10, y: y + 10};
+		start_positions[1] = {x: x + w - 10, y: y + 10};
+		start_positions[2] = {x: x + 10, y: y + h - 10};
+		start_positions[3] = {x: x + w - 10, y: y + h - 10};
+	}
+	createArena(50, 10, 150, 75);
 
 
 	

@@ -1,9 +1,4 @@
 var Box2D = require('./Box2d.js');
-var start_positions = new Array();
-start_positions[0] = {x: 10, y: 10};
-start_positions[1] = {x: 50, y: 10};
-start_positions[2] = {x: 10, y: 20};
-start_positions[3] = {x: 20, y: 20};
 var myBodies = [];
 var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,	   b2Cross = Box2D.Common.Math.b2Cross
@@ -32,12 +27,20 @@ function createWall(x, y, w, h) {
 	world.CreateBody(bodyDef).CreateFixture(myFixture);	
 }
 
-createWall(0, 0, 150, 1);	//top wall
-createWall(0, 0, 1, 100);	//left wall
-createWall(150, 0, 1, 100);	//right wall
-createWall(0, 99, 150, 1);	//bottom wall	
-
 	
+var start_positions = new Array();	
+function createArena(x, y, w, h) {
+	createWall(x, y, w, 1);	//top wall
+	createWall(x, y, 1, h);	//left wall
+	createWall(x + w, y, 1, h);	//right wall
+	createWall(x, y + h - 1, w, 1);	//bottom wall
+	
+	start_positions[0] = {x: x + 10, y: y + 10};
+	start_positions[1] = {x: x + w - 10, y: y + 10};
+	start_positions[2] = {x: x + 10, y: y + h - 10};
+	start_positions[3] = {x: x + w - 10, y: y + h - 10};
+}
+createArena(50, 10, 150, 75);
 
 bodyDef.type = b2Body.b2_dynamicBody;
 bodyDef.position.Set(4, 8);
