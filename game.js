@@ -20,20 +20,36 @@ var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 ,      b2Fixture = Box2D.Dynamics.b2Fixture
 ,      b2AABB = Box2D.Collision.b2AABB;
+var bodyDef = new b2BodyDef;
+var myFixture = new b2FixtureDef;
+var world = new b2World(new b2Vec2(0, 0), false);
+function createWall(x, y, w, h) {
+	bodyDef.type = b2Body.b2_staticBody;
+	bodyDef.position.x = x + w/2;
+	bodyDef.position.y = y + h/2;
+	myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+	myFixture.shape.SetAsBox(w/2, h/2);
+	world.CreateBody(bodyDef).CreateFixture(myFixture);	
+}
 
+createWall(0, 0, 150, 1);	//top wall
+createWall(0, 0, 1, 100);	//left wall
+createWall(150, 0, 1, 100);	//right wall
+createWall(0, 99, 150, 1);	//bottom wall	
 
 	
-var bodyDef = new b2BodyDef;
+
 bodyDef.type = b2Body.b2_dynamicBody;
 bodyDef.position.Set(4, 8);
 bodyDef.userData = 'BOX';
 	
-var myFixture = new b2FixtureDef;
+
 myFixture.shape = new b2CircleShape(3);
 myFixture.density = 1;
 myFixture.friction = 0.5;
 myFixture.restitution = 0.5;
-var world = new b2World(new b2Vec2(0, 0), false);	
+
+
 var add_player = function(num_players, width, height) {
 	console.log("num_players: " + num_players);
 	myBodies[num_players-1] = world.CreateBody(bodyDef);	
@@ -46,25 +62,7 @@ var add_player = function(num_players, width, height) {
 	console.log(width);
 	console.log(height);
 	
-	
-	var Wall_one = new b2FixtureDef;
-	Wall_one.density = .5;
-	Wall_one.friction = 0.4;
-	Wall_one.restitution = 0.2;
-	var bodyDef2 = new b2BodyDef;
-	bodyDef2.type = b2Body.b2_staticBody;
-	
-  	Wall_one.shape = new b2PolygonShape;
-	Wall_one.shape.SetAsBox(width/2,4);
-	bodyDef2.position.Set(width/2, 0);
-	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
-	bodyDef2.position.Set(width/2, (height/10));
-	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
-	Wall_one.shape.SetAsBox(2,height/2);
-	bodyDef2.position.Set(0, height/2);
-	world.CreateBody(bodyDef2).CreateFixture(Wall_one);
-	bodyDef2.position.Set(width/10, height/2);
-	world.CreateBody(bodyDef2).CreateFixture(Wall_one);  
+
 	
 }
 
