@@ -40,7 +40,7 @@ function createArena(x, y, w, h) {
 	start_positions[2] = {x: x + 10, y: y + h - 10};
 	start_positions[3] = {x: x + w - 10, y: y + h - 10};
 }
-createArena(50, 10, 150, 75);
+createArena(15, 15, 100, 75);
 
 bodyDef.type = b2Body.b2_dynamicBody;
 bodyDef.position.Set(4, 8);
@@ -90,7 +90,7 @@ var add_player = function(num_players, width, height) {
 var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
-	var temp_body = contact.GetFixtureB().GetBody();
+	var temp_body = contact.GetFixtureA().GetBody();
 	console.log(temp_body.GetLinearVelocity().Length());
 	console.log("you hit something!");
 	console.log("impact velocity = " + temp_body.GetLinearVelocity().Length());
@@ -99,7 +99,7 @@ listener.BeginContact = function(contact) {
 		console.log("setting damping to: " + Math.log(temp_body.GetLinearVelocity().Length()));
 		//console.log("My Lives : " + myLives);
 		isStunned = true;
-		contact.GetFixtureB().GetBody().SetLinearDamping(
+		temp_body.SetLinearDamping(
 			Math.log(temp_body.GetLinearVelocity().Length())
 		);
 		//myLives= myLives - 1;
