@@ -84,11 +84,11 @@ listener.BeginContact = function(contact) {
 	console.log("impact velocity = " + temp_body.GetLinearVelocity().Length());
 	if(temp_body.GetLinearVelocity().Length() > 10) {
 		console.log("hit wall too hard!");
-		console.log("setting damping to: " + Math.log(temp_body.GetLinearVelocity().Length())/2);
+		console.log("setting damping to: " + Math.log(temp_body.GetLinearVelocity().Length()));
 		//console.log("My Lives : " + myLives);
 		isStunned = true;
 		contact.GetFixtureB().GetBody().SetLinearDamping(
-			Math.log(temp_body.GetLinearVelocity().Length())/2
+			Math.log(temp_body.GetLinearVelocity().Length())
 		);
 		//myLives= myLives - 1;
 	}
@@ -206,7 +206,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	}		
 	if(isMouseDown && canMove == true && isStunned == false ) {
 		//console.log("moving");
-		myBodies[playerID].ApplyForce(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x)*10, (mouseY - myBodies[playerID].GetPosition().y)*10), myBodies[playerID].GetPosition());
+		myBodies[playerID].ApplyImpulse(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x), (mouseY - myBodies[playerID].GetPosition().y)), myBodies[playerID].GetPosition());
 		
 		rotate_to_mouse(playerID, mouseX, mouseY);
 	} else if(isMouseDown && canMove == false) {
@@ -219,7 +219,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 		
 	//console.log(ret);
 	
-	world.Step(1/60, 10, 10);
+	world.Step(1/60, 8, 3);
 	
 	
 	world.ClearForces();
