@@ -51,6 +51,16 @@ myFixture.shape = new b2CircleShape(3);
 myFixture.density = 1;
 myFixture.friction = 0.5;
 myFixture.restitution = 0.5;
+var myHorn = new b2FixtureDef;
+myHorn.shape = new b2PolygonShape;
+myHorn.shape.SetAsArray([
+	new b2Vec2(5*0.866 ,0),
+	new b2Vec2(0, 3*1.5),
+	new b2Vec2(0, 3*-1.5),
+]);
+myHorn.density = 1;
+myHorn.friction = 0.5;
+myHorn.restitution = 0.5;
 
 
 var add_player = function(num_players, width, height) {
@@ -61,7 +71,8 @@ var add_player = function(num_players, width, height) {
 	myBodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
 	myBodies[num_players-1].SetFixedRotation(false);
 	myBodies[num_players-1].SetAngularVelocity(0);
-	myBodies[num_players-1].CreateFixture(myFixture); 	
+	myBodies[num_players-1].CreateFixture(myFixture);
+	myBodies[num_players-1].CreateFixture(myHorn); 
 	console.log(width);
 	console.log(height);
 	
