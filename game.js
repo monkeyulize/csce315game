@@ -1,4 +1,10 @@
 var Box2D = require('./Box2d.js');
+var lives = {
+	p1: 3,
+	p2: 3,
+	p3: 3,
+	p4: 3
+};
 var myBodies = [];
 var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,	   b2Cross = Box2D.Common.Math.b2Cross
@@ -75,9 +81,6 @@ var add_player = function(num_players, width, height) {
 	myBodies[num_players-1].CreateFixture(myHorn); 
 	console.log(width);
 	console.log(height);
-	
-
-	
 }
 
 
@@ -91,22 +94,25 @@ var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
 	var temp_body = contact.GetFixtureA().GetBody();
+	for(i = 0; i < myBodies.length; i++) {
+		if(temp_body == myBodies[i]) {
+			lives["p"+(i+1)]--;
+			console.log(lives["p"+(i+1)]);
+		}
+	}
 	console.log(temp_body.GetLinearVelocity().Length());
 	console.log("you hit something!");
 	console.log("impact velocity = " + temp_body.GetLinearVelocity().Length());
 	if(temp_body.GetLinearVelocity().Length() > 10) {
 		console.log("hit wall too hard!");
 		console.log("setting damping to: " + Math.log(temp_body.GetLinearVelocity().Length()));
-		//console.log("My Lives : " + myLives);
 		isStunned = true;
 		temp_body.SetLinearDamping(
 			Math.log(temp_body.GetLinearVelocity().Length())
 		);
-		//myLives= myLives - 1;
 	}
 	console.log("isStunned = " + isStunned);			
 } 
-var myLives = 3;
 var canMove = false;
 var isStunned = false;
 
@@ -201,10 +207,6 @@ var destroy_body = function(playerID) {
 }
 		
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
-	/* console.log("playerID: " + playerID);
-	console.log("isMouseDown: " + isMouseDown);
-	console.log("mouseX: " + mouseX);
-	console.log("mouseY: " + mouseY); */
 	if(myBodies[playerID].GetLinearVelocity().Length() < 0.8 && myBodies[playerID].GetLinearDamping() != 0) {
 		myBodies[playerID].SetLinearVelocity(new b2Vec2(0, 0));
 		console.log("resetting damping to 0");
@@ -235,7 +237,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	
 	
 	world.ClearForces();
-	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID}	
+	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID, lives : lives["p"+(playerID+1)]}	
 }
 
 module.exports.add_player = add_player;

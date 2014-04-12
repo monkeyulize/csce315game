@@ -1,13 +1,40 @@
 <html>
 
 <head>
+<meta charset="UTF-8">
 </head>
 
 <body>
+<div id="player1" style="position: absolute; top: 40px; left: 40px; width: 200px; height: 30px; line-height: 0.1">	
+	<p>player 1</p>
+	<p id="p1health">♥ ♥ ♥</p>
+</div>
+<div id="player2" style="position: absolute; top: 100px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p>player 2</p>
+	<p id="p2health">♥ ♥ ♥</p>
+</div>
+<div id="player3" style="position: absolute; top: 160px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p>player 3</p>
+	<p id="p3health">♥ ♥ ♥</p>
+</div>
+<div id="player4" style="position: absolute; top: 220px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p>player 4</p>
+	<p id="p4health">♥ ♥ ♥</p>
+</div>
 <canvas width="500" height="500" id="canvas"></canvas>
+
+
+
+
+
+
 </body>
 <script type="text/javascript" src="Box2d.js"></script> 
 <script src="/socket.io/socket.io.js"></script>
+
+
+
+
 <script>
 	var p_id;
 	var num_players;
@@ -18,8 +45,19 @@
 	canvas.height = window.innerHeight;
 
 	
-	var width = 800;
-	var height = 600;
+	/* begin: life indicator */
+	
+	var lives = {
+		p1: 3,
+		p2: 3,
+		p3: 3,
+		p4: 3	
+	};	
+		
+	/* end: life indicator */
+	
+	
+	
 	var    b2Vec2 = Box2D.Common.Math.b2Vec2
 	,	   b2Cross = Box2D.Common.Math.b2Cross
 	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -164,9 +202,21 @@
 		this.angle = angle;	
 	}
 	
-
+	var hearts;
 	socket.on('pos data', function(data) {
 		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
+		switch(data.lives) {
+			case 3:
+				hearts = "♥ ♥ ♥";
+				break;
+			case 2:
+				hearts = "♥ ♥";
+				break;
+			case 1:
+				hearts = "♥";
+				break;
+		}
+		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
 	});
 		
 	var mouseX, mouseY, mousePVec, isMouseDown;
