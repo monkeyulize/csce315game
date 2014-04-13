@@ -1,36 +1,235 @@
 <html>
 
 <head>
+<meta charset="UTF-8">
 </head>
 
 <body>
-<canvas width="500" height="500" id="canvas"></canvas>
-</body>
+<div id="player1" style="position: absolute; top: 0px; left: 220px; width: 1000px; height: 30px; line-height: 0.1">	
+	<p style="font-size:150px" >player 1</p>
+	<p id="p1health" style="font-size:150px">♥ ♥ ♥</p>
+</div>
+<div id="player2" style="position: absolute; top: 90px; right: 300px; width: 1000px; height: 50px; line-height: 0.1">
+	<p style="font-size:150px">player 2</p>
+	<p id="p2health"style="font-size:150px">♥ ♥ ♥</p>
+</div>
+<div id="player3" style="position: absolute; top: 3150px; left: 200px; width: 1000px; height: 100px; line-height: 0.1">
+	<p style="font-size:150px">player 3</p>
+	<p id="p3health"style="font-size:150px">♥ ♥ ♥</p>
+</div>
+<div id="player4" style="position: absolute; top: 3150px; right: 300px; width: 1000px; height: 150px; line-height: 0.1 ">
+	<p style="font-size:150px">player 4</p>
+	<p id="p4health"style="font-size:150px">♥ ♥ ♥</p>
+</div>
+<canvas width="500" height="500" id="canvas" style="background-color:#00CCCC;"></canvas>
 
+
+
+
+
+
+</body>
+<script type="text/javascript" src="Box2d.js"></script> 
 <script src="/socket.io/socket.io.js"></script>
+
+
+
+
 <script>
 	var p_id;
-	
+	var num_players;
+	var socket = io.connect('http://' + window.location.hostname + ':24130');
+
 	canvas.width = window.innerWidth;
+	
 	canvas.height = window.innerHeight;
+
 	
+	/* begin: life indicator */
 	
-	var socket = io.connect('http://compute.cse.tamu.edu:24130');
-	
-	socket.on('ready', function(data) {
-		console.log("connected");
-		p_id = data.playerID;
-		console.log(p_id);
+	var lives = {
+		p1: 3,
+		p2: 3,
+		p3: 3,
+		p4: 3	
+	};	
 		
+	/* end: life indicator */
+	
+	
+	
+	var    b2Vec2 = Box2D.Common.Math.b2Vec2
+	,	   b2Cross = Box2D.Common.Math.b2Cross
+	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
+	,      b2Body = Box2D.Dynamics.b2Body
+	,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+	,      b2World = Box2D.Dynamics.b2World
+	,      b2BoxDef = Box2D.Dynamics.b2BoxDef
+	,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+	,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+	,	   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape
+	,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
+	,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+	,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+	,      b2Fixture = Box2D.Dynamics.b2Fixture
+	,      b2AABB = Box2D.Collision.b2AABB;
+	var bodyDef = new b2BodyDef;
+	var myFixture = new b2FixtureDef;
+	var world = new b2World(new b2Vec2(0, 0), false);	
+	function createWall(x, y, w, h) {
+		bodyDef.type = b2Body.b2_staticBody;
+		bodyDef.position.x = x + w/2;
+		bodyDef.position.y = y + h/2;
+		myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		myFixture.shape.SetAsBox(w/2, h/2);
+		world.CreateBody(bodyDef).CreateFixture(myFixture);	
+	}
+	var start_positions = new Array();	
+	function createArena(x, y, w, h) {
+		createWall(x, y, w, 1);	//top wall
+		createWall(x, y, 1, h);	//left wall
+		createWall(x + w, y, 1, h);	//right wall
+		createWall(x, y + h - 1, w, 1);	//bottom wall
+	
+		start_positions[0] = {x: x + 10, y: y + 10};
+		start_positions[1] = {x: x + w - 10, y: y + 10};
+		start_positions[2] = {x: x + 10, y: y + h - 10};
+		start_positions[3] = {x: x + w - 10, y: y + h - 10};
+	}
+	var w = 400;
+	var l = 300;
+	var x = canvas.width/20-w/2;
+	var y = canvas.width/20-l/2;
+	createArena(15, 15, w, l);
+	
+
+	
+	bodyDef.type = b2Body.b2_dynamicBody;
+	bodyDef.position.Set(4, 8);
+	bodyDef.userData = 'BOX';
+	
+	myFixture.shape = new b2CircleShape(3);
+	myFixture.density = 1;
+	myFixture.friction = 0.5;
+	myFixture.restitution = 0.5;
+	
+	var myHorn = new b2FixtureDef;
+	myHorn.shape = new b2PolygonShape;
+	myHorn.shape.SetAsArray([
+		new b2Vec2(5*0.866 ,0),
+		new b2Vec2(0, 3*1.5),
+		new b2Vec2(0, 3*-1.5),
+	]);
+	myHorn.density = 1;
+	myHorn.friction = 0.5;
+	myHorn.restitution = 0.5;	
+
+
+	
+	var started = false;
+	var bodies = new Array();
+	var posX, posY, ang;
+	socket.on('player connected', function(data) {
+		console.log("player connected");
+		p_id = data.playerID;
+					
+		num_players = data.num_players;	
+		
+		bodies[num_players-1] = world.CreateBody(bodyDef); 
+		bodies[num_players-1].SetPositionAndAngle(new b2Vec2(start_positions[p_id].x, start_positions[p_id].y),0);
+		bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+		bodies[num_players-1].SetFixedRotation(false);
+		bodies[num_players-1].SetAngularVelocity(0);
+		bodies[num_players-1].CreateFixture(myFixture);
+		bodies[num_players-1].CreateFixture(myHorn); 
+		bodies[num_players-1]["playerID"] = p_id;
+		console.log("num_players: " + num_players);		
+		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
+		
+		for(i = num_players-2; i >= 0; i--) {
+			bodies[i] = world.CreateBody(bodyDef); 
+			bodies[i].SetPositionAndAngle(new b2Vec2(start_positions[i].x, start_positions[i].y),0);
+			bodies[i].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[i].SetFixedRotation(false);
+			bodies[i].SetAngularVelocity(0);
+			bodies[i].CreateFixture(myFixture);
+			bodies[i].CreateFixture(myHorn); 
+			bodies[i]["playerID"] = i;
+			console.log("i: " + i);
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[i]["playerID"]);
+		
+		}
+		
+		started = true;
+		socket.emit('wh', {width : canvas.width, height : canvas.height });		
+		requestAnimFrame(update);
+	});
+	
+	socket.on('player joined', function(data) {
+		console.log("another player joined");
+		if(data.num_players > num_players) {
+			num_players = data.num_players;
+			bodies[num_players-1] = world.CreateBody(bodyDef); 
+			bodies[num_players-1].SetPositionAndAngle(
+				new b2Vec2(start_positions[num_players-1].x, start_positions[num_players-1].y),0);
+			bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[num_players-1].SetFixedRotation(false);
+			bodies[num_players-1].SetAngularVelocity(0);
+			bodies[num_players-1].CreateFixture(myFixture);
+			bodies[num_players-1].CreateFixture(myHorn); 
+			bodies[num_players-1]["playerID"] = data.other_playerID;
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[num_players-1]["playerID"]);
+		
+		}
+	});
+	window.requestAnimFrame = (function(){
+		return window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function(/* function */ callback, /* DOMElement */ element){
+		window.setTimeout(callback, 1000 / 60);
+		};
+	})();		
+	socket.on('player disconnected', function(data) {
+		world.DestroyBody(bodies[data.id_to_destroy]);	
+		num_players--;
 	});
 	
 	
+	function positionAndAngle(positionX, positionY, angle) {
+		this.positionX = positionX;
+		this.positionY = positionY;
+		this.angle = angle;	
+	}
+	
+	var hearts;
+	socket.on('pos data', function(data) {
+		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
+		switch(data.lives) {
+			case 3:
+				hearts = "♥ ♥ ♥";
+				break;
+			case 2:
+				hearts = "♥ ♥";
+				break;
+			case 1:
+				hearts = "♥";
+				break;
+		}
+		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
+	});
+		
 	var mouseX, mouseY, mousePVec, isMouseDown;
 	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
 	document.addEventListener("mousedown", function(e) {
 		isMouseDown = true;
 		handleMouseMove(e);
 		document.addEventListener("mousemove", handleMouseMove, true);
+		started = true;
 	}, true);
 	
 	document.addEventListener("mouseup", function() {
@@ -43,8 +242,8 @@
 	function handleMouseMove(e) {
 		mouseX = (e.clientX - canvasPosition.x) / 10;
 		mouseY = (e.clientY - canvasPosition.y) / 10;
-		console.log(mouseX + " " + mouseY);
-		socket.emit('mouse data', {playerID: p_id, mouseX: mouseX, mouseY: mouseY });
+		//console.log(mouseX + " " + mouseY);
+		
 	};
 	function getElementPosition(element) {
 		var elem=element, tagname="", x=0, y=0;
@@ -63,16 +262,21 @@
 		return {x: x, y: y};
 	}
 	
+	var debugDraw = new b2DebugDraw();
+	debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
+	debugDraw.SetDrawScale(10);
+	debugDraw.SetFillAlpha(0.5); //define transparency
+	debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
+	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+	world.SetDebugDraw(debugDraw);
 	
+	function update() {
+		if(started == true) {
+			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
+		}
+		world.DrawDebugData();
+		requestAnimFrame(update);
 	
-	
+	}	
 </script>
-
-
-
-
-
-
-
-
 </html>
