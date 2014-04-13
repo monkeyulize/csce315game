@@ -1,0 +1,106 @@
+<html>
+	<head>
+
+	</head>
+	
+	
+	<body>
+	</body>
+	
+<style>
+body {
+  font-family: sans-serif;
+}
+
+#status {
+  position: absolute;
+	top: -50;
+	right: 20;
+  font-size: 14pt;
+  color: blue;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+#background{
+  
+}
+
+#game {
+  
+}
+
+#board div {
+  margin-top: 5px;
+}
+
+#login_section{
+  display: none;
+  position: absolute;
+	top: 350;
+	right: 450;
+	}
+
+.user_name {
+  font-size: 10pt;
+  font-weight: bold;
+  color: blue;
+}
+
+.notification {
+  color: green;
+}
+</style>
+
+
+
+
+<div id="warning">
+  JavaScript is required to run this app.
+</div>
+
+<div id="background">
+  <img src="./assets/menu_image.png" alt="Background" width="window.height" height="window.width">
+</div>
+
+<div id="login_section">
+  Your name:
+  <input id="name" type="text"></input>
+  <div></div>
+  <input id="login" type="button" value="Join Game" disabled="true" horizontal-align: text-center></input>
+</div>
+
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script>
+  // $(document) returns a jQuery object representing the whole document (page).
+  // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
+  // document is loaded.
+  $(document).ready(function() {
+    // Hide the warning section and show the login section.
+    $('#warning').css('display', 'none');
+	$('#login_section').css('display', 'block');
+	$('#background').css('display', 'block');
+	
+
+
+    // When Enter is pressed in the name field, it should be treated as clicking
+    // on the Log In button.
+    $('#name').keyup(function(event) {
+      if (event.keyCode == 13) {
+        $('#login').click();
+		$('#login_section').css('display', 'none');
+        $('#game').css('display', 'block');
+		$('#background').css('display', 'none');
+        $('#status').text('Logged In.');
+      }
+    });
+
+  });
+</script>
+
+
+	
+	
+</html>
+
+
+	
