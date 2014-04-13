@@ -48,8 +48,12 @@ io.sockets.on('connection', function (socket) {
 	p_id++;
 	
 	socket.on('wh', function(data) {
+		
 		game.add_player(players.length, 800, 600);
+		
 	});
+	
+	
 	
 	
 	socket.on('mouse data', function (data) {

@@ -94,24 +94,22 @@
 		
 		yourBody.CreateFixture(yourFixture);
 		
-		//attempting wall_1
-		var Wall_one = new b2FixtureDef;
-		Wall_one.density = .5;
-		Wall_one.friction = 0.4;
-		Wall_one.restitution = 0.2;
-		var bodyDef = new b2BodyDef;
-		bodyDef.type = b2Body.b2_staticBody;
-		Wall_one.shape = new b2PolygonShape;
-		Wall_one.shape.SetAsBox(canvas.width/2,4);
-		bodyDef.position.Set(canvas.width/2, 0);
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
-		bodyDef.position.Set(canvas.width/2, (canvas.height/10));
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
-		Wall_one.shape.SetAsBox(2,canvas.height/2);
-		bodyDef.position.Set(0, canvas.height/2);
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
-		bodyDef.position.Set(canvas.width/10, canvas.height/2);
-		world.CreateBody(bodyDef).CreateFixture(Wall_one);
+		function createArena(x, y, w, h) {
+		createWall(x, y, w, 1);	//top wall
+		createWall(x, y, 1, h);	//left wall
+		createWall(x + w, y, 1, h);	//right wall
+		createWall(x, y + h - 1, w, 1);	//bottom wall
+	
+		start_positions[0] = {x: x + 10, y: y + 10};
+		start_positions[1] = {x: x + w - 10, y: y + 10};
+		start_positions[2] = {x: x + 10, y: y + h - 10};
+		start_positions[3] = {x: x + w - 10, y: y + h - 10};
+	}
+	var w = 400;
+	var l = 300;
+	var x = canvas.width/20-w/2;
+	var y = canvas.width/20-l/2;
+	createArena(15, 15, w, l);
 		
 		var debugDraw = new b2DebugDraw();
 		debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));

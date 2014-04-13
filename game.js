@@ -5,6 +5,7 @@ var lives = {
 	p3: 3,
 	p4: 3
 };
+
 var myBodies = [];
 var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,	   b2Cross = Box2D.Common.Math.b2Cross
@@ -35,18 +36,20 @@ function createWall(x, y, w, h) {
 
 	
 var start_positions = new Array();	
-function createArena(x, y, w, h) {
-	createWall(x, y, w, 1);	//top wall
-	createWall(x, y, 1, h);	//left wall
-	createWall(x + w, y, 1, h);	//right wall
-	createWall(x, y + h - 1, w, 1);	//bottom wall
+	function createArena(x, y, w, h) {
+		createWall(x, y, w, 1);	//top wall
+		createWall(x, y, 1, h);	//left wall
+		createWall(x + w, y, 1, h);	//right wall
+		createWall(x, y + h - 1, w, 1);	//bottom wall
 	
-	start_positions[0] = {x: x + 10, y: y + 10};
-	start_positions[1] = {x: x + w - 10, y: y + 10};
-	start_positions[2] = {x: x + 10, y: y + h - 10};
-	start_positions[3] = {x: x + w - 10, y: y + h - 10};
-}
-createArena(15, 15, 100, 75);
+		start_positions[0] = {x: x + 10, y: y + 10};
+		start_positions[1] = {x: x + w - 10, y: y + 10};
+		start_positions[2] = {x: x + 10, y: y + h - 10};
+		start_positions[3] = {x: x + w - 10, y: y + h - 10};
+	}
+	var w = 400;
+	var l = 300;
+	createArena(15, 15, w, l);
 
 bodyDef.type = b2Body.b2_dynamicBody;
 bodyDef.position.Set(4, 8);
@@ -79,6 +82,7 @@ var add_player = function(num_players, width, height) {
 	myBodies[num_players-1].SetAngularVelocity(0);
 	myBodies[num_players-1].CreateFixture(myFixture);
 	myBodies[num_players-1].CreateFixture(myHorn); 
+	
 	console.log(width);
 	console.log(height);
 }
