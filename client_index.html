@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 </head>
 <style>
+
 	#player1{
 		 -webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -13,6 +14,7 @@
 		-o-user-select: none;
 		user-select: none;
 		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
 	}
 	#player2{
 		-webkit-touch-callout: none;
@@ -23,6 +25,7 @@
 		-o-user-select: none;
 		user-select: none;
 		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
 	}
 	#player3{
 		-webkit-touch-callout: none;
@@ -33,6 +36,7 @@
 		-o-user-select: none;
 		user-select: none;
 		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
 	}
 	#player4{
 		 -webkit-touch-callout: none;
@@ -43,31 +47,39 @@
 		-o-user-select: none;
 		user-select: none;
 		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
 	}
 </style>
 
 <body>
 <div id="player1" style="position: absolute; top: 90px; left: 220px; width: 1000px; height: 30px; line-height: 0.1">	
-	<p style="font-size:150px" >player 1</p>
+	<p style="font-size:150px" ><span id="span1"></span></p>
 	<p id="p1health" style="font-size:150px">♥ ♥ ♥</p>
 </div>
 <div id="player2" style="position: absolute; top: 90px; left: 3600px; width: 1000px; height: 50px; line-height: 0.1">
-	<p style="font-size:150px;">player 2</p>
+	<p style="font-size:150px;"><span id="span2"></span></p>
 	<p id="p2health"style="font-size:150px">♥ ♥ ♥</p>
 </div>
 <div id="player3" style="position: absolute; top: 2750px; left: 200px; width: 1000px; height: 100px; line-height: 0.1">
-	<p style="font-size:150px">player 3</p>
+	<p style="font-size:150px"><span id="span3"></span></p>
 	<p id="p3health"style="font-size:150px">♥ ♥ ♥</p>
 </div>
 <div id="player4" style="position: absolute; top: 2750px; left: 3600px; width: 1000px; height: 150px; line-height: 0.1 ">
-	<p style="font-size:150px">player 4</p>
+	<p style="font-size:150px"><span id="span4"></span></p>
 	<p id="p4health"style="font-size:150px">♥ ♥ ♥</p>
 </div>
 <canvas width="500" height="500" id="canvas" style="background-color:#00CCCC;"></canvas>
 
-
-
-
+<script>
+	var player_1= "player 1";
+	var player_2= "player 2";
+	var player_3= "player 3";
+	var player_4= "player 4";
+	document.getElementById('span1').innerHTML=player_1;
+	document.getElementById('span2').innerHTML=player_2;
+	document.getElementById('span3').innerHTML=player_3;
+	document.getElementById('span4').innerHTML=player_4;
+</script>
 
 
 </body>
@@ -140,8 +152,6 @@
 	}
 	var w = 400;
 	var l = 300;
-	var x = canvas.width/20-w/2;
-	var y = canvas.width/20-l/2;
 	createArena(15, 15, w, l);
 	
 
@@ -223,7 +233,20 @@
 			bodies[num_players-1]["playerID"] = data.other_playerID;
 			console.log("num_players: " + num_players);		
 			console.log("player ID: " + bodies[num_players-1]["playerID"]);
-		
+			switch(num_players-1){
+				case 0:
+					player_1 = data.other_playerID;
+					break;
+				case 1:
+					player_2 = data.other_playerID;
+					break;
+				case 2:
+					player_3 = data.other_playerID;
+					break;
+				case 3:
+					player_4 = data.other_playerID;
+					break;	
+			}
 		}
 	});
 	window.requestAnimFrame = (function(){
