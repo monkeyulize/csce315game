@@ -2,7 +2,7 @@ var server = require('http').createServer(handler);
 var io = require('socket.io').listen(server);
 var fs = require('fs')	
 var game = require('./game');
-server.listen(24130);
+server.listen(24133);
 io.set('log level', 1);
 
 function handler (req, res) {

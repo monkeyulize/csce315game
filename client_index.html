@@ -49,6 +49,17 @@
 		cursor: default;
 		color: rgba(0, 0, 0, 0.25);
 	}
+	#gameover{
+		 -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		z-index:-1;
+	}
 </style>
 
 <body>
@@ -67,6 +78,10 @@
 <div id="player4" style="position: absolute; top: 2750px; left: 3600px; width: 1000px; height: 150px; line-height: 0.1 ">
 	<p style="font-size:150px"><span id="span4"></span></p>
 	<p id="p4health"style="font-size:150px">♥ ♥ ♥</p>
+</div>
+<div id="gameover" style="position: absolute; top: 1420px; left: 800px; width: 3000px; height: 30px; line-height: 0.1;text-align:center;">	
+	<p style="font-size:150px" >GAME OVER</p>
+	<p style="font-size:150px" >YOU HAVE NO LIVES REMAINING.</p>
 </div>
 <canvas width="500" height="500" id="canvas" style="background-color:#00CCCC;"></canvas>
 
@@ -92,7 +107,7 @@
 <script>
 	var p_id;
 	var num_players;
-	var socket = io.connect('http://' + window.location.hostname + ':24130');
+	var socket = io.connect('http://' + window.location.hostname + ':24133');
 
 	canvas.width = window.innerWidth;
 	
@@ -219,6 +234,9 @@
 	});
 	
 	socket.on('player joined', function(data) {
+		////////////////////////////////////////////////// showing how to end game
+		document.getElementById('gameover').style.zIndex=1;
+		//////////////////////////////////////////////////
 		console.log("another player joined");
 		if(data.num_players > num_players) {
 			num_players = data.num_players;
@@ -235,16 +253,16 @@
 			console.log("player ID: " + bodies[num_players-1]["playerID"]);
 			switch(num_players-1){
 				case 0:
-					player_1 = data.other_playerID;
+					document.getElementById('span1').innerHTML=data.other_playerID;
 					break;
 				case 1:
-					player_2 = data.other_playerID;
+					document.getElementById('span2').innerHTML=data.other_playerID;
 					break;
 				case 2:
-					player_3 = data.other_playerID;
+					document.getElementById('span3').innerHTML=data.other_playerID;
 					break;
 				case 3:
-					player_4 = data.other_playerID;
+					document.getElementById('span4').innerHTML=data.other_playerID;
 					break;	
 			}
 		}
@@ -284,6 +302,9 @@
 			case 1:
 				hearts = "♥";
 				break;
+			case 0:
+				hearts = " ";
+				break;	
 		}
 		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
 	});
