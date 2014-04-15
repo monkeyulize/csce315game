@@ -224,6 +224,11 @@
 	var bodies = new Array();
 	var posX, posY, ang;
 	
+	socket.on('lose life', function(data) {
+		console.log("decreasing life");
+	
+	});
+	
 	//recieves message of me connecting to the server
 	socket.on('player connected', function(data) {
 		console.log("player connected");

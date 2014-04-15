@@ -1,11 +1,14 @@
 //define aspects of server such as what files to keep track of, what files needing to store, and what js files to 
 //use, in this case http protocol, store files, use socket.io, and use game.js, and listen on port 24133
-var server = require('http').createServer(handler);
+var server = require('http').createServer(handler).listen(24133);
 var io = require('socket.io').listen(server);
 var fs = require('fs')	
 var game = require('./game');
-server.listen(24133);
 io.set('log level', 1);
+
+io.sockets.on('connection', function(socket) {
+	game.initGame(io, socket);
+});
 
 function handler (req, res) {
 	//handle request of client_index
@@ -14,7 +17,7 @@ function handler (req, res) {
 		function (err, data) {
 			if (err) {
 				res.writeHead(500);
-				return res.end('Error loading index.html');
+				return res.end('Error loading client_index.html');
 			}
 		
 			res.writeHead(200);
@@ -27,7 +30,7 @@ function handler (req, res) {
 			function (err, data) {
 				if (err) {
 					res.writeHead(500);
-					return res.end('Error loading index.html');
+					return res.end('Error loading Box2d.js');
 				}
 			
 				res.writeHead(200);
@@ -37,12 +40,12 @@ function handler (req, res) {
 	
 }
 //store a local player id, and keep track of players and clients
-var p_id = 0;
+/* var p_id = 0;
 var players = new Array();
-var clients = [];
+var clients = []; */
 
 //see when a player has connected and store information, while adding information to global game
-io.sockets.on('connection', function (socket) {
+/* io.sockets.on('connection', function (socket) {
 	console.log("player " + p_id + " connected");
 	console.log("socket ID: " + socket.id);
 	clients[p_id] = {"socket" : socket.id};
@@ -80,7 +83,7 @@ io.sockets.on('connection', function (socket) {
 		players.pop();
 	});
 });
-
+ */
 
 
 

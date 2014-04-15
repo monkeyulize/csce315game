@@ -6,6 +6,57 @@ var lives = {
 	p3: 3,
 	p4: 3
 };
+var p_id = 0;
+var players = new Array();
+var clients = [];
+var io, socket;
+module.exports.initGame = function(_io, _socket) {
+	io = _io;
+	socket = _socket;
+	console.log("player " + p_id + " connected");
+	console.log("socket ID: " + socket.id);
+	clients[p_id] = {"socket" : socket.id};
+	players[p_id] = p_id;
+	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
+	//let clients know a new player has joined
+	socket.broadcast.emit('player joined', {num_players : players.length, other_playerID : p_id});
+	p_id++;
+	
+	socket.on('wh', function(data) {
+		//add a player to the servers game 
+		add_player(players.length, 800, 600);
+		
+	});
+
+	//emits and updates the players mice and mice locations 
+	socket.on('mouse data', function (data) {
+		var pos_data = update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
+		io.sockets.emit('pos data', pos_data);
+	});
+	
+	//sees when a player has disconnected and let other clients know they have disconnected for deletion
+	socket.on('disconnect', function () {
+		//send disconnect message to every client, and delete disconnect on every local game
+		for(i = 0; i < clients.length; i++) {
+			if(clients[i].socket == socket.id) {
+				console.log("player " + i + " disconnected");
+				destroy_body(i);
+				io.sockets.emit('player disconnected', {id_to_destroy : i});
+			}
+		}
+		p_id--;
+		players.pop();
+	});
+
+
+
+
+}
+
+
+
+
+
 
 //declare and define objects and classes needed for box2d
 var myBodies = [];
@@ -120,6 +171,7 @@ listener.BeginContact = function(contact) {
 					for(i = 0; i < myBodies.length; i++) {
 						if(temp_body.GetBody()== myBodies[i]) {
 							lives["p"+(i+1)]--;
+							socket.emit('lose life', {lives: lives["p"+(i+1)]});
 							console.log(lives["p"+(i+1)]);
 						}
 					}
