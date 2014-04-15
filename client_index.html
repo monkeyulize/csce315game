@@ -1,10 +1,12 @@
 <html>
 
 <head>
-<meta charset="UTF-8">
+	<meta charset="UTF-8">
 </head>
-<style>
 
+<style>
+	/* Player names in corners of screen, make unhighlightable, and slightly transparent
+		Also keep mouse the default pointer as a default mouse pointer for consistency */
 	#player1{
 		 -webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -49,6 +51,8 @@
 		cursor: default;
 		color: rgba(0, 0, 0, 0.25);
 	}
+	/* Game over prompt for end of the game, same settings as above, but set behind canvas until it needs to
+		to be moved forward */
 	#gameover{
 		 -webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -60,9 +64,11 @@
 		cursor: default;
 		z-index:-1;
 	}
+
 </style>
 
 <body>
+<!--Set the font and size of text to be displayed to screen, and absolute locate them in corners-->
 <div id="player1" style="position: absolute; top: 90px; left: 220px; width: 1000px; height: 30px; line-height: 0.1">	
 	<p style="font-size:150px" ><span id="span1"></span></p>
 	<p id="p1health" style="font-size:150px">♥ ♥ ♥</p>
@@ -83,9 +89,13 @@
 	<p style="font-size:150px" >GAME OVER</p>
 	<p style="font-size:150px" >YOU HAVE NO LIVES REMAINING.</p>
 </div>
-<canvas width="500" height="500" id="canvas" style="background-color:#00CCCC;"></canvas>
+<!--Create the canvas, and set its color to blue-->
+	<canvas width="500" height="500" id="canvas" style="background-color:#00CCCC;margin-left: auto; margin-right: auto "></canvas>
+
+
 
 <script>
+	//set default name of each player to player 1 to player 4, and replace span tag with those names
 	var player_1= "player 1";
 	var player_2= "player 2";
 	var player_3= "player 3";
@@ -98,19 +108,26 @@
 
 
 </body>
+
+<!--import Box2d, and socket.io libraries for use in code-->
+<!--Box2d is a physics engine and in control of all physics seen within game-->
 <script type="text/javascript" src="Box2d.js"></script> 
+<!--socket.io is incharge of all server and client communications-->
 <script src="/socket.io/socket.io.js"></script>
 
 
 
 
 <script>
-	var p_id;
-	var num_players;
-	var socket = io.connect('http://' + window.location.hostname + ':24133');
-
-	canvas.width = window.innerWidth;
+	//player id, ranges from 0 to 3, later a name will replace or be associated to it
+		var p_id;		
+	//number of players currently in game
+		var num_players;	
+	//connect to compute.cse.tamu.edu
+		var socket = io.connect('http://' + window.location.hostname + ':24133');	
 	
+	//fill the entire screen with canvas
+	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
 	
@@ -126,7 +143,7 @@
 	/* end: life indicator */
 	
 	
-	
+	//declare and instantiate all box2d required functions and classes for use in creating world
 	var    b2Vec2 = Box2D.Common.Math.b2Vec2
 	,	   b2Cross = Box2D.Common.Math.b2Cross
 	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
@@ -142,9 +159,15 @@
 	,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 	,      b2Fixture = Box2D.Dynamics.b2Fixture
 	,      b2AABB = Box2D.Collision.b2AABB;
+	
+	//bodydef used to define a new type of actor
 	var bodyDef = new b2BodyDef;
+	//fixture used to define a new type of sub shape
 	var myFixture = new b2FixtureDef;
+	//declare new world by which to apply physics 
 	var world = new b2World(new b2Vec2(0, 0), false);	
+	
+	//dynamically create walls using parameters, currently only used in creating the outer walls
 	function createWall(x, y, w, h) {
 		bodyDef.type = b2Body.b2_staticBody;
 		bodyDef.position.x = x + w/2;
@@ -153,6 +176,8 @@
 		myFixture.shape.SetAsBox(w/2, h/2);
 		world.CreateBody(bodyDef).CreateFixture(myFixture);	
 	}
+	
+	//create all 4 walls and define players spawn within it
 	var start_positions = new Array();	
 	function createArena(x, y, w, h) {
 		createWall(x, y, w, 1);	//top wall
@@ -167,19 +192,22 @@
 	}
 	var w = 400;
 	var l = 300;
+	//create a world of 400x10 by 300x10 due to scale factor of 10, or 4000x3000
 	createArena(15, 15, w, l);
 	
 
-	
+	//define the body as moveable and subject to outer forces
 	bodyDef.type = b2Body.b2_dynamicBody;
 	bodyDef.position.Set(4, 8);
 	bodyDef.userData = 'BOX';
 	
+	//define the vulernable body subshape
 	myFixture.shape = new b2CircleShape(3);
 	myFixture.density = 1;
 	myFixture.friction = 0.5;
 	myFixture.restitution = 0.5;
 	
+	//define the invulnerable horn subshape
 	var myHorn = new b2FixtureDef;
 	myHorn.shape = new b2PolygonShape;
 	myHorn.shape.SetAsArray([
@@ -190,18 +218,20 @@
 	myHorn.density = 1;
 	myHorn.friction = 0.5;
 	myHorn.restitution = 0.5;	
-
-
+	
 	
 	var started = false;
 	var bodies = new Array();
 	var posX, posY, ang;
+	
+	//recieves message of me connecting to the server
 	socket.on('player connected', function(data) {
 		console.log("player connected");
 		p_id = data.playerID;
 					
 		num_players = data.num_players;	
 		
+		//create a local copy of my player and spawning them into world at an appropriate spawn point
 		bodies[num_players-1] = world.CreateBody(bodyDef); 
 		bodies[num_players-1].SetPositionAndAngle(new b2Vec2(start_positions[p_id].x, start_positions[p_id].y),0);
 		bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
@@ -213,6 +243,7 @@
 		console.log("num_players: " + num_players);		
 		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
 		
+		//creating a local copy of every other player in game
 		for(i = num_players-2; i >= 0; i--) {
 			bodies[i] = world.CreateBody(bodyDef); 
 			bodies[i].SetPositionAndAngle(new b2Vec2(start_positions[i].x, start_positions[i].y),0);
@@ -227,14 +258,15 @@
 			console.log("player ID: " + bodies[i]["playerID"]);
 		
 		}
-		
+		//game begins when player connected
 		started = true;
 		socket.emit('wh', {width : canvas.width, height : canvas.height });		
 		requestAnimFrame(update);
 	});
 	
+	//receives message that a new player has joined, instantiate and start controlling the local actor
 	socket.on('player joined', function(data) {
-		////////////////////////////////////////////////// showing how to end game
+		////////////////////////////////////////////////// showing how to end game 
 		document.getElementById('gameover').style.zIndex=1;
 		//////////////////////////////////////////////////
 		console.log("another player joined");
@@ -267,6 +299,7 @@
 			}
 		}
 	});
+	//tracks when the game has changed and only refresh drawing when a change has been made to the screen
 	window.requestAnimFrame = (function(){
 		return window.requestAnimationFrame ||
 		window.webkitRequestAnimationFrame ||
@@ -289,6 +322,7 @@
 		this.angle = angle;	
 	}
 	
+	//recieves message of hearts and allows shifting from 3 to no lives remaining
 	var hearts;
 	socket.on('pos data', function(data) {
 		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
@@ -308,7 +342,8 @@
 		}
 		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
 	});
-		
+	
+	//tracks when my mouse is held down, and emits the location of mouse for the server copy to move appropriately
 	var mouseX, mouseY, mousePVec, isMouseDown;
 	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
 	document.addEventListener("mousedown", function(e) {
@@ -318,6 +353,7 @@
 		started = true;
 	}, true);
 	
+	//tracks when button is released and move the movement aspect of player when key is released
 	document.addEventListener("mouseup", function() {
 		document.removeEventListener("mousemove", handleMouseMove, true);
 		isMouseDown = false;
@@ -325,12 +361,12 @@
 		mouseY = undefined;
 	}, true);
 	
+	//calculate the actual position of the mouse
 	function handleMouseMove(e) {
 		mouseX = (e.clientX - canvasPosition.x) / 10;
-		mouseY = (e.clientY - canvasPosition.y) / 10;
-		//console.log(mouseX + " " + mouseY);
-		
+		mouseY = (e.clientY - canvasPosition.y) / 10;		
 	};
+	
 	function getElementPosition(element) {
 		var elem=element, tagname="", x=0, y=0;
 		while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
@@ -348,6 +384,7 @@
 		return {x: x, y: y};
 	}
 	
+	//actually drawing the world, scale of 10, opacity of 50%, line thickness of 1, and on canvas
 	var debugDraw = new b2DebugDraw();
 	debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
 	debugDraw.SetDrawScale(10);
@@ -356,6 +393,8 @@
 	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 	world.SetDebugDraw(debugDraw);
 	
+	//refresh the world only when the game has changed, using the request aniframe, and only does so when fram
+	//is in focus on screen
 	function update() {
 		if(started == true) {
 			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
