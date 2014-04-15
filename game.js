@@ -47,10 +47,6 @@ module.exports.initGame = function(_io, _socket) {
 		p_id--;
 		players.pop();
 	});
-
-
-
-
 }
 
 
@@ -112,7 +108,7 @@ var start_positions = new Array();
 
 bodyDef.type = b2Body.b2_dynamicBody;
 bodyDef.position.Set(4, 8);
-bodyDef.userData = 'BOX';
+bodyDef.SetUserData('PLAYER');
 	
 //define the horn and body subshapes
 myFixture.shape = new b2CircleShape(3);
@@ -120,6 +116,7 @@ myFixture.density = 1;
 myFixture.friction = 0.5;
 myFixture.restitution = 0.5;
 var myHorn = new b2FixtureDef;
+myHorn.SetUserData('HORN');
 myHorn.shape = new b2PolygonShape;
 myHorn.shape.SetAsArray([
 	new b2Vec2(5*0.866 ,0),
@@ -160,25 +157,21 @@ listener.BeginContact = function(contact) {
 			console.log("impact velocity = " + temp_body.GetBody().GetLinearVelocity().Length());
 
 			//hit other player
-			if(temp_body.GetFriction() == .6 &&  temp_coli.GetFriction() == .5 && temp_body.GetBody().GetUserData() != "WALL" && temp_coli.GetBody().GetUserData() != "WALL")
+			if(temp_coli.GetBody().GetUserData() != 'WALL')
 			{
-				console.log(temp_body.GetBody().GetUserData());
-				console.log("hit other player");
-				console.log("setting damping to: " + Math.log(temp_body.GetBody().GetLinearVelocity().Length())/2);
-				isStunned = true;
-				temp_body.GetBody().SetLinearDamping(Math.log(temp_body.GetBody().GetLinearVelocity().Length())/2);
+				console.log("hit a " + temp_body.GetBody().GetUserData());
 				//find which body was hit
 					for(i = 0; i < myBodies.length; i++) {
-						if(temp_body.GetBody()== myBodies[i]) {
+						if(temp_coli.GetBody() == myBodies[i]) {
 							lives["p"+(i+1)]--;
 							socket.emit('lose life', {lives: lives["p"+(i+1)]});
-							console.log(lives["p"+(i+1)]);
+							console.log("player " + (i+1) + " " + lives["p"+(i+1)]);
 						}
 					}
 			}
 
 			//hit a wall too hard
-			if(temp_body.GetBody().GetLinearVelocity().Length() > 25 && temp_coli.GetBody().GetUserData() == "WALL") {
+			if(temp_body.GetBody().GetLinearVelocity().Length() > 25 && temp_coli.GetBody().GetUserData() == 'WALL') {
 				console.log("hit wall too hard!");
 				console.log("setting damping to: " + Math.log(temp_body.GetBody().GetLinearVelocity().Length())/2);
 				isStunned = true;
