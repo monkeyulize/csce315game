@@ -6,54 +6,6 @@ var lives = {
 	p3: 3,
 	p4: 3
 };
-var p_id = 0;
-var players = new Array();
-var clients = [];
-var io, socket;
-module.exports.initGame = function(_io, _socket) {
-	io = _io;
-	socket = _socket;
-	console.log("player " + p_id + " connected");
-	console.log("socket ID: " + socket.id);
-	clients[p_id] = {"socket" : socket.id};
-	players[p_id] = p_id;
-	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
-	//let clients know a new player has joined
-	socket.broadcast.emit('player joined', {num_players : players.length, other_playerID : p_id});
-	p_id++;
-	
-	socket.on('wh', function(data) {
-		//add a player to the servers game 
-		add_player(players.length, 800, 600);
-		
-	});
-
-	//emits and updates the players mice and mice locations 
-	socket.on('mouse data', function (data) {
-		var pos_data = update(data.playerID, data.isMouseDown, data.mouseX, data.mouseY);
-		io.sockets.emit('pos data', pos_data);
-	});
-	
-	//sees when a player has disconnected and let other clients know they have disconnected for deletion
-	socket.on('disconnect', function () {
-		//send disconnect message to every client, and delete disconnect on every local game
-		for(i = 0; i < clients.length; i++) {
-			if(clients[i].socket == socket.id) {
-				console.log("player " + i + " disconnected");
-				destroy_body(i);
-				io.sockets.emit('player disconnected', {id_to_destroy : i});
-			}
-		}
-		p_id--;
-		players.pop();
-	});
-}
-
-
-
-
-
-
 //declare and define objects and classes needed for box2d
 var myBodies = [];
 var    b2Vec2 = Box2D.Common.Math.b2Vec2
@@ -71,21 +23,20 @@ var    b2Vec2 = Box2D.Common.Math.b2Vec2
 ,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
 ,      b2Fixture = Box2D.Dynamics.b2Fixture
 ,      b2AABB = Box2D.Collision.b2AABB;
-
-//declare the shape class, fixture class, and the world for physics
-var bodyDef = new b2BodyDef;
-var myFixture = new b2FixtureDef;
+var wallDef = new b2BodyDef;
+var wallFixture = new b2FixtureDef;
+var playerFixture = new b2FixtureDef;
+var playerDef = new b2BodyDef;
+var hornFixture = new b2FixtureDef;
 var world = new b2World(new b2Vec2(0, 0), false);
-
-//create global copy of a wall
 function createWall(x, y, w, h) {
-	bodyDef.type = b2Body.b2_staticBody;
-	bodyDef.userData = 'WALL';
-	bodyDef.position.x = x + w/2;
-	bodyDef.position.y = y + h/2;
-	myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
-	myFixture.shape.SetAsBox(w/2, h/2);
-	world.CreateBody(bodyDef).CreateFixture(myFixture);	
+	wallDef.type = b2Body.b2_staticBody;
+	wallDef.position.x = x + w/2;
+	wallDef.position.y = y + h/2;
+	wallFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+	wallFixture.shape.SetAsBox(w/2, h/2);
+	wallFixture.userData = "WALL";
+	world.CreateBody(wallDef).CreateFixture(wallFixture);	
 }
 
 //create global copy of all 4 walls, and all 4 spawn locations	
@@ -101,84 +52,81 @@ var start_positions = new Array();
 		start_positions[2] = {x: x + 10, y: y + h - 10};
 		start_positions[3] = {x: x + w - 10, y: y + h - 10};
 	}
-	var w = 400;
-	var l = 300;
-	createArena(15, 15, w, l);
+createArena(0, 0, 75.4, 55.4);
 
+playerDef.type = b2Body.b2_dynamicBody;
+playerDef.position.Set(4, 8);
 
-bodyDef.type = b2Body.b2_dynamicBody;
-bodyDef.position.Set(4, 8);
-bodyDef.SetUserData('PLAYER');
 	
-//define the horn and body subshapes
-myFixture.shape = new b2CircleShape(3);
-myFixture.density = 1;
-myFixture.friction = 0.5;
-myFixture.restitution = 0.5;
-var myHorn = new b2FixtureDef;
-myHorn.SetUserData('HORN');
-myHorn.shape = new b2PolygonShape;
-myHorn.shape.SetAsArray([
-	new b2Vec2(5*0.866 ,0),
-	new b2Vec2(0, 3*1.5),
-	new b2Vec2(0, 3*-1.5),
+
+playerFixture.shape = new b2CircleShape(1.5);
+playerFixture.density = 1;
+playerFixture.friction = 0.5;
+playerFixture.restitution = 0.5;
+playerFixture.userData = "PLAYER";
+
+hornFixture.userData = "HORN";
+hornFixture.shape = new b2PolygonShape;
+hornFixture.shape.SetAsArray([
+	new b2Vec2(2.5*0.866 ,0),
+	new b2Vec2(0, 1.5*1.5),
+	new b2Vec2(0, 1.5*-1.5),
 ]);
-myHorn.density = 1;
-myHorn.friction = 0.6;
-myHorn.restitution = 0.5;
+hornFixture.density = 1;
+hornFixture.friction = 0.5;
+hornFixture.restitution = 0.5;
 
 //add a player to the global game 
 var add_player = function(num_players, width, height) {
 	console.log("num_players: " + num_players);
-	myBodies[num_players-1] = world.CreateBody(bodyDef);	
+	myBodies[num_players-1] = world.CreateBody(playerDef);		
 	myBodies[num_players-1].SetPositionAndAngle(
 		new b2Vec2(start_positions[num_players-1].x, start_positions[num_players-1].y),0);
 	myBodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
 	myBodies[num_players-1].SetFixedRotation(false);
 	myBodies[num_players-1].SetAngularVelocity(0);
-	myBodies[num_players-1].CreateFixture(myFixture);
-	myBodies[num_players-1].CreateFixture(myHorn); 
-	
-	console.log(width);
-	console.log(height);
+	myBodies[num_players-1].CreateFixture(playerFixture);
+	myBodies[num_players-1].CreateFixture(hornFixture); 
 }
 
 //track collisions of dynamic shapes, being those shapes that move
 var listener = new Box2D.Dynamics.b2ContactListener;
 world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
-			
-			//temp body is collider, temp coli is collidee
-			var temp_body = contact.GetFixtureA();
-			var temp_coli = contact.GetFixtureB();
-			console.log("my type "+temp_body.GetFriction());
-			console.log("there type "+temp_coli.GetFriction());
-			console.log("you hit something!");
-			console.log("impact velocity = " + temp_body.GetBody().GetLinearVelocity().Length());
-
-			//hit other player
-			if(temp_coli.GetBody().GetUserData() != 'WALL')
-			{
-				console.log("hit a " + temp_body.GetBody().GetUserData());
-				//find which body was hit
-					for(i = 0; i < myBodies.length; i++) {
-						if(temp_coli.GetBody() == myBodies[i]) {
-							lives["p"+(i+1)]--;
-							socket.emit('lose life', {lives: lives["p"+(i+1)]});
-							console.log("player " + (i+1) + " " + lives["p"+(i+1)]);
-						}
-					}
-			}
-
-			//hit a wall too hard
-			if(temp_body.GetBody().GetLinearVelocity().Length() > 25 && temp_coli.GetBody().GetUserData() == 'WALL') {
-				console.log("hit wall too hard!");
-				console.log("setting damping to: " + Math.log(temp_body.GetBody().GetLinearVelocity().Length())/2);
+	var body1 = contact.GetFixtureA();
+	var body2 = contact.GetFixtureB();
+	if(body1.GetUserData() == 'HORN') {
+		if(body2.GetUserData() == 'PLAYER') {
+			for(i = 0; i < myBodies.length; i++) {
+				if(body2.GetBody() == myBodies[i]) {
+					lives["p"+(i+1)]--;
+				}
+			}				
+		} else if(body2.GetUserData() == 'WALL') {
+			if(body1.GetBody().GetLinearVelocity().Length() > 10) {
 				isStunned = true;
-				temp_body.GetBody().SetLinearDamping(Math.log(temp_body.GetBody().GetLinearVelocity().Length())/2);
-			}
-			console.log("isStunned = " + isStunned);	
-} 
+				body1.GetBody().SetLinearDamping(
+					Math.log(body1.GetBody().GetLinearVelocity().Length())
+				);
+			}					
+		}
+	} else if(body2.GetUserData() == 'HORN') {
+		if(body1.GetUserData() == 'PLAYER') {
+			for(i = 0; i < myBodies.length; i++) {
+				if(body1.GetBody() == myBodies[i]) {
+					lives["p"+(i+1)]--;
+				}
+			}				
+		} else if(body1.GetUserData() == 'WALL') {
+			if(body2.GetBody().GetLinearVelocity().Length() > 10) {
+				isStunned = true;
+				body2.GetBody().SetLinearDamping(
+					Math.log(body2.GetBody().GetLinearVelocity().Length())
+				);
+			}					
+		}
+	} 
+}  
 var canMove = false;
 var isStunned = false;
 //allow rotation to mouse pointer for player to turn, include all logic for angles and turning
@@ -191,7 +139,7 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 	var angle1_act = Math.atan2(a1, b1);
 	var angle1;
 	
-	var turning_speed = Math.PI*3;
+	var turning_speed = Math.PI;
 	
 	var angle2 = myBodies[playerID].GetAngle();
 
@@ -266,7 +214,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 		myBodies[playerID].SetAngularVelocity(0);
 	}		
 	if(isMouseDown && canMove == true && isStunned == false ) {
-		myBodies[playerID].ApplyImpulse(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x), (mouseY - myBodies[playerID].GetPosition().y)), myBodies[playerID].GetPosition());
+		myBodies[playerID].ApplyImpulse(new b2Vec2((mouseX - myBodies[playerID].GetPosition().x)/7, (mouseY - myBodies[playerID].GetPosition().y)/7), myBodies[playerID].GetPosition());
 		
 		rotate_to_mouse(playerID, mouseX, mouseY);
 	} else if(isMouseDown && canMove == false) {
