@@ -83,6 +83,12 @@
 
 
 <script>
+document.getElementById("player1").style.visibility="hidden";
+document.getElementById("player2").style.visibility="hidden";
+document.getElementById("player3").style.visibility="hidden";
+document.getElementById("player4").style.visibility="hidden";
+
+
 	var p_id;
 	var num_players;
 	var socket = io.connect('http://' + window.location.hostname + ':24130');
@@ -146,7 +152,30 @@
 	}
 	createArena(0, 0, 75.4, 55.4);
 
-
+	var launcherDef = new b2BodyDef;
+	var launcherFixture = new b2FixtureDef;
+	var launcherSensor = new b2FixtureDef;
+	var launcher;
+	function createLauncher(x, y, w, h) {
+		launcherDef.type = b2Body.b2_staticBody;
+		launcherDef.position.x = x + w/2;
+		launcherDef.position.y = y + h/2;
+		launcherFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		launcherFixture.shape.SetAsBox(w/2, h/2);
+		launcherFixture.userData = "LAUNCHER";
+		launcherSensor.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		launcherSensor.shape.SetAsOrientedBox(w/2.5, h/8, new b2Vec2(0, -h/2));
+		
+		launcher = world.CreateBody(launcherDef);
+		launcher.CreateFixture(launcherSensor);
+		launcher.CreateFixture(launcherFixture);
+	}
+	
+	createLauncher(10, 30, 10, 1);
+	
+	createLauncher(40, 30, 10, 1);
+	
+	
 	
 	bodyDef.type = b2Body.b2_dynamicBody;
 	bodyDef.position.Set(4, 8);
@@ -160,8 +189,8 @@
 	myHorn.shape = new b2PolygonShape;
 	myHorn.shape.SetAsArray([
 		new b2Vec2(2.5*0.866 ,0),
-		new b2Vec2(0, 1.5*1.5),
-		new b2Vec2(0, 1.5*-1.5),
+		new b2Vec2(0, 1*1.5),
+		new b2Vec2(0, 1*-1.5),
 	]);
 	myHorn.density = 1;
 	myHorn.friction = 0.5;
@@ -173,6 +202,10 @@
 	var bodies = new Array();
 	var posX, posY, ang;
 	socket.on('player connected', function(data) {
+		//document.getElementById("player" + (data.playerID+1)).style.visibility="visible";
+		for(i = data.playerID; i >= 0; i--) {
+			document.getElementById("player" + (i+1)).style.visibility="visible";
+		}
 		console.log("player connected");
 		p_id = data.playerID;
 					
@@ -209,6 +242,8 @@
 	});
 	
 	socket.on('player joined', function(data) {
+		document.getElementById("player" + (data.other_playerID+1)).style.visibility="visible";
+
 		console.log("another player joined");
 		if(data.num_players > num_players) {
 			num_players = data.num_players;
@@ -237,6 +272,7 @@
 		};
 	})();		
 	socket.on('player disconnected', function(data) {
+		document.getElementById("player"+(data.id_to_destroy+1)).style.visibility="hidden";
 		world.DestroyBody(bodies[data.id_to_destroy]);	
 		num_players--;
 	});
@@ -311,7 +347,7 @@
 	}
 	
 	var debugDraw = new b2DebugDraw();
-	debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
+	debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
 	debugDraw.SetDrawScale(10);
 	debugDraw.SetFillAlpha(0.5); //define transparency
 	debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
