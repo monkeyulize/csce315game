@@ -78,27 +78,33 @@
 </body>
 <script type="text/javascript" src="Box2d.js"></script> 
 <script src="/socket.io/socket.io.js"></script>
-
+<script type="text/javascript" src="Easel.js"></script> 
 
 
 
 <script>
-document.getElementById("player1").style.visibility="hidden";
-document.getElementById("player2").style.visibility="hidden";
-document.getElementById("player3").style.visibility="hidden";
-document.getElementById("player4").style.visibility="hidden";
-
-
+	var stage = new createjs.Stage(canvas);
+	stage.enableDOMEvents(true);
+	
+	document.getElementById("player1").style.visibility="hidden";
+	document.getElementById("player2").style.visibility="hidden";
+	document.getElementById("player3").style.visibility="hidden";
+	document.getElementById("player4").style.visibility="hidden";
+	
 	var p_id;
 	var num_players;
-	var socket = io.connect('http://' + window.location.hostname + ':24130');
+	var socket = io.connect('http://' + window.location.hostname + ':24131');
 	console.log(window.innerHeight);
 	console.log(window.innerWidth);
 	canvas.width = 801;
 	
 	canvas.height = 601;
 
-	
+	back = stage.addChild(new createjs.Shape());
+	back.graphics.beginFill("#66CC00").drawRect(0,0,760,550);
+			back.x = 0;
+			back.y = 0;
+	stage.addChild(back);
 	/* begin: life indicator */
 	
 	var lives = {
@@ -137,6 +143,12 @@ document.getElementById("player4").style.visibility="hidden";
 		myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
 		myFixture.shape.SetAsBox(w/2, h/2);
 		world.CreateBody(bodyDef).CreateFixture(myFixture);	
+		
+		wall = stage.addChild(new createjs.Shape());
+		wall.graphics.beginFill("green").drawRect(0,0,10*w,10*h);
+			wall.x = 10*x;
+			wall.y = 10*y;
+		stage.addChild(wall);
 	}
 	var start_positions = new Array();	
 	function createArena(x, y, w, h) {
@@ -144,7 +156,7 @@ document.getElementById("player4").style.visibility="hidden";
 		createWall(x, y, 1, h);	//left wall
 		createWall(x + w, y, 1, h);	//right wall
 		createWall(x, y + h - 1, w, 1);	//bottom wall
-	
+		
 		start_positions[0] = {x: x + 10, y: y + 10};
 		start_positions[1] = {x: x + w - 10, y: y + 10};
 		start_positions[2] = {x: x + 10, y: y + h - 10};
@@ -199,8 +211,11 @@ document.getElementById("player4").style.visibility="hidden";
 
 	
 	var started = false;
+	var colors =new Array("red","yellow","purple","orange");
+	var player_shapes = new Array();
 	var bodies = new Array();
 	var posX, posY, ang;
+	
 	socket.on('player connected', function(data) {
 		//document.getElementById("player" + (data.playerID+1)).style.visibility="visible";
 		for(i = data.playerID; i >= 0; i--) {
@@ -221,6 +236,7 @@ document.getElementById("player4").style.visibility="hidden";
 		bodies[num_players-1]["playerID"] = p_id;
 		console.log("num_players: " + num_players);		
 		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
+		newPlayer("herro",num_players);
 		
 		for(i = num_players-2; i >= 0; i--) {
 			bodies[i] = world.CreateBody(bodyDef); 
@@ -234,6 +250,7 @@ document.getElementById("player4").style.visibility="hidden";
 			console.log("i: " + i);
 			console.log("num_players: " + num_players);		
 			console.log("player ID: " + bodies[i]["playerID"]);
+			newPlayer("herro",i+1);
 		
 		}
 		started = true;
@@ -258,6 +275,7 @@ document.getElementById("player4").style.visibility="hidden";
 			bodies[num_players-1]["playerID"] = data.other_playerID;
 			console.log("num_players: " + num_players);		
 			console.log("player ID: " + bodies[num_players-1]["playerID"]);
+			newPlayer("herro",num_players);
 		
 		}
 	});
@@ -328,7 +346,21 @@ document.getElementById("player4").style.visibility="hidden";
 		mouseY = (e.clientY - canvasPosition.y) / 10;
 		//console.log(mouseX + " " + mouseY);
 		
-	};
+	}
+	function newPlayer(string, player_id) {
+		
+		player_shapes[player_id-1] = new createjs.Shape();
+		player_shapes[player_id-1].graphics.beginFill(colors[player_id-1]);
+		player_shapes[player_id-1].graphics.beginStroke(colors[player_id-1]);
+		player_shapes[player_id-1].graphics.moveTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y).lineTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y+10*2.5*0.866).lineTo(player_shapes[player_id-1].x+1.5*10, player_shapes[player_id-1].y).lineTo(player_shapes[player_id-1].x-1.5*10, player_shapes[player_id-1].y).lineTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y+10*2.5*0.866);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*10);
+		player_shapes[player_id-1].graphics.setStrokeStyle(3).beginStroke("green");
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*10*.75);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*10*.5);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*10*.25);
+		stage.addChild(player_shapes[player_id-1]);
+		
+	}
 	function getElementPosition(element) {
 		var elem=element, tagname="", x=0, y=0;
 		while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
@@ -358,8 +390,19 @@ document.getElementById("player4").style.visibility="hidden";
 		if(started == true) {
 			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
 		}
-		world.DrawDebugData();
+		for (var i=0;i<num_players;i++){ 
+			player_shapes[i].x= bodies[i].GetPosition().x*10;
+			player_shapes[i].y= bodies[i].GetPosition().y*10;
+			player_shapes[i].rotation = (bodies[i].GetAngle())*57.3-90;
+		}
+		//circle.x= bodies[0].GetPosition().x*10;
+		//circle.y= bodies[0].GetPosition().y*10;
+		//circle.rotation = (bodies[0].GetAngle())*57.3-90;
+		stage.update(event);
+		//world.DrawDebugData();
+		
 		requestAnimFrame(update);
+		
 	
 	}	
 </script>

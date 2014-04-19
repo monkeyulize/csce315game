@@ -2,7 +2,7 @@ var server = require('http').createServer(handler);
 var io = require('socket.io').listen(server);
 var fs = require('fs')	
 var game = require('./game');
-server.listen(24130);
+server.listen(24131);
 io.set('log level', 1);
 
 function handler (req, res) {
@@ -22,6 +22,16 @@ function handler (req, res) {
 		});
 		} else if(req.url == "/Box2d.js") {
 			fs.readFile(__dirname + '/Box2d.js',
+			function (err, data) {
+				if (err) {
+					res.writeHead(500);
+					return res.end('Error loading index.html');
+				}
+				res.writeHead(200);
+				res.end(data);
+			});
+		} else if(req.url == "/Easel.js") {
+			fs.readFile(__dirname + '/Easel.js',
 			function (err, data) {
 				if (err) {
 					res.writeHead(500);
