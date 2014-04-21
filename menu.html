@@ -73,7 +73,7 @@ body {
 
 <div id="buttons" style="float:left; width 800px; height: 600px;"> 
 	<div><button class="button">Login </button></div>
-	<div><button class="button">Instructions </button></div>
+	<div><button class="button" onclick="jumpToInstr()">Instructions </button></div>
 	<div><button class="button">Rules </button></div>
 </div>
 
@@ -103,6 +103,10 @@ body {
     });
 
   });
+
+function jumpToInstr() {
+  window.location = "/instruction%20screen.html";
+}
 </script>
 
 </div>
