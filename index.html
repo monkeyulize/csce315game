@@ -1,34 +1,139 @@
 <html>
-	<head>
 
-	</head>
+<head>
+<meta charset="UTF-8">
+</head>
+<style>
+	#player1{
+		 -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+	#player2{
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+	#player3{
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+	#player4{
+		 -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+</style>
+
+
+<body>
+<div id="player1" style="position: absolute; top: 40px; left: 40px; width: 200px; height: 30px; line-height: 0.1">	
+	<p>player 1</p>
+	<p id="p1health">♥ ♥ ♥</p>
+</div>
+<div id="player2" style="position: absolute; top: 100px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p>player 2</p>
+	<p id="p2health">♥ ♥ ♥</p>
+</div>
+<div id="player3" style="position: absolute; top: 160px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p>player 3</p>
+	<p id="p3health">♥ ♥ ♥</p>
+</div>
+<div id="player4" style="position: absolute; top: 220px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p>player 4</p>
+	<p id="p4health">♥ ♥ ♥</p>
+</div>
+<canvas width="801" height="601" id="canvas"></canvas>
+
+
+
+
+
+
+</body>
+<script type="text/javascript" src="Box2d.js"></script> 
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="Easel.js"></script> 
+
+
+
+<script>
+	var stage = new createjs.Stage(canvas);
+	stage.enableDOMEvents(true);
 	
+	document.getElementById("player1").style.visibility="hidden";
+	document.getElementById("player2").style.visibility="hidden";
+	document.getElementById("player3").style.visibility="hidden";
+	document.getElementById("player4").style.visibility="hidden";
 	
-	<body>
-	<canvas width="500" height="500" id="canvas"></canvas>
-	</body>
-	<script type="text/javascript" src="http://lufylegend.com/js/Box2dWeb-2.1.a.3.min.js"></script> 	
-	<script>
+	var p_id;
+	var scale = 10;
+	var num_players;
+	var socket = io.connect('http://' + window.location.hostname + ':24131');
+	console.log(window.innerHeight);
+	console.log(window.innerWidth);
+	canvas.width = 801;
 	
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-				
-		var    b2Vec2 = Box2D.Common.Math.b2Vec2
-		,	   b2Cross = Box2D.Common.Math.b2Cross
-		,      b2BodyDef = Box2D.Dynamics.b2BodyDef
-		,      b2Body = Box2D.Dynamics.b2Body
-		,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
-		,      b2World = Box2D.Dynamics.b2World
-		,      b2BoxDef = Box2D.Dynamics.b2BoxDef
-		,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
-		,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
-		,	   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape
-		,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
-		,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
-		,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
-		,      b2Fixture = Box2D.Dynamics.b2Fixture
-		,      b2AABB = Box2D.Collision.b2AABB;		
+	canvas.height = 601;
+
+	back = stage.addChild(new createjs.Shape());
+	back.graphics.beginFill("#FFFFFF").drawRect(0,0,760,550);
+			back.x = 0;
+			back.y = 0;
+	stage.addChild(back);
+	/* begin: life indicator */
+
+	var lives = {
+		p1: 3,
+		p2: 3,
+		p3: 3,
+		p4: 3	
+	};	
 		
+	/* end: life indicator */
+	
+	
+	
+	var    b2Vec2 = Box2D.Common.Math.b2Vec2
+	,	   b2Cross = Box2D.Common.Math.b2Cross
+	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
+	,      b2Body = Box2D.Dynamics.b2Body
+	,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+	,      b2World = Box2D.Dynamics.b2World
+	,      b2BoxDef = Box2D.Dynamics.b2BoxDef
+	,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+	,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+	,	   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape
+	,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
+	,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+	,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+	,      b2Fixture = Box2D.Dynamics.b2Fixture
+	,      b2AABB = Box2D.Collision.b2AABB;
 	var bodyDef = new b2BodyDef;
 	var myFixture = new b2FixtureDef;
 	var world = new b2World(new b2Vec2(0, 0), false);	
@@ -39,234 +144,277 @@
 		myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
 		myFixture.shape.SetAsBox(w/2, h/2);
 		world.CreateBody(bodyDef).CreateFixture(myFixture);	
+		
+		wall = stage.addChild(new createjs.Shape());
+		wall.graphics.beginFill("green").drawRect(scale*x,scale*y,scale*w,scale*h);
+		stage.addChild(wall);
+	}
+	var start_positions = new Array();	
+	function createArena(x, y, w, h) {
+		createWall(x, y, w, 1);	//top wall
+		createWall(x, y, 1, h);	//left wall
+		createWall(x + w, y, 1, h);	//right wall
+		createWall(x, y + h - 1, w, 1);	//bottom wall
+		
+		start_positions[0] = {x: x + 10, y: y + 10};
+		start_positions[1] = {x: x + w - 10, y: y + 10};
+		start_positions[2] = {x: x + 10, y: y + h - 10};
+		start_positions[3] = {x: x + w - 10, y: y + h - 10};
+	}
+	createArena(0, 0, (canvas.width-46)/scale, (canvas.height-46)/scale);
+
+	var launcherDef = new b2BodyDef;
+	var launcherFixture = new b2FixtureDef;
+	var launcherSensor = new b2FixtureDef;
+	var launcher;
+	function createLauncher(x, y, w, h) {
+		launcherDef.type = b2Body.b2_staticBody;
+		launcherDef.position.x = x + w/2;
+		launcherDef.position.y = y + h/2;
+		launcherFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		launcherFixture.shape.SetAsBox(w/2, h/2);
+		launcherFixture.userData = "LAUNCHER";
+		launcherSensor.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		launcherSensor.shape.SetAsOrientedBox(w/2.5, h/8, new b2Vec2(0, -h/2));
+		
+		launcher = world.CreateBody(launcherDef);
+		launcher.CreateFixture(launcherSensor);
+		launcher.CreateFixture(launcherFixture);
+		
+		stage_launcher = stage.addChild(new createjs.Shape());
+		stage_launcher.graphics.beginFill("red").drawRect(0,0,scale*(w/2),scale*(h/2));
+			stage_launcher.x = scale*x + scale*(w/2);
+			stage_launcher.y = scale*y + scale*(h/2);
+		stage.addChild(stage_launcher);
 	}
 	
-    createWall(0, 0, 150, 1);	//top wall
-    createWall(0, 0, 1, 100);	//left wall
-    createWall(150, 0, 1, 100);	//right wall
-    createWall(0, 99, 150, 1);	//bottom wall
+	createLauncher(10, 30, 10, 1);
+	
+	createLauncher(40, 30, 10, 1);
+	
+	
+	
+	bodyDef.type = b2Body.b2_dynamicBody;
+	bodyDef.position.Set(4, 8);
+	
+	myFixture.shape = new b2CircleShape(1.5);
+	myFixture.density = 1;
+	myFixture.friction = 0.5;
+	myFixture.restitution = 0.5;
+	
+	var myHorn = new b2FixtureDef;
+	myHorn.shape = new b2PolygonShape;
+	myHorn.shape.SetAsArray([
+		new b2Vec2(2.5*0.866 ,0),
+		new b2Vec2(0, 1*1.5),
+		new b2Vec2(0, 1*-1.5),
+	]);
+	myHorn.density = 1;
+	myHorn.friction = 0.5;
+	myHorn.restitution = 0.5;	
 
-		var listener = new Box2D.Dynamics.b2ContactListener;
-		world.SetContactListener(listener);
-		listener.BeginContact = function(contact) {
-			console.log("you hit something!");
-			console.log("impact velocity = " + myBody.GetLinearVelocity().Length());
-			if(myBody.GetLinearVelocity().Length() > 10) {
-				console.log("hit wall too hard!");
-				console.log("setting damping to: " + Math.log(myBody.GetLinearVelocity().Length())/2);
-				console.log("My Lives : " + myLives);
-				isStunned = true;
-				myBody.SetLinearDamping(Math.log(myBody.GetLinearVelocity().Length())/2);
-				myLives= myLives - 1;
-			}
-			console.log("isStunned = " + isStunned);			
+
+	
+	var started = false;
+	var colors =new Array("#FF0000","#3399FF","FF00FF","#FFCC00");
+	var player_shapes = new Array();
+	var bodies = new Array();
+	var posX, posY, ang;
+	
+	socket.on('player connected', function(data) {
+		//document.getElementById("player" + (data.playerID+1)).style.visibility="visible";
+		for(i = data.playerID; i >= 0; i--) {
+			document.getElementById("player" + (i+1)).style.visibility="visible";
 		}
+		console.log("player connected");
+		p_id = data.playerID;
+					
+		num_players = data.num_players;	
 		
+		bodies[num_players-1] = world.CreateBody(bodyDef); 
+		bodies[num_players-1].SetPositionAndAngle(new b2Vec2(start_positions[p_id].x, start_positions[p_id].y),0);
+		bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+		bodies[num_players-1].SetFixedRotation(false);
+		bodies[num_players-1].SetAngularVelocity(0);
+		bodies[num_players-1].CreateFixture(myFixture);
+		bodies[num_players-1].CreateFixture(myHorn); 
+		bodies[num_players-1]["playerID"] = p_id;
+		bodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
+		console.log("num_players: " + num_players);		
+		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
+		newPlayer("herro",num_players);
+		player_shapes[num_players-1].shadow = new createjs.Shadow("#000000", 0, 0, 12);
+		
+		for(i = num_players-2; i >= 0; i--) {
+			bodies[i] = world.CreateBody(bodyDef); 
+			bodies[i].SetPositionAndAngle(new b2Vec2(start_positions[i].x, start_positions[i].y),0);
+			bodies[i].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[i].SetFixedRotation(false);
+			bodies[i].SetAngularVelocity(0);
+			bodies[i].CreateFixture(myFixture);
+			bodies[i].CreateFixture(myHorn); 
+			bodies[i]["playerID"] = i;
+			bodies[i].userData = {canMove : true, isStunned : false, launchMode : false};
+			console.log("i: " + i);
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[i]["playerID"]);
+			newPlayer("herro",i+1);
+			player_shapes[i].shadow = new createjs.Shadow("#000000", 0, 0, 12);
+		
+		}
+		started = true;
+		socket.emit('wh', {width : (canvas.width-46)/scale, height : (canvas.width-46)/scale });		
+		requestAnimFrame(update);
+	});
+	
+	socket.on('player joined', function(data) {
+		document.getElementById("player" + (data.other_playerID+1)).style.visibility="visible";
 
-		bodyDef.type = b2Body.b2_dynamicBody;
-		bodyDef.position.Set(4, 8);
-		bodyDef.userData = 'BOX';
-		
-		
-		var myBody = world.CreateBody(bodyDef);
-		
-		myBody.SetPositionAndAngle(new b2Vec2(10,10),0);
-		myBody.SetLinearVelocity(new b2Vec2(0, 0));
-		myBody.SetFixedRotation(false);
-		myBody.SetAngularVelocity(0);
-		
-
-		myFixture.shape = new b2CircleShape(3);
-		myFixture.density = 1;
-		myFixture.friction = 0.5;
-		myFixture.restitution = 0.5;
-		
-		var myLives = 3;
-		
-		myBody.CreateFixture(myFixture);
-		
-
-		
-		var debugDraw = new b2DebugDraw();
-		debugDraw.SetSprite(document.getElementById ("canvas").getContext("2d"));
-		debugDraw.SetDrawScale(10);
-		debugDraw.SetFillAlpha(0.5); //define transparency
-		debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
-		debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-		world.SetDebugDraw(debugDraw);
-		
-		window.setInterval(update, 1000/60);
-		
-		var mouseX, mouseY, mousePVec, isMouseDown, selectedBody, mouseJoint;
-		var canvasPosition = getElementPosition(document.getElementById("canvas")); 
-		
-		document.addEventListener("mousedown", function(e) {
-			isMouseDown = true;
-			handleMouseMove(e);
-			document.addEventListener("mousemove", handleMouseMove, true);
-		}, true);
-		
-		document.addEventListener("mouseup", function() {
-			document.removeEventListener("mousemove", handleMouseMove, true);
-			isMouseDown = false;
-			mouseX = undefined;
-			mouseY = undefined;
-		}, true);
-		
-		function handleMouseMove(e) {
-			mouseX = (e.clientX - canvasPosition.x) / 10;
-			mouseY = (e.clientY - canvasPosition.y) / 10;
+		console.log("another player joined");
+		if(data.num_players > num_players) {
+			num_players = data.num_players;
+			bodies[num_players-1] = world.CreateBody(bodyDef); 
+			bodies[num_players-1].SetPositionAndAngle(
+				new b2Vec2(start_positions[num_players-1].x, start_positions[num_players-1].y),0);
+			bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[num_players-1].SetFixedRotation(false);
+			bodies[num_players-1].SetAngularVelocity(0);
+			bodies[num_players-1].CreateFixture(myFixture);
+			bodies[num_players-1].CreateFixture(myHorn); 
+			bodies[num_players-1]["playerID"] = data.other_playerID;
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[num_players-1]["playerID"]);
+			newPlayer("herro",num_players);
+			player_shapes[num_players-1].shadow = new createjs.Shadow("#000000", 0, 0, 12);
+		}
+	});
+	window.requestAnimFrame = (function(){
+		return window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function(/* function */ callback, /* DOMElement */ element){
+		window.setTimeout(callback, 1000 / 60);
 		};
-		function getElementPosition(element) {
-			var elem=element, tagname="", x=0, y=0;
-			while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
-				y += elem.offsetTop;
-				x += elem.offsetLeft;
-				tagname = elem.tagName.toUpperCase();
-				if(tagname == "BODY")
-					elem=0;
-				if(typeof(elem) == "object") {
-					if(typeof(elem.offsetParent) == "object") {
-						elem = elem.offsetParent;
-					}
+	})();		
+	socket.on('player disconnected', function(data) {
+		document.getElementById("player"+(data.id_to_destroy+1)).style.visibility="hidden";
+		world.DestroyBody(bodies[data.id_to_destroy]);	
+		stage.removeChild(player_shapes[data.id_to_destroy]);
+		num_players--;
+	});
+
+	var hearts;
+	socket.on('pos data', function(data) {
+		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
+		switch(data.lives) {
+			case 3:
+				hearts = "♥ ♥ ♥";
+				break;
+			case 2:
+				hearts = "♥ ♥";
+				break;
+			case 1:
+				hearts = "♥";
+				break;
+			case 0:
+				hearts = "dead";
+				break;
+			default:
+				hearts = "dead";
+				break;
+		}
+		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
+		bodies[data.playerID].userData = data.state;
+	});
+		
+	var mouseX, mouseY, mousePVec, isMouseDown;
+	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
+	document.addEventListener("mousedown", function(e) {
+		isMouseDown = true;
+		handleMouseMove(e);
+		document.addEventListener("mousemove", handleMouseMove, true);
+		started = true;
+	}, true);
+	
+	document.addEventListener("mouseup", function() {
+		document.removeEventListener("mousemove", handleMouseMove, true);
+		isMouseDown = false;
+		mouseX = undefined;
+		mouseY = undefined;
+	}, true);
+	
+	function handleMouseMove(e) {
+		mouseX = (e.clientX - canvasPosition.x) / scale;
+		mouseY = (e.clientY - canvasPosition.y) / scale;
+		//console.log(mouseX + " " + mouseY);
+		
+	}
+	function newPlayer(string, player_id) {
+		
+		player_shapes[player_id-1] = new createjs.Shape();
+		player_shapes[player_id-1].graphics.beginFill(colors[player_id-1]);
+		player_shapes[player_id-1].graphics.beginStroke(colors[player_id-1]);
+		player_shapes[player_id-1].graphics.moveTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y)
+								  .lineTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y+scale*2.5*0.866)
+								  .lineTo(player_shapes[player_id-1].x+1.5*scale, player_shapes[player_id-1].y)
+								  .lineTo(player_shapes[player_id-1].x-1.5*scale, player_shapes[player_id-1].y)
+								  .lineTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y+scale*2.5*0.866);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale);
+		player_shapes[player_id-1].graphics.setStrokeStyle(3).beginStroke("green");
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale*.75);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale*.5);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale*.25);
+		stage.addChild(player_shapes[player_id-1]);
+		
+	}
+	function getElementPosition(element) {
+		var elem=element, tagname="", x=0, y=0;
+		while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
+			y += elem.offsetTop;
+			x += elem.offsetLeft;
+			tagname = elem.tagName.toUpperCase();
+			if(tagname == "BODY")
+				elem=0;
+			if(typeof(elem) == "object") {
+				if(typeof(elem.offsetParent) == "object") {
+					elem = elem.offsetParent;
 				}
 			}
-			return {x: x, y: y};
 		}
-		
-		var canMove = false;
-		var isStunned = false;
-		
-		function rotate_to_mouse() {
-			var pos = new b2Vec2(myBody.GetPosition().x, myBody.GetPosition().y);
-			var a1 = mouseY - pos.y;
-			var b1 = mouseX - pos.x;
-			//circle.x = pos.x;
-			//circle.y = pos.y;
-			var angle1_act = Math.atan2(a1, b1);
-			var angle1;
-			
-			var turning_speed = Math.PI*3;
-			
-			var angle2 = myBody.GetAngle();
-
-			if(angle2 < 0) {
-				angle2 += 2*Math.PI;
-			}
-			if(angle2 > 2*Math.PI) {
-				angle2 -= 2*Math.PI;
-			}
-
-			
-			
-			if (angle1_act < 0) {
-				angle1 = 2*Math.PI - (-1 * angle1_act);
-			}
-			if (angle1_act > 0) {
-				angle1 = angle1_act;
-			}
-			//console.log("1 - 2: " + (angle1 - angle2));
-			//myBody.SetAngularVelocity(Math.PI/2);
-			if(angle1 >= Math.PI) {				
-				if(angle2 >= Math.PI) {
-					if(angle1 <= angle2) {
-					//console.log("1");
-						myBody.SetAngularVelocity(-turning_speed)
-					}else if(angle1 > angle2) {
-					//console.log("2");
-						myBody.SetAngularVelocity(turning_speed);
-					}
-					//console.log("angle 2 is greater than angle 1");
-					canMove = false;				
-				} else if(angle2 < Math.PI) {
-					if(angle1 <= (angle2 + Math.PI)) {
-					//console.log("1");
-						myBody.SetAngularVelocity(turning_speed);
-					}else if(angle1 > (angle2 + Math.PI)) {
-					//console.log("2");
-						myBody.SetAngularVelocity(-turning_speed);
-					}
-					//console.log("angle 2 is greater than angle 1");
-					canMove = false;
+		return {x: x, y: y};
+	}
+	
+	var debugDraw = new b2DebugDraw();
+	debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+	debugDraw.SetDrawScale(10);
+	debugDraw.SetFillAlpha(0.5); //define transparency
+	debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
+	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+	world.SetDebugDraw(debugDraw);
+	
+	function update() {
+		if(started == true) {
+			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
+		}
+		for (var i=0;i<num_players;i++){ 
+				player_shapes[i].x= bodies[i].GetPosition().x*scale;
+				player_shapes[i].y= bodies[i].GetPosition().y*scale;
+				//degree = radian *57.3, then turning 90 degrees for orientation
+				player_shapes[i].rotation = (bodies[i].GetAngle())*57.3-90;
+				if(bodies[i].userData.isStunned == true) {
+					player_shapes[i].shadow = new createjs.Shadow("#FFFFFF", 0, 0, 12);
+				} else {
+					player_shapes[i].shadow = new createjs.Shadow(colors[i], 0, 0, 12);
 				}
-				
-
-			}else if(angle1 < Math.PI) {
-				if(angle2 >= Math.PI) {
-					if(angle1 <= (angle2 - Math.PI)) {
-					//console.log("1");
-						myBody.SetAngularVelocity(turning_speed);
-					}else if(angle1 > (angle2 - Math.PI)) {
-					//console.log("2");
-						myBody.SetAngularVelocity(-turning_speed);
-					}
-					//console.log("angle 2 is greater than angle 1");
-					canMove = false;				
-				} else if(angle2 < Math.PI) {
-					if(angle1 <= angle2) {
-					//console.log("1");
-						myBody.SetAngularVelocity(-turning_speed);
-					}else if(angle1 > angle2) {
-					//console.log("2");
-						myBody.SetAngularVelocity(turning_speed);
-					}
-					//console.log("angle 2 is greater than angle 1");
-					canMove = false;
-				}
-			}
-			//console.log(Math.abs(angle2 - angle1));
-			if((Math.abs(angle2 - angle1) <= 0.1) || (Math.abs(angle2 - angle1) >= 6.1)) {
-				//console.log(canMove);
-				myBody.SetAngularVelocity(0);
-				canMove = true;
-			} else {
-				//console.log(canMove);
-			}
-			//console.log("a1: " + angle1);	
-			//console.log("a2: " + angle2);
-			
 		}
-
-
+		stage.update(event);
+		//world.DrawDebugData();
 		
-	 
-
-			
-
-			
-		function update() {
+		requestAnimFrame(update);
 		
-			if(myBody.GetLinearVelocity().Length() < 0.8 && myBody.GetLinearDamping() != 0) {
-				myBody.SetLinearVelocity(new b2Vec2(0, 0));
-				console.log("resetting damping to 0");
-				myBody.SetLinearDamping(0);
-				isStunned = false;
-				console.log("isStunned = " + canMove);
-			}
-			
-			if(!isMouseDown) {
-				myBody.SetAngularVelocity(0);
-			}		
-			if(isMouseDown && canMove == true && isStunned == false) {
-				myBody.ApplyForce(new b2Vec2((mouseX - myBody.GetPosition().x)*10, (mouseY - myBody.GetPosition().y)*10), myBody.GetPosition());
-				
-				rotate_to_mouse();
-			} else if(isMouseDown && canMove == false) {
-				rotate_to_mouse();
-			}
-			
-			world.Step(1/60, 10, 10);
-			world.DrawDebugData();			
-			//stage.update();
-			world.ClearForces();
-			
-		}
-
 	
-	</script>
-	
-	
+	}	
+</script>
 </html>
-
-
-	
