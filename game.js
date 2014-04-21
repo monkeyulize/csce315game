@@ -113,6 +113,7 @@ var add_player = function(num_players, width, height) {
 	myBodies[num_players-1].SetAngularVelocity(0);
 	myBodies[num_players-1].CreateFixture(playerFixture);
 	myBodies[num_players-1].CreateFixture(hornFixture); 
+	myBodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
 }
 var canMove = false;
 var isStunned = false;
@@ -131,13 +132,18 @@ listener.BeginContact = function(contact) {
 		if(body2.GetUserData() == 'LAUNCHERSENSOR') {
 			for(i = 0; i < myBodies.length; i++) {
 				if(body1.GetBody() == myBodies[i]) {
-					launchMode = true;
+					myBodies[i].userData.launchMode = true;
 				}
 			}	
-		
 		}
-	
-	
+	} else if(body2.GetUserData() == 'HORN' || body2.GetUserData() == 'PLAYER') {
+		if(body1.GetUserData() == 'LAUNCHERSENSOR') {
+			for(i = 0; i < myBodies.length; i++) {
+				if(body2.GetBody() == myBodies[i]) {
+					myBodies[i].userData.launchMode = true;
+				}
+			}
+		}
 	}
 	
 	
@@ -150,6 +156,11 @@ listener.BeginContact = function(contact) {
 			}				
 		} else if(body2.GetUserData() == 'WALL') {
 			if(body1.GetBody().GetLinearVelocity().Length() > 10) {
+				for(i = 0; i < myBodies.length; i++) {
+					if(body1.GetBody() == myBodies[i]) {
+						myBodies[i].userData.isStunned = true;
+					}
+				}				
 				isStunned = true;
 				body1.GetBody().SetLinearDamping(
 					Math.log(body1.GetBody().GetLinearVelocity().Length())
@@ -165,6 +176,11 @@ listener.BeginContact = function(contact) {
 			}				
 		} else if(body1.GetUserData() == 'WALL') {
 			if(body2.GetBody().GetLinearVelocity().Length() > 10) {
+				for(i = 0; i < myBodies.length; i++) {
+					if(body1.GetBody() == myBodies[i]) {
+						myBodies[i].userData.isStunned = true;
+					}
+				}
 				isStunned = true;
 				body2.GetBody().SetLinearDamping(
 					Math.log(body2.GetBody().GetLinearVelocity().Length())
@@ -176,12 +192,7 @@ listener.BeginContact = function(contact) {
 
 //allow rotation to mouse pointer for player to turn, include all logic for angles and turning
 function rotate_to_mouse(playerID, mouseX, mouseY) {
-	if(launchMode) {
-		console.log("rotating");	
-	}
-
 	var pos = new b2Vec2(myBodies[playerID].GetPosition().x, myBodies[playerID].GetPosition().y);
-	//console.log(pos);
 	var a1 = mouseY - pos.y;
 	var b1 = mouseX - pos.x;
 	var angle1_act = Math.atan2(a1, b1);
@@ -190,14 +201,15 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 	var turning_speed = Math.PI;
 	
 	var angle2 = myBodies[playerID].GetAngle();
-
 	if(angle2 < 0) {
 		angle2 += 2*Math.PI;
+		myBodies[playerID].SetAngle(angle2);
 	}
 	if(angle2 > 2*Math.PI) {
 		angle2 -= 2*Math.PI;
+		myBodies[playerID].SetAngle(angle2);
 	}
-	
+
 	if (angle1_act < 0) {
 		angle1 = 2*Math.PI - (-1 * angle1_act);
 	}
@@ -211,14 +223,14 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 			}else if(angle1 > angle2) {
 				myBodies[playerID].SetAngularVelocity(turning_speed);
 			}
-			canMove = false;				
+			myBodies[playerID].userData.canMove = false;
 		} else if(angle2 < Math.PI) {
 			if(angle1 <= (angle2 + Math.PI)) {
 				myBodies[playerID].SetAngularVelocity(turning_speed);
 			}else if(angle1 > (angle2 + Math.PI)) {
 				myBodies[playerID].SetAngularVelocity(-turning_speed);
 			}
-			canMove = false;
+			myBodies[playerID].userData.canMove = false;
 		}
 		
 	}else if(angle1 < Math.PI) {
@@ -228,19 +240,19 @@ function rotate_to_mouse(playerID, mouseX, mouseY) {
 			}else if(angle1 > (angle2 - Math.PI)) {
 				myBodies[playerID].SetAngularVelocity(-turning_speed);
 			}
-			canMove = false;				
+			myBodies[playerID].userData.canMove = false;
 		} else if(angle2 < Math.PI) {
 			if(angle1 <= angle2) {
 				myBodies[playerID].SetAngularVelocity(-turning_speed);
 			}else if(angle1 > angle2) {
 				myBodies[playerID].SetAngularVelocity(turning_speed);
 			}
-			canMove = false;
+			myBodies[playerID].userData.canMove = false;
 		}
 	}
 	if((Math.abs(angle2 - angle1) <= 0.1) || (Math.abs(angle2 - angle1) >= 6.1)) {
 		myBodies[playerID].SetAngularVelocity(0);
-		canMove = true;
+		myBodies[playerID].userData.canMove = true;
 	}
 }
 //delete player from game, currently used in deleting player from game
@@ -252,33 +264,41 @@ var destroy_body = function(playerID) {
 //update the physics including movement, collisions, and setting the state of the game		
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	var SCALE_FACTOR = 3;
-	var LAUNCH_SPEED = 10;
-	rotate_to_mouse(playerID, mouseX, mouseY);
-	if(launchMode == true) {
+	var LAUNCH_SPEED = 700;
+
+	var temp_data = myBodies[playerID].userData;
+	if(temp_data.launchMode == true) {
+		rotate_to_mouse(playerID, mouseX, mouseY);
 		myBodies[playerID].SetLinearVelocity(new b2Vec2(0, 0));
-		//myBodies[playerID].SetAngularVelocity(0);
-		//console.log("click somewhere to launch");
-		
-		if(isMouseDown) {
-			console.log("launched");
-			var vec = new b2Vec2((mouseX - myBodies[playerID].GetPosition().x), (mouseY - myBodies[playerID].GetPosition().y));
+		rotate_to_mouse(playerID, mouseX, mouseY);
+		if(undefined != mouseX) {
+			lastMouseX = mouseX;
+		}
+		if(undefined != mouseY) {
+			lastMouseY = mouseY;
+		}
+		if(!isMouseDown) {
+			myBodies[playerID].userData.launchMode = false;
+			console.log("launched " + playerID);
+			var vec = new b2Vec2((lastMouseX - myBodies[playerID].GetPosition().x), (lastMouseY - myBodies[playerID].GetPosition().y));
 			var vec_length = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
 			vec.x = (vec.x/vec_length) * LAUNCH_SPEED;
 			vec.y = (vec.y/vec_length) * LAUNCH_SPEED;
 			myBodies[playerID].ApplyImpulse(vec, myBodies[playerID].GetPosition());
-			launchMode = false;
+			
 		}		
 	}
 	if(myBodies[playerID].GetLinearVelocity().Length() < 0.8 && myBodies[playerID].GetLinearDamping() != 0) {
 		myBodies[playerID].SetLinearVelocity(new b2Vec2(0, 0));
 		myBodies[playerID].SetLinearDamping(0);
+		myBodies[playerID].userData.isStunned = false;
 		isStunned = false;
 	}
 	
-	if(!isMouseDown && launchMode == false) {
+	if(!isMouseDown && temp_data.launchMode == false) {
 		myBodies[playerID].SetAngularVelocity(0);
 	}		
-	if(isMouseDown && canMove == true && isStunned == false && launchMode == false) {
+	if(isMouseDown && temp_data.canMove == true && temp_data.isStunned == false && temp_data.launchMode == false) {
 		myBodies[playerID].SetLinearDamping(0);
 		var vec = new b2Vec2((mouseX - myBodies[playerID].GetPosition().x), (mouseY - myBodies[playerID].GetPosition().y));
 		var vec_length = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
@@ -286,7 +306,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 		vec.y = (vec.y/vec_length) * SCALE_FACTOR;
 		myBodies[playerID].ApplyImpulse(vec, myBodies[playerID].GetPosition());
 		rotate_to_mouse(playerID, mouseX, mouseY);
-	} else if(isMouseDown && canMove == false && launchMode == false) {
+	} else if(isMouseDown && temp_data.canMove == false && temp_data.launchMode == false) {
 		myBodies[playerID].SetLinearDamping(1);
 		rotate_to_mouse(playerID, mouseX, mouseY);
 	}
@@ -297,7 +317,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	world.Step(1/60, 8, 3);
 	
 	world.ClearForces();
-	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID, lives : lives["p"+(playerID+1)]}	
+	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID, lives : lives["p"+(playerID+1)], state : temp_data}	
 }
 
 //export functions for server usage.
