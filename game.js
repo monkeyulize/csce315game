@@ -113,7 +113,6 @@ var add_player = function(num_players, width, height) {
 	myBodies[num_players-1].SetAngularVelocity(0);
 	myBodies[num_players-1].CreateFixture(playerFixture);
 	myBodies[num_players-1].CreateFixture(hornFixture); 
-	myBodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
 }
 var canMove = false;
 var isStunned = false;
@@ -132,18 +131,13 @@ listener.BeginContact = function(contact) {
 		if(body2.GetUserData() == 'LAUNCHERSENSOR') {
 			for(i = 0; i < myBodies.length; i++) {
 				if(body1.GetBody() == myBodies[i]) {
-					myBodies[i].userData.launchMode = true;
+					launchMode = true;
 				}
 			}	
+		
 		}
-	} else if(body2.GetUserData() == 'HORN' || body2.GetUserData() == 'PLAYER') {
-		if(body1.GetUserData() == 'LAUNCHERSENSOR') {
-			for(i = 0; i < myBodies.length; i++) {
-				if(body2.GetBody() == myBodies[i]) {
-					myBodies[i].userData.launchMode = true;
-				}
-			}
-		}
+	
+	
 	}
 	
 	
@@ -260,24 +254,19 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	var SCALE_FACTOR = 3;
 	var LAUNCH_SPEED = 10;
 	rotate_to_mouse(playerID, mouseX, mouseY);
-	if(myBodies[playerID].userData.launchMode == true) {
+	if(launchMode == true) {
 		myBodies[playerID].SetLinearVelocity(new b2Vec2(0, 0));
-		rotate_to_mouse(playerID, mouseX, mouseY);
-		if(undefined != mouseX) {
-			lastMouseX = mouseX;
-		}
-		if(undefined != mouseY) {
-			lastMouseY = mouseY;
-		}
-		if(!isMouseDown) {
-			myBodies[playerID].userData.launchMode = false;
-			console.log("launched " + playerID);
-			var vec = new b2Vec2((lastMouseX - myBodies[playerID].GetPosition().x), (lastMouseY - myBodies[playerID].GetPosition().y));
+		//myBodies[playerID].SetAngularVelocity(0);
+		//console.log("click somewhere to launch");
+		
+		if(isMouseDown) {
+			console.log("launched");
+			var vec = new b2Vec2((mouseX - myBodies[playerID].GetPosition().x), (mouseY - myBodies[playerID].GetPosition().y));
 			var vec_length = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
 			vec.x = (vec.x/vec_length) * LAUNCH_SPEED;
 			vec.y = (vec.y/vec_length) * LAUNCH_SPEED;
 			myBodies[playerID].ApplyImpulse(vec, myBodies[playerID].GetPosition());
-			
+			launchMode = false;
 		}		
 	}
 	if(myBodies[playerID].GetLinearVelocity().Length() < 0.8 && myBodies[playerID].GetLinearDamping() != 0) {
