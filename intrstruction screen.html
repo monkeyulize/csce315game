@@ -5,24 +5,40 @@ body {
   font-family: sans-serif;
 }
 
-#background{
-
-}
-
 #buttons{
   position: absolute;
   top: 350;
   left: 300;
 }
 
-.button {
-  width: 200px;
-  font-family: Comic Sans;
+
+#container
+{
+    height:600px;
+    width:800px;
+    position:relative;
 }
+
+#image
+{    
+    position:absolute;
+    left:0;
+    top:0;
+}
+#text
+{
+    z-index:100;
+    position:absolute;    
+    color:black;
+    font-size:16px;
+    font-weight:normal;
+    left:0px;
+    top:100px;
+}
+
 
 </style>
 
-<div id="screen_size" style="float:left; width: 800px; height: 600px;">
 
 <div id="warning">
   JavaScript is required to run this app.
@@ -31,16 +47,10 @@ body {
 
 <body>
 
-
-
-
-<p>
-
-<div id="background" style="float:left; width 800px; height: 600px;">
-  <img src="./assets/instruction_screen.png" alt="Background" width="window.height" height="window.width">
-
-<h1>Instructions</h1>
-    - To move the player around drag the mouse in the direction you want it to go in.<br>
+<div id="container">
+    <img id="image" src="./assets/instruction_screen.png"/>
+    <p id="text">
+        - To move the player around drag the mouse in the direction you want it to go in.<br>
     - Hitting the back of another player will result in the other player losing 1 health point. <br>
     - Land on a launch pad to increase the players speed.<br>
     -Once a launch pad is touched and used, the launch pad will be disabled for a length of time.<br>
@@ -48,34 +58,16 @@ body {
 	 <br> the same turning speed such that a player cannot rapidly change directions apart from using a launch pad.<br>
     -Hitting the wall at a fast speed will result in player losing control of their character for a time. <br>
 
-<button id="return" >Back </button>
-	</div>
+	<button id="buttons">Back To Menu </button>
 
-</p>
-	</div>
-<!--p>
-    - To move the player around drag the mouse in the direction you want it to go in.<br>
-    - Hitting the back of another player will result in the other player losing 1 health point. <br>
-    - Land on a launch pad to increase the players speed.<br>
-    -Once a launch pad is touched and used, the launch pad will be disabled for a length of time.<br>
-    -All avatars will have a limited range of motion while moving and all avatars will have 
-	 <br> the same turning speed such that a player cannot rapidly change directions apart from using a launch pad.<br>
-    -Hitting the wall at a fast speed will result in player losing control of their character for a time. <br>
-
-	<SCRIPT LANGUAGE='Javascript'>
-document.write("<XMP>")
-document.write("\t- To move the player around drag the mouse in the direction you want it to go in.\r")
-document.write("\t- Hitting the back of another player will result in the other player losing 1 health point.\r")
-document.write("\t- Land on a launch pad to increase the players speed.\r")
-document.write("\t- Once a launch pad is touched and used, the launch pad will be disabled for a length of time.\r")
-document.write("\t- All avatars will have a limited range of motion while moving and all avatars will have the same turning speed such that a player cannot rapidly change directions apart from using a launch pad.\r")
-document.write("\t- Hitting the wall at a fast speed will result in player losing control of their character for a time.\r")
-
-
-document.write("</XMP>")
-</SCRIPT>
+    </p>
 	
-	</p!-->
+
+	
+</div>
+
+
+
 
 </body>
 </html>
