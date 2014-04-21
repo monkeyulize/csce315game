@@ -72,9 +72,9 @@ body {
 </div>
 
 <div id="buttons" style="float:left; width 800px; height: 600px;"> 
-	<div><button class="button">Login </button></div>
+	<div><button class="button" onclick="jumpToLogin()">Login </button></div>
 	<div><button class="button" onclick="jumpToInstr()">Instructions </button></div>
-	<div><button class="button">Rules </button></div>
+	<div><button class="button" onclick="jumpToRules()">Rules </button></div>
 </div>
 
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
@@ -105,7 +105,15 @@ body {
   });
 
 function jumpToInstr() {
-  window.location = "/instruction%20screen.html";
+  window.location = "/instruction_screen.html";
+}
+
+function jumpToRules() {
+  window.location = "/rulescreen.html";
+}
+
+function jumpToLogin() {
+  window.location = "/loginscreen.html";
 }
 </script>
 
