@@ -235,6 +235,7 @@
 		bodies[num_players-1].CreateFixture(myFixture);
 		bodies[num_players-1].CreateFixture(myHorn); 
 		bodies[num_players-1]["playerID"] = p_id;
+		bodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
 		console.log("num_players: " + num_players);		
 		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
 		newPlayer("herro",num_players);
@@ -249,6 +250,7 @@
 			bodies[i].CreateFixture(myFixture);
 			bodies[i].CreateFixture(myHorn); 
 			bodies[i]["playerID"] = i;
+			bodies[i].userData = {canMove : true, isStunned : false, launchMode : false};
 			console.log("i: " + i);
 			console.log("num_players: " + num_players);		
 			console.log("player ID: " + bodies[i]["playerID"]);
@@ -327,6 +329,7 @@
 				break;
 		}
 		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
+		bodies[data.playerID].userData = data.state;
 	});
 		
 	var mouseX, mouseY, mousePVec, isMouseDown;
@@ -403,10 +406,11 @@
 				player_shapes[i].y= bodies[i].GetPosition().y*scale;
 				//degree = radian *57.3, then turning 90 degrees for orientation
 				player_shapes[i].rotation = (bodies[i].GetAngle())*57.3-90;
-				if(player_shapes[i].x%20>10)
+				if(bodies[i].userData.isStunned == true) {
 					player_shapes[i].shadow = new createjs.Shadow("#FFFFFF", 0, 0, 12);
-				else
+				} else {
 					player_shapes[i].shadow = new createjs.Shadow(colors[i], 0, 0, 12);
+				}
 		}
 		stage.update(event);
 		//world.DrawDebugData();
