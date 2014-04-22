@@ -260,12 +260,13 @@ var destroy_body = function(playerID) {
 	world.DestroyBody(myBodies[playerID]);
 	lives["p"+(playerID+1)] = 3;
 }
+var update_speed = 1/60
 
 //update the physics including movement, collisions, and setting the state of the game		
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	var SCALE_FACTOR = 3;
 	var LAUNCH_SPEED = 700;
-
+	
 	var temp_data = myBodies[playerID].userData;
 	if(temp_data.launchMode == true) {
 		rotate_to_mouse(playerID, mouseX, mouseY);
@@ -314,7 +315,7 @@ var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	var positionX = myBodies[playerID].GetPosition().x;
 	var positionY = myBodies[playerID].GetPosition().y;
 
-	world.Step(1/60, 8, 3);
+	world.Step(update_speed, 8, 3);
 	
 	world.ClearForces();
 	return {positionX : positionX, positionY : positionY, angle : angle, playerID : playerID, lives : lives["p"+(playerID+1)], state : temp_data}	

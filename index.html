@@ -22,7 +22,13 @@ body {
   margin-bottom: 0px;
 }
 #background{
-  
+
+}
+
+#warning {
+	display: "none";
+	font-size: 10pt;
+	font-family: Comic Sans;
 }
 
 #game {
@@ -33,12 +39,16 @@ body {
   margin-top: 5px;
 }
 
-#login_section{
-  display: none;
+#buttons{
   position: absolute;
-	top: 350;
-	right: 450;
-	}
+  top: 350;
+  left: 300;
+}
+
+.button {
+  width: 200px;
+  font-family: Comic Sans;
+}
 
 .user_name {
   font-size: 10pt;
@@ -51,63 +61,37 @@ body {
 }
 </style>
 
+<div id="screen_size" style="float:left; width: 800px; height: 600px;">
 
-
-
-<div id="warning">
-  JavaScript is required to run this app.
-</div>
-
-<div id="background">
+<div id="background" style="float:left; width 800px; height: 600px;">
   <img src="./assets/menu_image.png" alt="Background" width="window.height" height="window.width">
 </div>
 
-<div id="login_section">
-  Your name:
-  <input id="name"  type="text"></input>
-  <div></div>
-  <input id="login" type="button" value="Join Game" onClick="jumpToGame()" horizontal-align: text-center></input>
+<div id="buttons" style="float:left; width 800px; height: 600px;"> 
+	<div><button class="button" onclick="jumpToLogin()">Login </button></div>
+	<div><button class="button" onclick="jumpToInstr()">Instructions </button></div>
+	<div><button class="button" onclick="jumpToRules()">Rules </button></div>
 </div>
-<script src="/socket.io/socket.io.js"></script>
+
 
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 <script>
-	function jumpToGame() {
-		var name = document.getElementById("name").value;
-		//console.log(name);
-		window.location = './game.html?name=' + name;
-	
-	
+
+
+	function jumpToInstr() {
+	  window.location = "./intrstruction_screen.html";
 	}
 
+	function jumpToRules() {
+	  window.location = "./rulescreen.html";
+	}
 
-  // $(document) returns a jQuery object representing the whole document (page).
-  // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
-  // document is loaded.
-  $(document).ready(function() {
-    // Hide the warning section and show the login section.
-    $('#warning').css('display', 'none');
-	$('#login_section').css('display', 'block');
-	$('#background').css('display', 'block');
-	
-
-
-    // When Enter is pressed in the name field, it should be treated as clicking
-    // on the Log In button.
-    $('#name').keyup(function(event) {
-      if (event.keyCode == 13) {
-        $('#login').click();
-		$('#login_section').css('display', 'none');
-        $('#game').css('display', 'block');
-		$('#background').css('display', 'none');
-        $('#status').text('Logged In.');
-      }
-    });
-
-  });
+	function jumpToLogin() {
+	  window.location = "./loginscreen.html";
+	}
 </script>
 
-
+</div>
 	
 	
 </html>
