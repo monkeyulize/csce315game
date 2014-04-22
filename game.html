@@ -1,0 +1,444 @@
+<html>
+
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<meta charset="UTF-8">
+</head>
+<style>
+	#player1{
+		 -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+	#player2{
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+	#player3{
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+	#player4{
+		 -webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
+		color: rgba(0, 0, 0, 0.25);
+	}
+</style>
+
+
+<body>
+<div id="player1" style="position: absolute; top: 40px; left: 40px; width: 200px; height: 30px; line-height: 0.1">	
+	<p id="p1name">player 1</p>
+	<p id="p1health">♥ ♥ ♥</p>
+</div>
+<div id="player2" style="position: absolute; top: 100px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p id="p2name">player 2</p>
+	<p id="p2health">♥ ♥ ♥</p>
+</div>
+<div id="player3" style="position: absolute; top: 160px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p id="p3name">player 3</p>
+	<p id="p3health">♥ ♥ ♥</p>
+</div>
+<div id="player4" style="position: absolute; top: 220px; left: 40px; width: 200px; height: 25px; line-height: 0.1">
+	<p id="p4name">player 4</p>
+	<p id="p4health">♥ ♥ ♥</p>
+</div>
+<canvas width="801" height="601" id="canvas"></canvas>
+
+
+
+
+
+
+</body>
+<script type="text/javascript" src="Box2d.js"></script> 
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="Easel.js"></script> 
+
+
+
+<script>
+	function getParameterByName(name) {
+		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+			results = regex.exec(location.search);
+		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+	var name = getParameterByName('name');
+	//console.log(name);
+	
+	var stage = new createjs.Stage(canvas);
+	stage.enableDOMEvents(true);
+	
+	document.getElementById("player1").style.visibility="hidden";
+	document.getElementById("player2").style.visibility="hidden";
+	document.getElementById("player3").style.visibility="hidden";
+	document.getElementById("player4").style.visibility="hidden";
+	
+	var p_id;
+	var scale = 10;
+	var num_players;
+	var socket = io.connect('http://' + window.location.hostname + ':24131');
+	console.log(window.innerHeight);
+	console.log(window.innerWidth);
+	canvas.width = 801;
+	
+	canvas.height = 601;
+
+	back = stage.addChild(new createjs.Shape());
+	back.graphics.beginFill("#FFFFFF").drawRect(0,0,760,550);
+			back.x = 0;
+			back.y = 0;
+	stage.addChild(back);
+	/* begin: life indicator */
+
+	var lives = {
+		p1: 3,
+		p2: 3,
+		p3: 3,
+		p4: 3	
+	};	
+		
+	/* end: life indicator */
+	
+	
+	
+	var    b2Vec2 = Box2D.Common.Math.b2Vec2
+	,	   b2Cross = Box2D.Common.Math.b2Cross
+	,      b2BodyDef = Box2D.Dynamics.b2BodyDef
+	,      b2Body = Box2D.Dynamics.b2Body
+	,      b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+	,      b2World = Box2D.Dynamics.b2World
+	,      b2BoxDef = Box2D.Dynamics.b2BoxDef
+	,      b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+	,      b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
+	,	   b2EdgeShape = Box2D.Collision.Shapes.b2EdgeShape
+	,      b2RevoluteJointDef=Box2D.Dynamics.Joints.b2RevoluteJointDef
+	,      b2MouseJointDef =  Box2D.Dynamics.Joints.b2MouseJointDef
+	,      b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+	,      b2Fixture = Box2D.Dynamics.b2Fixture
+	,      b2AABB = Box2D.Collision.b2AABB;
+	var bodyDef = new b2BodyDef;
+	var myFixture = new b2FixtureDef;
+	var world = new b2World(new b2Vec2(0, 0), false);	
+	function createWall(x, y, w, h) {
+		bodyDef.type = b2Body.b2_staticBody;
+		bodyDef.position.x = x + w/2;
+		bodyDef.position.y = y + h/2;
+		myFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		myFixture.shape.SetAsBox(w/2, h/2);
+		world.CreateBody(bodyDef).CreateFixture(myFixture);	
+		
+		wall = stage.addChild(new createjs.Shape());
+		wall.graphics.beginFill("green").drawRect(scale*x,scale*y,scale*w,scale*h);
+		stage.addChild(wall);
+	}
+	var start_positions = new Array();	
+	function createArena(x, y, w, h) {
+		createWall(x, y, w, 1);	//top wall
+		createWall(x, y, 1, h);	//left wall
+		createWall(x + w, y, 1, h);	//right wall
+		createWall(x, y + h - 1, w, 1);	//bottom wall
+		
+		start_positions[0] = {x: x + 10, y: y + 10};
+		start_positions[1] = {x: x + w - 10, y: y + 10};
+		start_positions[2] = {x: x + 10, y: y + h - 10};
+		start_positions[3] = {x: x + w - 10, y: y + h - 10};
+	}
+	createArena(0, 0, (canvas.width-46)/scale, (canvas.height-46)/scale);
+
+	var launcherDef = new b2BodyDef;
+	var launcherFixture = new b2FixtureDef;
+	var launcherSensor = new b2FixtureDef;
+	var launcher;
+	function createLauncher(x, y, w, h) {
+		launcherDef.type = b2Body.b2_staticBody;
+		launcherDef.position.x = x + w/2;
+		launcherDef.position.y = y + h/2;
+		launcherFixture.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		launcherFixture.shape.SetAsBox(w/2, h/2);
+		launcherFixture.userData = "LAUNCHER";
+		launcherSensor.shape = new Box2D.Collision.Shapes.b2PolygonShape;
+		launcherSensor.shape.SetAsOrientedBox(w/2.5, h/8, new b2Vec2(0, -h/2));
+		
+		launcher = world.CreateBody(launcherDef);
+		launcher.CreateFixture(launcherSensor);
+		launcher.CreateFixture(launcherFixture);
+		
+		stage_launcher = stage.addChild(new createjs.Shape());
+		stage_launcher.graphics.beginFill("red").drawRect(0,0,scale*w,scale*h);
+			stage_launcher.x = scale*x;
+			stage_launcher.y = scale*y;
+		stage.addChild(stage_launcher);
+	}
+	
+	createLauncher(10, 30, 10, 1);
+	
+	createLauncher(40, 30, 10, 1);
+	
+	
+	
+	bodyDef.type = b2Body.b2_dynamicBody;
+	bodyDef.position.Set(4, 8);
+	
+	myFixture.shape = new b2CircleShape(1.5);
+	myFixture.density = 1;
+	myFixture.friction = 0.5;
+	myFixture.restitution = 0.5;
+	
+	var myHorn = new b2FixtureDef;
+	myHorn.shape = new b2PolygonShape;
+	myHorn.shape.SetAsArray([
+		new b2Vec2(2.5*0.866 ,0),
+		new b2Vec2(0, 1*1.5),
+		new b2Vec2(0, 1*-1.5),
+	]);
+	myHorn.density = 1;
+	myHorn.friction = 0.5;
+	myHorn.restitution = 0.5;	
+
+
+	
+	var started = false;
+	var colors =new Array("#FF0000","#3399FF","FF00FF","#FFCC00");
+	var player_shapes = new Array();
+	var bodies = new Array();
+	var posX, posY, ang;
+	
+	socket.on('player connected', function(data) {
+		//document.getElementById("p1name").innerHTML = name;
+		
+		//document.getElementById("player" + (data.playerID+1)).style.visibility="visible";
+		for(i = data.playerID; i >= 0; i--) {
+			document.getElementById("player" + (i+1)).style.visibility="visible";
+		}
+		console.log("player connected");
+		p_id = data.playerID;
+		socket.emit('name', {id : data.playerID, name : name});			
+		num_players = data.num_players;	
+		
+		bodies[num_players-1] = world.CreateBody(bodyDef); 
+		bodies[num_players-1].SetPositionAndAngle(new b2Vec2(start_positions[p_id].x, start_positions[p_id].y),0);
+		bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+		bodies[num_players-1].SetFixedRotation(false);
+		bodies[num_players-1].SetAngularVelocity(0);
+		bodies[num_players-1].CreateFixture(myFixture);
+		bodies[num_players-1].CreateFixture(myHorn); 
+		bodies[num_players-1]["playerID"] = p_id;
+		bodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
+		console.log("num_players: " + num_players);		
+		console.log("player ID: " + bodies[num_players-1]["playerID"]);		
+		newPlayer("herro",num_players);
+		player_shapes[num_players-1].shadow = new createjs.Shadow("#000000", 0, 0, 12);
+		
+		for(i = num_players-2; i >= 0; i--) {
+			bodies[i] = world.CreateBody(bodyDef); 
+			bodies[i].SetPositionAndAngle(new b2Vec2(start_positions[i].x, start_positions[i].y),0);
+			bodies[i].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[i].SetFixedRotation(false);
+			bodies[i].SetAngularVelocity(0);
+			bodies[i].CreateFixture(myFixture);
+			bodies[i].CreateFixture(myHorn); 
+			bodies[i]["playerID"] = i;
+			bodies[i].userData = {canMove : true, isStunned : false, launchMode : false};
+			console.log("i: " + i);
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[i]["playerID"]);
+			newPlayer("herro",i+1);
+			player_shapes[i].shadow = new createjs.Shadow("#000000", 0, 0, 12);
+		
+		}
+		if(num_players >= 2) {
+			started = true;
+		}
+		
+		socket.emit('wh', {width : (canvas.width-46)/scale, height : (canvas.width-46)/scale });		
+		requestAnimFrame(update);
+	});
+	
+	socket.on('player name', function(data) {
+		document.getElementById("p" + (data.id+1) + "name").innerHTML = data.name;
+		
+	});
+	
+	socket.on('player joined', function(data) {
+		document.getElementById("player" + (data.other_playerID+1)).style.visibility="visible";
+
+		console.log("another player joined");
+		if(data.num_players > num_players) {
+			num_players = data.num_players;
+			bodies[num_players-1] = world.CreateBody(bodyDef); 
+			bodies[num_players-1].SetPositionAndAngle(
+				new b2Vec2(start_positions[num_players-1].x, start_positions[num_players-1].y),0);
+			bodies[num_players-1].SetLinearVelocity(new b2Vec2(0, 0));
+			bodies[num_players-1].SetFixedRotation(false);
+			bodies[num_players-1].SetAngularVelocity(0);
+			bodies[num_players-1].CreateFixture(myFixture);
+			bodies[num_players-1].CreateFixture(myHorn); 
+			bodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
+			bodies[num_players-1]["playerID"] = data.other_playerID;
+			console.log("num_players: " + num_players);		
+			console.log("player ID: " + bodies[num_players-1]["playerID"]);
+			newPlayer("herro",num_players);
+			player_shapes[num_players-1].shadow = new createjs.Shadow("#000000", 0, 0, 12);
+		}
+	});
+	window.requestAnimFrame = (function(){
+		return window.requestAnimationFrame ||
+		window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function(/* function */ callback, /* DOMElement */ element){
+		window.setTimeout(callback, 1000 / 60);
+		};
+	})();		
+	socket.on('player disconnected', function(data) {
+		console.log("player disconnected");
+		document.getElementById("player"+(data.id_to_destroy+1)).style.visibility="hidden";
+		world.DestroyBody(bodies[data.id_to_destroy]);	
+		stage.removeChild(player_shapes[data.id_to_destroy]);
+		num_players--;
+	});
+
+	var hearts;
+	socket.on('pos data', function(data) {
+		bodies[data.playerID].SetPositionAndAngle(new b2Vec2(data.positionX, data.positionY), data.angle);
+		switch(data.lives) {
+			case 3:
+				hearts = "♥ ♥ ♥";
+				break;
+			case 2:
+				hearts = "♥ ♥";
+				break;
+			case 1:
+				hearts = "♥";
+				break;
+			case 0:
+				hearts = "dead";
+				break;
+			default:
+				hearts = "dead";
+				break;
+		}
+		document.getElementById("p"+(data.playerID+1)+"health").innerHTML = hearts;
+		bodies[data.playerID].userData = data.state;
+	});
+		
+	var mouseX, mouseY, mousePVec, isMouseDown;
+	var canvasPosition = getElementPosition(document.getElementById("canvas")); 
+	document.addEventListener("mousedown", function(e) {
+		isMouseDown = true;
+		handleMouseMove(e);
+		document.addEventListener("mousemove", handleMouseMove, true);
+		started = true;
+	}, true);
+	
+	document.addEventListener("mouseup", function() {
+		document.removeEventListener("mousemove", handleMouseMove, true);
+		isMouseDown = false;
+		mouseX = undefined;
+		mouseY = undefined;
+	}, true);
+	
+	function handleMouseMove(e) {
+		mouseX = (e.clientX - canvasPosition.x) / scale;
+		mouseY = (e.clientY - canvasPosition.y) / scale;
+		//console.log(mouseX + " " + mouseY);
+		
+	}
+	function newPlayer(string, player_id) {
+		
+		player_shapes[player_id-1] = new createjs.Shape();
+		player_shapes[player_id-1].graphics.beginFill(colors[player_id-1]);
+		player_shapes[player_id-1].graphics.beginStroke(colors[player_id-1]);
+		player_shapes[player_id-1].graphics.moveTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y)
+								  .lineTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y+scale*2.5*0.866)
+								  .lineTo(player_shapes[player_id-1].x+1.5*scale, player_shapes[player_id-1].y)
+								  .lineTo(player_shapes[player_id-1].x-1.5*scale, player_shapes[player_id-1].y)
+								  .lineTo(player_shapes[player_id-1].x, player_shapes[player_id-1].y+scale*2.5*0.866);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale);
+		player_shapes[player_id-1].graphics.setStrokeStyle(3).beginStroke("green");
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale*.75);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale*.5);
+		player_shapes[player_id-1].graphics.beginFill("blue").drawCircle(0, 0, 1.5*scale*.25);
+		stage.addChild(player_shapes[player_id-1]);
+		
+	}
+	function getElementPosition(element) {
+		var elem=element, tagname="", x=0, y=0;
+		while((typeof(elem) == "object") && (typeof(elem.tagName) != "undefined")) {
+			y += elem.offsetTop;
+			x += elem.offsetLeft;
+			tagname = elem.tagName.toUpperCase();
+			if(tagname == "BODY")
+				elem=0;
+			if(typeof(elem) == "object") {
+				if(typeof(elem.offsetParent) == "object") {
+					elem = elem.offsetParent;
+				}
+			}
+		}
+		return {x: x, y: y};
+	}
+	
+	var debugDraw = new b2DebugDraw();
+	debugDraw.SetSprite(document.getElementById("canvas").getContext("2d"));
+	debugDraw.SetDrawScale(10);
+	debugDraw.SetFillAlpha(0.5); //define transparency
+	debugDraw.SetLineThickness(1.0); //defines thickness of lines or boundaries
+	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+	world.SetDebugDraw(debugDraw);
+	
+	function update() {
+		if(started == true) {
+			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
+		}
+		for (var i=0;i<bodies.length;i++){ 
+				player_shapes[i].x= bodies[i].GetPosition().x*scale;
+				player_shapes[i].y= bodies[i].GetPosition().y*scale;
+				//degree = radian *57.3, then turning 90 degrees for orientation
+				player_shapes[i].rotation = (bodies[i].GetAngle())*57.3-90;
+				if(bodies[i].userData.isStunned == true) {
+					player_shapes[i].shadow = new createjs.Shadow("#FFFFFF", 0, 0, 12);
+				} else {
+					player_shapes[i].shadow = new createjs.Shadow(colors[i], 0, 0, 12);
+				}
+		}
+		stage.update(event);
+		//world.DrawDebugData();
+		
+		requestAnimFrame(update);
+		
+	
+	}	
+</script>
+</html>

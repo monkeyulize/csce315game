@@ -19,6 +19,7 @@ var p_ids = {
 	2 : 'free',
 	3 : 'free'
 }
+var player_names = new Array();
 var players = new Array();
 var clients = [];
 io.sockets.on('connection', function (socket) {
@@ -30,14 +31,19 @@ io.sockets.on('connection', function (socket) {
 			break;
 		}	
 	}
-	
+	socket.on('name', function(data) {
+		player_names[data.id] = data.name;	
+		for(i = 0; i < player_names.length; i++) {
+			io.sockets.emit('player name', {id : i, name : player_names[i]});
+		}
+		
+	});
 	console.log("player " + p_id + " connected");
 	console.log("socket ID: " + socket.id);
 	clients[p_id] = {"socket" : socket.id};
 	players[p_id] = p_id;
 	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
 	socket.broadcast.emit('player joined', {num_players : players.length, other_playerID : p_id});
-	//p_id++;
 	socket.on('wh', function(data) {
 		game.add_player(players.length, 800, 600);
 	});
