@@ -77,44 +77,22 @@ body {
 	<div><button class="button" onclick="jumpToRules()">Rules </button></div>
 </div>
 
+
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 <script>
-  // $(document) returns a jQuery object representing the whole document (page).
-  // $(document).ready(fn) tells jQuery to call function 'fn' after the whole
-  // document is loaded.
-  $(document).ready(function() {
-    // Hide the warning section and show the login section.
-    $('#warning').css('display', 'none');
-	$('#login_section').css('display', 'block');
-	$('#background').css('display', 'block');
-	
 
 
-    // When Enter is pressed in the name field, it should be treated as clicking
-    // on the Log In button.
-    $('#name').keyup(function(event) {
-      if (event.keyCode == 13) {
-        $('#login').click();
-		$('#login_section').css('display', 'none');
-        $('#game').css('display', 'block');
-		$('#background').css('display', 'none');
-        $('#status').text('Logged In.');
-      }
-    });
+	function jumpToInstr() {
+	  window.location = "./intrstruction_screen.html";
+	}
 
-  });
+	function jumpToRules() {
+	  window.location = "./rulescreen.html";
+	}
 
-function jumpToInstr() {
-  window.location = "/instruction_screen.html";
-}
-
-function jumpToRules() {
-  window.location = "/rulescreen.html";
-}
-
-function jumpToLogin() {
-  window.location = "/loginscreen.html";
-}
+	function jumpToLogin() {
+	  window.location = "./loginscreen.html";
+	}
 </script>
 
 </div>
