@@ -118,9 +118,9 @@ var add_player = function(num_players, width, height) {
 var canMove = false;
 var isStunned = false;
 var launchMode = false;
+var has_collided = false;
 
-
-
+var update_speed = 1/60;
 
 //track collisions of dynamic shapes, being those shapes that move
 var listener = new Box2D.Dynamics.b2ContactListener;
@@ -128,6 +128,12 @@ world.SetContactListener(listener);
 listener.BeginContact = function(contact) {
 	var body1 = contact.GetFixtureA();
 	var body2 = contact.GetFixtureB();
+	if(body1.GetUserData() == 'HORN' || body1.GetUserData() == 'PLAYER') {
+		if(body2.GetUserData() == 'HORN' || body2.GetUserData() == 'PLAYER') {
+			has_collided = true;
+		}
+	}
+	
 	if(body1.GetUserData() == 'HORN' || body1.GetUserData() == 'PLAYER') {
 		if(body2.GetUserData() == 'LAUNCHERSENSOR') {
 			for(i = 0; i < myBodies.length; i++) {
@@ -152,6 +158,7 @@ listener.BeginContact = function(contact) {
 			for(i = 0; i < myBodies.length; i++) {
 				if(body2.GetBody() == myBodies[i]) {
 					lives["p"+(i+1)]--;
+					update_speed = 1/60;
 				}
 			}				
 		} else if(body2.GetUserData() == 'WALL') {
@@ -172,6 +179,7 @@ listener.BeginContact = function(contact) {
 			for(i = 0; i < myBodies.length; i++) {
 				if(body1.GetBody() == myBodies[i]) {
 					lives["p"+(i+1)]--;
+					update_speed = 1/60;
 				}
 			}				
 		} else if(body1.GetUserData() == 'WALL') {
@@ -261,11 +269,57 @@ var destroy_body = function(playerID) {
 	lives["p"+(playerID+1)] = 3;
 }
 var update_speed = 1/60
-
+function distance(x1, x2, y1, y2) {
+	return Math.sqrt((x2 - x1)*(x2 - x1) + (y2 - y1)*(y2 - y1));
+}
+var counter = 0;
+var distances = {
+	0 : 0,
+	0 : 0,
+	0 : 0,
+	0 : 0,
+	0 : 0,
+	0 : 0,
+}
+var which_distance;
 //update the physics including movement, collisions, and setting the state of the game		
 var update = function(playerID, isMouseDown, mouseX, mouseY) {
 	var SCALE_FACTOR = 3;
+	
 	var LAUNCH_SPEED = 700;
+	var positions = [];
+	for(i = 0; i < myBodies.length; i++) {
+		positions[i] = myBodies[i].GetPosition();	
+	}
+	var mod_index = 0;
+	if(myBodies.length >= 2) {
+		for(i = 0; i < myBodies.length; i++) {
+			for(j = i+1; j < myBodies.length; j++) {
+				distances[mod_index % 5] = (distance(positions[i].x, positions[j].x, positions[i].y, positions[j].y));
+				mod_index++;
+			}
+		}
+	}
+	
+	for(i = 0; i < 5; i++) {
+		if(distances[i] <= 5 && counter < 50) {
+			counter++;
+			which_distance = i;
+			update_speed = 1/1000;
+		
+		}
+		if(counter >= 50) {
+			update_speed = 1/60;
+			//console.log(which_distance);
+			//console.log(counter + " " + distances[which_distance]);
+			if(distances[which_distance] > 5) {
+				counter = 0;
+			}
+		}	
+	}
+
+
+	
 	
 	var temp_data = myBodies[playerID].userData;
 	if(temp_data.launchMode == true) {
