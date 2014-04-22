@@ -182,9 +182,9 @@
 		launcher.CreateFixture(launcherFixture);
 		
 		stage_launcher = stage.addChild(new createjs.Shape());
-		stage_launcher.graphics.beginFill("red").drawRect(0,0,scale*(w/2),scale*(h/2));
-			stage_launcher.x = scale*x + scale*(w/2);
-			stage_launcher.y = scale*y + scale*(h/2);
+		stage_launcher.graphics.beginFill("red").drawRect(0,0,scale*w,scale*h);
+			stage_launcher.x = scale*x;
+			stage_launcher.y = scale*y;
 		stage.addChild(stage_launcher);
 	}
 	
@@ -281,6 +281,7 @@
 			bodies[num_players-1].SetAngularVelocity(0);
 			bodies[num_players-1].CreateFixture(myFixture);
 			bodies[num_players-1].CreateFixture(myHorn); 
+			bodies[num_players-1].userData = {canMove : true, isStunned : false, launchMode : false};
 			bodies[num_players-1]["playerID"] = data.other_playerID;
 			console.log("num_players: " + num_players);		
 			console.log("player ID: " + bodies[num_players-1]["playerID"]);
@@ -302,6 +303,7 @@
 		document.getElementById("player"+(data.id_to_destroy+1)).style.visibility="hidden";
 		world.DestroyBody(bodies[data.id_to_destroy]);	
 		stage.removeChild(player_shapes[data.id_to_destroy]);
+		//bodies.splice(data.id_to_destroy, 1);
 		num_players--;
 	});
 
@@ -398,7 +400,7 @@
 		if(started == true) {
 			socket.emit('mouse data', {playerID: p_id, isMouseDown: isMouseDown, mouseX: mouseX, mouseY: mouseY })
 		}
-		for (var i=0;i<num_players;i++){ 
+		for (var i=0;i<bodies.length;i++){ 
 				player_shapes[i].x= bodies[i].GetPosition().x*scale;
 				player_shapes[i].y= bodies[i].GetPosition().y*scale;
 				//degree = radian *57.3, then turning 90 degrees for orientation

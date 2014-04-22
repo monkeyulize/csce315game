@@ -13,16 +13,31 @@ function handler (req, res) {
 	}).resume();
 }
 var p_id = 0;
+var p_ids = {
+	0 : 'free',
+	1 : 'free',
+	2 : 'free',
+	3 : 'free'
+}
 var players = new Array();
 var clients = [];
 io.sockets.on('connection', function (socket) {
+	p_id = 0;
+	for(i = 0; i < 4; i++) {
+		if(p_ids[i] == 'free') {
+			p_ids[i] = 'taken';
+			p_id = i;
+			break;
+		}	
+	}
+	
 	console.log("player " + p_id + " connected");
 	console.log("socket ID: " + socket.id);
 	clients[p_id] = {"socket" : socket.id};
 	players[p_id] = p_id;
 	io.sockets.socket(clients[p_id].socket).emit('player connected', { playerID: p_id, num_players : players.length });	
 	socket.broadcast.emit('player joined', {num_players : players.length, other_playerID : p_id});
-	p_id++;
+	//p_id++;
 	socket.on('wh', function(data) {
 		game.add_player(players.length, 800, 600);
 	});
@@ -38,12 +53,12 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		for(i = 0; i < clients.length; i++) {
 			if(clients[i].socket == socket.id) {
+				p_ids[i] = 'free';
 				console.log("player " + i + " disconnected");
 				game.destroy_body(i);
 				io.sockets.emit('player disconnected', {id_to_destroy : i});
 			}
 		}
-		p_id--;
 		players.pop();
 	});
 });
