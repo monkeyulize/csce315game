@@ -1,0 +1,100 @@
+<html>
+	<head>
+
+	</head>
+	
+	
+	<body>
+	</body>
+	
+<style>
+body {
+  font-family: sans-serif;
+}
+
+#status {
+  position: absolute;
+	top: -50;
+	right: 20;
+  font-size: 14pt;
+  color: blue;
+  margin-right: 0px;
+  margin-bottom: 0px;
+}
+#background{
+
+}
+
+#warning {
+	display: "none";
+	font-size: 10pt;
+	font-family: Comic Sans;
+}
+
+#game {
+  
+}
+
+#board div {
+  margin-top: 5px;
+}
+
+#buttons{
+  position: absolute;
+  top: 350;
+  left: 300;
+}
+
+.button {
+  width: 200px;
+  font-family: Comic Sans;
+}
+
+.user_name {
+  font-size: 10pt;
+  font-weight: bold;
+  color: blue;
+}
+
+.notification {
+  color: green;
+}
+</style>
+
+<div id="screen_size" style="float:left; width: 800px; height: 600px;">
+
+<div id="background" style="float:left; width 800px; height: 600px;">
+  <img src="./assets/menu_image.png" alt="Background" width="window.height" height="window.width">
+</div>
+
+<div id="buttons" style="float:left; width 800px; height: 600px;"> 
+	<div><button class="button" onclick="jumpToLogin()">Login </button></div>
+	<div><button class="button" onclick="jumpToInstr()">Instructions </button></div>
+	<div><button class="button" onclick="jumpToRules()">Rules </button></div>
+</div>
+
+
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script>
+
+
+	function jumpToInstr() {
+	  window.location = "./intrstruction_screen.html";
+	}
+
+	function jumpToRules() {
+	  window.location = "./rulescreen.html";
+	}
+
+	function jumpToLogin() {
+	  window.location = "./loginscreen.html";
+	}
+</script>
+
+</div>
+	
+	
+</html>
+
+
+	

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<style>
+body {
+  font-family: sans-serif;
+}
+
+#inputbox
+{
+  position: absolute;
+  top: 324px;
+  left: 268px;
+}
+
+#buttons{
+  position: absolute;
+  top: 350px;
+  left: 350px;
+}
+
+.button {
+  width: 100px;
+  font-family: Comic Sans;
+}
+
+
+#container
+{
+    height:600px;
+    width:800px;
+    position:relative;
+}
+
+#image
+{    
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+</style>
+
+
+
+<body>
+
+<div id="container">
+    <img id="image" src="./assets/login_screen.png"/>
+    
+	<div id ="inputbox" >
+		 Username: <input id="name" type="text" > 
+	</div>
+
+	<div id="buttons" > 
+		<input id="login" type="button" value="Join Game" onClick="jumpToGame()" horizontal-align: text-center></input>
+		<div><button class="button" onclick ="menuscreen()">Back To Menu </button> </div>
+	</div>
+   
+</div>
+
+
+<script>
+function jumpToGame() {
+	var name = document.getElementById("name").value;
+	window.location = './game.html?name=' + name;
+}
+function menuscreen() {
+	window.location = "./index.html";
+}
+</script>
+
+
+
+</body>
+</html>
+

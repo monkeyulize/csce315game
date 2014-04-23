@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<style>
+body {
+  font-family: sans-serif;
+}
+
+#background{
+
+}
+
+#buttons{
+  position: absolute;
+  top: 350;
+  left: 300;
+}
+
+
+#container
+{
+    height:600px;
+    width:800px;
+    position:relative;
+}
+
+#image
+{    
+    position:absolute;
+    left:0;
+    top:0;
+}
+#text
+{
+    z-index:100;
+    position:absolute;    
+    color:black;
+    font-size:16px;
+    font-weight:normal;
+    left:0px;
+    top:100px;
+}
+
+
+</style>
+
+<body>
+
+<div id="container">
+    <img id="image" src="./assets/rule_screen.png"/>
+    <p id="text">
+       - Play will take place on a square map, with obstacles symmetrically placed within it.<br>
+	-2-4 players spawn at the same time with one player in each of the 4 corners of the arena. Which corner each player spawns in is random, with no two players in same corner.<br>
+	-Players cannot move outside of the enclosed map.<br>
+	-The players avatar follows the players mouse. They have a constant speed but their direction is determined by where the cursor is relative to the avatar.<br>
+	-Each avatar has a ‘spike’ with which they attack other players. The rest of the avatar is vulnerable to attack.<br>
+	-Each player begins with three lives.<br>
+	-A player that is hit in the back loses 1 life, being hit in the front causes neither player damage.	<br>
+	-A player who is hit becomes invincible for a short time (1-3 seconds) after behing hit. They are also unable to ram other players while invincible. <br>
+	-A player with 0 life left results in their elimination from the game. <br>
+	-Hitting a launch pad increases speed of player, and allows player to select their launch angle.<br>
+	-Running into a wall at launch pad-induced speed will result in the player being unable to move for  a short time (1 - 2 seconds)
+	-Players have a set turning speed for moving. After being launched from a pad turning speed is reduced.<br>
+	-Being the last player alive results in the player winning and the game ending.<br>
+
+	<button id="buttons" onclick ="menuscreen()">Back To Menu </button>
+
+    </p>
+	
+
+	
+</div>
+
+<script>
+function menuscreen()
+{
+
+  window.location = "./index.html";
+
+}
+</script>
+
+
+</body>
+</html>
