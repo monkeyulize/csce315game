@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <style>
+
 body {
-  font-family: sans-serif;
+  font-family: quartz MS;
+	color:white;
 }
 
 #buttons{
@@ -29,11 +31,67 @@ body {
 {
     z-index:100;
     position:absolute;    
-    color:black;
     font-size:16px;
     font-weight:normal;
-    left:0px;
+    left:15px;
     top:100px;
+}
+
+#heading{
+	position: absolute;
+  top: 0px;
+  left: 235px;
+}
+
+h1{
+	font-size: 48px;
+}
+
+
+
+.btn-1 {
+	border: 0.188em solid white;
+	color: black;
+}
+.btn-1e {
+	overflow: hidden;
+}
+
+.btn-1e:hover,
+.btn-1e:active {
+	color: white;
+	border: 0.0;
+	background: none;
+}
+
+.btn-1e:active:after {
+	height: 400%;
+	opacity: 1;
+}
+.btn {
+	border: 0.1em solid white;
+	font-family: quartz MS;
+	font-size: inherit;
+	color: black;
+	background: white;
+	cursor: pointer;
+	padding: 1.563em	5em;
+	position: absolute;
+  top: 450px;
+  left: 225px; 
+	margin: 0.938em 1.875em;
+	margin-top: 25px;
+	margin-bottom:0px;
+	padding-top:2px;
+	padding-bottom:2px;
+	text-transform: none;
+	letter-spacing: 0.063em;
+	font-weight: 700;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
 }
 
 
@@ -43,20 +101,25 @@ body {
 <body>
 
 <div id="container">
-    <img id="image" src="./assets/instruction_screen.png"/>
+    <img id="image" src="./assets/background.png"/>
+		
+		<div>
+			<h1 id="heading">Instructions</h1>  
+		</div>
+		
     <p id="text">
-        - To move the player around drag the mouse in the direction you want it to go in.<br>
-    - Hitting the back of another player will result in the other player losing 1 health point. <br>
-    - Land on a launch pad to increase the players speed.<br>
-    -Once a launch pad is touched and used, the launch pad will be disabled for a length of time.<br>
-    -All avatars will have a limited range of motion while moving and all avatars will have 
-	 <br> the same turning speed such that a player cannot rapidly change directions apart from using a launch pad.<br>
-    -Hitting the wall at a fast speed will result in player losing control of their character for a time. <br>
+    - To move the player around drag the mouse in the direction you want it to go in.<br><br>
+    - Hitting the back of another player will result in the other player losing 1 health point. <br><br>
+    - Land on a launch pad to increase the players speed.<br><br>
+    - Once a launch pad is touched and used, the launch pad will be disabled for a length of time.<br><br>
+    - All avatars will have a limited range of motion while moving and all avatars will have 
+	  the same turning speed such that a player cannot rapidly change directions apart from using a launch pad.<br><br>
+    - Hitting the wall at a fast speed will result in player losing control of their character for a time. <br><br>
 
-	<button id="buttons" onclick ="menuscreen()">Back To Menu " </button>
+	
 
     </p>
-	
+	<button class="btn btn-1 btn-1e" onclick ="menuscreen()">Back To Menu</button>
 
 	
 </div>
