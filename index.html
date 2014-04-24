@@ -1,83 +1,192 @@
+<!DOCTYPE html>
 <html>
-	<head>
-
-	</head>
-	
-	
-	<body>
-	</body>
-	
 <style>
 body {
-  font-family: sans-serif;
+  font-family: quartz MS;
+	color:white;
 }
 
-#status {
-  position: absolute;
-	top: -50;
-	right: 20;
-  font-size: 14pt;
-  color: blue;
-  margin-right: 0px;
-  margin-bottom: 0px;
-}
-#background{
-
+#container
+{
+    height:600px;
+    width:800px;
+    position:relative;
 }
 
-#warning {
-	display: "none";
-	font-size: 10pt;
-	font-family: Comic Sans;
+#image
+{    
+    position:absolute;
+    left:0;
+    top:0;
 }
 
-#game {
-  
-}
-
-#board div {
-  margin-top: 5px;
-}
 
 #buttons{
   position: absolute;
   top: 350;
   left: 300;
+  font-family: eightBit; 
+ }
+ 
+#heading{
+  position: absolute;
+  top: 25px;
+  left: 100px;
 }
 
-.button {
-  width: 200px;
-  font-family: Comic Sans;
+h1{
+	font-size: 100px;
+	z-index: 11000;
 }
 
-.user_name {
-  font-size: 10pt;
-  font-weight: bold;
-  color: blue;
+.btn-1 {
+	border: 0.188em solid #666666;
+	color: #666666;
+}
+.btn-1e {
+	overflow: hidden;
 }
 
-.notification {
-  color: green;
+.btn-1e:after {
+	width: 100%;
+	height: 0em;
+	top: 50%;
+	left: 50%;
+	background: #666666;
+	opacity: 0;
+	-webkit-transform: translateX(-50%) translateY(-50%) rotate(45deg);
+	-moz-transform: translateX(-50%) translateY(-50%) rotate(45deg);
+	-ms-transform: translateX(-50%) translateY(-50%) rotate(45deg);
+	transform: translateX(-50%) translateY(-50%) rotate(45deg);
 }
+
+.btn-1e:hover,
+.btn-1e:active {
+	color: #666666;
+	border: 0.0;
+}
+
+.btn-1e:hover:after {
+	height: 260%;
+	opacity: 1;
+}
+
+.btn-1e:active:after {
+	height: 400%;
+	opacity: 1;
+}
+.btn-join {
+	border: 0.0;
+	font-family: quartz MS;
+	font-size: inherit;
+	color: white;
+	background: none;
+	cursor: pointer;
+	padding: 1.563em	5em;
+	position: absolute;
+  top: 300px;
+  left: 255px; 
+	margin: 0.938em 1.875em;
+	margin-top: 25px;
+	margin-bottom:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	text-transform: none;
+	letter-spacing: 0.063em;
+	font-weight: 700;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.btn-instructions {
+	border: 0.0;
+	font-family: quartz MS;
+	font-size: inherit;
+	color: white;
+	background: none;
+	cursor: pointer;
+	padding: 1.563em	5em;
+	position: absolute;
+  top: 300px;
+  left: 218px; 
+	margin: 0.938em 1.875em;
+	margin-top: 20px;
+	margin-bottom:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	text-transform: none;
+	letter-spacing: 0.063em;
+	font-weight: 700;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.btn-rules {
+	border: 0.0;
+	font-family: quartz MS;
+	font-size: inherit;
+	color: white;
+	background: none;
+	cursor: pointer;
+	padding: 1.563em	5em;
+	position: absolute;
+  top: 300px;
+  left: 255px; 
+	margin: 0.938em 1.875em;
+	margin-top: 20px;
+	margin-bottom:0px;
+	padding-top:0px;
+	padding-bottom:0px;
+	text-transform: none;
+	letter-spacing: 0.063em;
+	font-weight: 700;
+	outline: none;
+	position: relative;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+.btn:after {
+	content: '';
+	position: absolute;
+	z-index: -1;
+	-webkit-transition: all 0.3s;
+	-moz-transition: all 0.3s;
+	transition: all 0.3s;
+}
+
+
 </style>
 
-<div id="screen_size" style="float:left; width: 800px; height: 600px;">
+<body>
 
-<div id="background" style="float:left; width 800px; height: 600px;">
-  <img src="./assets/menu_image.png" alt="Background" width="window.height" height="window.width">
-</div>
+	<div id="container">
 
-<div id="buttons" style="float:left; width 800px; height: 600px;"> 
-	<div><button class="button" onclick="jumpToLogin()">Login </button></div>
-	<div><button class="button" onclick="jumpToInstr()">Instructions </button></div>
-	<div><button class="button" onclick="jumpToRules()">Rules </button></div>
-</div>
+		<img id="image" src="./assets/background.png"/>
 
+		<div>
+			<h1 id="heading">Launch Pad</h1>  
+		</div>
+		
+		<div id="buttons"> 
+			<button class="btn-join btn-1 btn-1e" onclick="jumpToLogin()">Login </button>
+			<div> <button class="btn-instructions btn-1 btn-1e" onclick="jumpToInstr()">Instructions </button></div>
+			<div> <button class="btn-rules btn-1 btn-1e" onclick="jumpToRules()">Rules </button></div>
+		</div>
+		
+	</div>
 
+	
 <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+
 <script>
-
-
 	function jumpToInstr() {
 	  window.location = "./intrstruction_screen.html";
 	}
@@ -91,10 +200,7 @@ body {
 	}
 </script>
 
-</div>
-	
-	
+</body>
+
 </html>
 
-
-	
